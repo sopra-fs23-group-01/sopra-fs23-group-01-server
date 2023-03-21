@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Gender;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 
 import javax.persistence.*;
@@ -52,6 +53,65 @@ public class User implements Serializable {
   @JsonFormat(pattern="dd-MM-yyyy")
   @Column(nullable = true)
   private Date birthday;
+
+  //Total bonus of user
+  private int bonus;
+  private Gender gender;
+  private String introduction;
+
+  private float winningRateUndercover;
+  private float WinningRateDetective;
+
+  private float escapedRate;
+
+    public int getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(int bonus) {
+        this.bonus = bonus;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public String getIntroduction() {
+        return introduction;
+    }
+
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public float getWinningRateUndercover() {
+        return winningRateUndercover;
+    }
+
+    public void setWinningRateUndercover(float winningRateUndercover) {
+        this.winningRateUndercover = winningRateUndercover;
+    }
+
+    public float getWinningRateDetective() {
+        return WinningRateDetective;
+    }
+
+    public void setWinningRateDetective(float winningRateDetective) {
+        WinningRateDetective = winningRateDetective;
+    }
+
+    public float getEscapedRate() {
+        return escapedRate;
+    }
+
+    public void setEscapedRate(float escapedRate) {
+        this.escapedRate = escapedRate;
+    }
+
 
   public Long getId() {
     return id;
