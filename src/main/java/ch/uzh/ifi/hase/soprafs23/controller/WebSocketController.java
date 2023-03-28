@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin
-public class SocketController {
+public class WebSocketController {
 
     private AtomicInteger idProducer = new AtomicInteger();
 
@@ -18,3 +18,4 @@ public class SocketController {
         return "user" +idProducer.getAndIncrement();
     }
 }
+

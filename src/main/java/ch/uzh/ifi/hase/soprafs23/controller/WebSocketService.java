@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Slf4j //lombok jar包，帮我们自动生成一些代码：@Data
 @Component
 @ServerEndpoint("/websocket/{username}")
-public class Socket {
+public class WebSocketService {
     public static final Map<String, Session> CLIENTS = new ConcurrentHashMap<>();
     /**
      * 连接建立时触发
