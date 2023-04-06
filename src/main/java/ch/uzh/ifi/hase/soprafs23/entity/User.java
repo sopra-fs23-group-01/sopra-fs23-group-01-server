@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
-import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.*;
 
 import javax.persistence.*;
 
@@ -45,6 +45,20 @@ public class User implements Serializable {
   @Column(nullable = false)
   private String password;
 
+    @Column
+    private String email;
+
+    @Column
+    private UserGender gender;
+
+    @Column
+    private float rateDe=0;
+
+    @Column
+    private float rateUn=0;
+
+    @Column
+    private String intro="Let's Go!!!";
   @JsonFormat(pattern="dd-MM-yyyy")
   @Column
   private Date registerdate;;
@@ -53,7 +67,7 @@ public class User implements Serializable {
   @Column(nullable = true)
   private Date birthday;
 
-  public Long getId() {
+  public long getId() {
     return id;
   }
 
@@ -127,4 +141,44 @@ public Object getLastUpdated() {
 public boolean isPresent() {
     return false;
 }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public UserGender getGender() {
+        return gender;
+    }
+
+    public void setGender(UserGender gender) {
+        this.gender = gender;
+    }
+
+    public float getRateDe() {
+        return rateDe;
+    }
+
+    public void setRateDe(float rateDe) {
+        this.rateDe = rateDe;
+    }
+
+    public float getRateUn() {
+        return rateUn;
+    }
+
+    public void setRateUn(float rateUn) {
+        this.rateUn = rateUn;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
 }

@@ -2,9 +2,12 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import java.util.Date;
 
+import ch.uzh.ifi.hase.soprafs23.constant.UserGender;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+
+import javax.persistence.Column;
 
 public class UserGetDTO {
 
@@ -18,7 +21,57 @@ public class UserGetDTO {
   @JsonFormat(pattern="dd-MM-yyyy")
   private Date registerDate;
 
-  public Long getId() {
+    private String email;
+
+    private UserGender gender;
+
+    private float rateDe;
+
+    private float rateUn;
+
+    private String intro;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public UserGender getGender() {
+        return gender;
+    }
+
+    public void setGender(UserGender gender) {
+        this.gender = gender;
+    }
+
+    public float getRateDe() {
+        return rateDe;
+    }
+
+    public void setRateDe(float rateDe) {
+        this.rateDe = rateDe;
+    }
+
+    public float getRateUn() {
+        return rateUn;
+    }
+
+    public void setRateUn(float rateUn) {
+        this.rateUn = rateUn;
+    }
+
+    public String getIntro() {
+        return intro;
+    }
+
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
+    public Long getId() {
     return id;
   }
 
