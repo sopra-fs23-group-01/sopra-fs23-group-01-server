@@ -100,7 +100,7 @@ public UserGetDTO userProfile (@PathVariable("userId") Long userId) {
 
 //Put method for editing the user profile
 @PutMapping("/users/{userId}")
-@ResponseStatus(HttpStatus.NO_CONTENT)
+@ResponseStatus(HttpStatus.OK)
 @ResponseBody
 public void userEditProfile(@PathVariable("userId") Long userId, @RequestBody UserPutDTO userPutDTO) {
     // convert API user to internal representation

@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserGender;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
@@ -17,7 +18,7 @@ public class UserPutDTO {
     private Date registerDate;
 
     private String email;
-
+    @JsonProperty("gender")
     private UserGender gender;
 
     private float rateDe;

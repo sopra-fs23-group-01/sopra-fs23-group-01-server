@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.*;
 import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -49,6 +50,7 @@ public class User implements Serializable {
     private String email;
 
     @Column
+    @JsonProperty("gender")
     private UserGender gender;
 
     @Column

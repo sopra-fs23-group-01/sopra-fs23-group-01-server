@@ -127,6 +127,18 @@ public class UserService {
     if(user.getBirthday()!=null){
           userByUserid.setBirthday(user.getBirthday());
           };
+      // set the gender
+      if(user.getGender()!=null){
+          userByUserid.setGender(user.getGender());
+      };
+      // set the email
+      if(user.getEmail()!=null){
+          userByUserid.setEmail(user.getEmail());
+      };
+      // set the intro
+      if(user.getIntro()!=null){
+          userByUserid.setIntro(user.getIntro());
+      };
         
       
     // saves the given entity but data is only persisted in the database once
