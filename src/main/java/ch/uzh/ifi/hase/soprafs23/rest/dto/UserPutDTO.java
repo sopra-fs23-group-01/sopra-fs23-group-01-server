@@ -27,6 +27,15 @@ public class UserPutDTO {
 
     private String intro;
 
+    private String avatarUrl;
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
     public String getEmail() {
         return email;
     }

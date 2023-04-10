@@ -68,6 +68,17 @@ public class User implements Serializable {
   @JsonFormat(pattern="dd-MM-yyyy")
   @Column(nullable = true)
   private Date birthday;
+    @Column
+    private String avatarUrl="https://robohash.org/1";
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+
 
   public long getId() {
     return id;

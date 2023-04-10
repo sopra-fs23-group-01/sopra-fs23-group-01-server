@@ -139,6 +139,9 @@ public class UserService {
       if(user.getIntro()!=null){
           userByUserid.setIntro(user.getIntro());
       };
+      if(user.getAvatarUrl()!=null){
+          userByUserid.setAvatarUrl(user.getAvatarUrl());
+      };
         
       
     // saves the given entity but data is only persisted in the database once

@@ -42,6 +42,7 @@ public interface DTOMapper {
   @Mapping(source = "email", target = "email")
   @Mapping(source = "intro", target = "intro")
   @Mapping(source = "gender", target = "gender")
+  @Mapping(source = "avatarUrl", target = "avatarUrl")
   UserGetDTO convertEntityToUserGetDTO(User user);
 
 
@@ -56,5 +57,6 @@ public interface DTOMapper {
   @Mapping(source = "email", target = "email")
   @Mapping(source = "intro", target = "intro")
   @Mapping(source = "gender", target = "gender")
+  @Mapping(source = "avatarUrl", target = "avatarUrl")
   User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
 }
