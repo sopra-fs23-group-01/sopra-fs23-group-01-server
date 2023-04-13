@@ -1,9 +1,8 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper;
 
+import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPostDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -59,4 +58,22 @@ public interface DTOMapper {
   @Mapping(source = "gender", target = "gender")
   @Mapping(source = "avatarUrl", target = "avatarUrl")
   User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
+
+  @Mapping(source = "roomId", target = "roomId")
+  @Mapping(source = "theme", target = "theme")
+  @Mapping(source = "roomProperty", target = "roomProperty")
+  //@Mapping(source = "token", target = "token")
+  Room convertRoomPostDTOtoEntity(RoomPostDTO roomPostDTO);
+
+  @Mapping(source = "roomId", target = "roomId")
+  @Mapping(source = "theme", target = "theme")
+  @Mapping(source = "roomProperty", target = "roomProperty")
+  //@Mapping(source = "token", target = "token")
+  RoomGetDTO convertEntityToRoomGetDTO(Room room);
+
+  @Mapping(source = "roomId", target = "roomId")
+  @Mapping(source = "theme", target = "theme")
+  @Mapping(source = "roomProperty", target = "roomProperty")
+  //@Mapping(source = "token", target = "token")
+  Room convertRoomPutDTOtoEntity(RoomPutDTO roomPutDTO);
 }
