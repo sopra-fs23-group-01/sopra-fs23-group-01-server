@@ -6,9 +6,6 @@ import ch.uzh.ifi.hase.soprafs23.constant.UserGender;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
-
-import javax.persistence.Column;
-
 public class UserGetDTO {
 
   private Long id;
