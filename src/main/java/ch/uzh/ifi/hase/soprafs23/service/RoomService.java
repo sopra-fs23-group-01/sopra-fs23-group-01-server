@@ -3,7 +3,9 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
 import ch.uzh.ifi.hase.soprafs23.constant.Theme;
 import ch.uzh.ifi.hase.soprafs23.entity.Room;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,9 +32,11 @@ public class RoomService {
     private final Logger log = LoggerFactory.getLogger(RoomService.class);
 
     private final RoomRepository roomRepository;
+    private final UserRepository userRepository;
 
-    public RoomService(@Qualifier("roomRepository") RoomRepository userRepository) {
-        this.roomRepository = userRepository;
+    public RoomService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("roomRepository") RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Room> getRooms() {return this.roomRepository.findAll();}
@@ -40,14 +44,26 @@ public class RoomService {
     //Here we create a new room and we need to set the room property and theme according to the input from client
     public Room createRoom(Room newRoom) {
         //newRoom.setToken(UUID.randomUUID().toString());
+        newRoom.setRoomOwnerId(newRoom.getRoomOwnerId());
         newRoom.setRoomProperty(newRoom.getRoomProperty());
         newRoom.setTheme(newRoom.getTheme());
+        newRoom.addRoomPlayer(userRepository.findById(newRoom.getRoomOwnerId()));
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newRoom = roomRepository.save(newRoom);
         roomRepository.flush();
         log.debug("Created Information for Room: {}", newRoom);
         return newRoom;
+    }
+
+    public Room findRoomById(Long id) {
+        Optional<Room> roomById = roomRepository.findById(id);
+        if (roomById.isPresent()) {
+            return roomById.get();
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room with this ID:"+id+" not found!");
+        }
     }
 
     /**

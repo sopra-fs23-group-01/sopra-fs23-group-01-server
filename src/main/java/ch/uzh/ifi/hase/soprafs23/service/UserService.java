@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +29,14 @@ public class UserService {
 
   private final Logger log = LoggerFactory.getLogger(UserService.class);
 
+  private final RoomRepository roomRepository;
   private final UserRepository userRepository;
 
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
-    this.userRepository = userRepository;
+  public UserService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("roomRepository") RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
+        this.userRepository = userRepository;
   }
+
 
   public List<User> getUsers() {
     return this.userRepository.findAll();

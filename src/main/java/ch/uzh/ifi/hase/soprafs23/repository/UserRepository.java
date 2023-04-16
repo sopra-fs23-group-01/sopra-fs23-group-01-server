@@ -11,5 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserRepository extends JpaRepository<User, Long> {
   User findByUsername(String username);
   User getOne(@RequestParam(required = true) Long id);
-}
 
+  default UserRepository getUserRepository() {
+        return this;
+  }
+
+}

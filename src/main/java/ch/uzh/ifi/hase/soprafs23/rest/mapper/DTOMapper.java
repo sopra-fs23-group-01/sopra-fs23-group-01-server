@@ -62,18 +62,24 @@ public interface DTOMapper {
   @Mapping(source = "roomId", target = "roomId")
   @Mapping(source = "theme", target = "theme")
   @Mapping(source = "roomProperty", target = "roomProperty")
+  @Mapping(source = "roomOwnerId", target = "roomOwnerId")
+  //@Mapping(source = "roomPlayers", target = "roomPlayers")
   //@Mapping(source = "token", target = "token")
   Room convertRoomPostDTOtoEntity(RoomPostDTO roomPostDTO);
 
   @Mapping(source = "roomId", target = "roomId")
   @Mapping(source = "theme", target = "theme")
   @Mapping(source = "roomProperty", target = "roomProperty")
+  @Mapping(source = "roomOwnerId", target = "roomOwnerId")
+  @Mapping(source = "roomPlayers", target = "roomPlayers")
   //@Mapping(source = "token", target = "token")
   RoomGetDTO convertEntityToRoomGetDTO(Room room);
 
   @Mapping(source = "roomId", target = "roomId")
   @Mapping(source = "theme", target = "theme")
   @Mapping(source = "roomProperty", target = "roomProperty")
-  //@Mapping(source = "token", target = "token")
+  @Mapping(source = "roomOwnerId", target = "roomOwnerId")
+  @Mapping(source = "roomPlayers", target = "roomPlayers")
+      //@Mapping(source = "token", target = "token")
   Room convertRoomPutDTOtoEntity(RoomPutDTO roomPutDTO);
 }

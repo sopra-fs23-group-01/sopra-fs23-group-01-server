@@ -56,6 +56,14 @@ public class RoomController {
         return DTOMapper.INSTANCE.convertEntityToRoomGetDTO(createdRoom);
     }
 
+    //Get method for getting one room
+    @GetMapping("/games/{roomId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public RoomGetDTO userProfile (@PathVariable("roomId") Long roomId) {
+        Room room = roomService.findRoomById(roomId);
+        return DTOMapper.INSTANCE.convertEntityToRoomGetDTO(room);
+    }
     //login
 //    @PostMapping("/users/login")
 //    @ResponseStatus(HttpStatus.OK)

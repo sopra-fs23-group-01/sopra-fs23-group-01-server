@@ -29,6 +29,7 @@ public class User implements Serializable {
 
   @Id
   @GeneratedValue
+  @Column(name = "user_id")
   private long id;
 
   @Column(nullable = true)
@@ -68,6 +69,11 @@ public class User implements Serializable {
   @JsonFormat(pattern="dd-MM-yyyy")
   @Column(nullable = true)
   private Date birthday;
+
+  @ManyToOne
+  @JoinColumn(name = "room_id")
+  private Room room;
+
     @Column
     private String avatarUrl="https://robohash.org/1";
     public String getAvatarUrl() {

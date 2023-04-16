@@ -2,6 +2,9 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 import ch.uzh.ifi.hase.soprafs23.constant.*;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -21,11 +24,15 @@ public class Room implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "room_sequence")
+    @SequenceGenerator(name = "room_sequence", sequenceName = "room_sequence", allocationSize = 1, initialValue = 10000)
     private long roomId;
 
     @Column(nullable = true)
     private Theme theme;
+
+    @Column(nullable = false)
+    private long roomOwnerId;
 
     @Column(nullable = true)
     private int maxPlayersNum;
@@ -35,6 +42,9 @@ public class Room implements Serializable {
 
     @Column(nullable = false)
     private RoomProperty roomProperty;
+
+    @OneToMany(mappedBy = "room")
+    private List<User> roomPlayers = new ArrayList<>();
 
     public long getRoomId() {
         return roomId;
@@ -72,6 +82,23 @@ public class Room implements Serializable {
         return maxPlayersNum;
     }
 
+    public List<User> getRoomPlayers() {
+        return roomPlayers;
+    }
+
+    public void addRoomPlayer(Optional<User> user) {
+        if (user.isPresent()) {
+            User owner = user.get();
+            this.roomPlayers.add(owner);
+        }
+    }
+    public long getRoomOwnerId() {
+        return roomOwnerId;
+    }
+
+    public void setRoomOwnerId(long roomOwnerId) {
+        this.roomOwnerId = roomOwnerId;
+    }
     public void setMaxPlayersNum(int maxPlayersNum) {
         this.maxPlayersNum = maxPlayersNum;
     }
