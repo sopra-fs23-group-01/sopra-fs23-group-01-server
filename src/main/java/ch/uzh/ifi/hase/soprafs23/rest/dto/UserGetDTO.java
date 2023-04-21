@@ -6,6 +6,9 @@ import ch.uzh.ifi.hase.soprafs23.constant.UserGender;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+
+import javax.persistence.Column;
+
 public class UserGetDTO {
 
   private Long id;
@@ -28,6 +31,26 @@ public class UserGetDTO {
 
     private String intro;
     private String avatarUrl;
+
+    private String card;// 玩家的牌
+    private boolean role;// 玩家的身份 true是detective false是undercover
+
+    public String getCard() {
+        return card;
+    }
+
+    public void setCard(String card) {
+        this.card = card;
+    }
+
+    public boolean getRole() {
+        return role;
+    }
+
+    public void setRole(boolean role) {
+        this.role = role;
+    }
+
     public String getAvatarUrl() {
         return avatarUrl;
     }

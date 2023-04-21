@@ -3,6 +3,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,5 +102,23 @@ public class Room implements Serializable {
     }
     public void setMaxPlayersNum(int maxPlayersNum) {
         this.maxPlayersNum = maxPlayersNum;
+    }
+
+    public void assignCardsAndRoles() {
+        // shuffle the players list
+        Collections.shuffle(roomPlayers);
+
+        // assign role and card to each player
+        for (int i = 0; i < roomPlayers.size(); i++) {
+            User player = roomPlayers.get(i);
+            if (i == 0) {
+                player.setRole(false);
+                player.setCard("pear");
+            } else {
+                player.setRole(true);
+                player.setCard("apple");
+            }
+        }
+
     }
 }

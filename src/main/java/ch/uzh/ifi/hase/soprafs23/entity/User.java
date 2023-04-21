@@ -51,6 +51,28 @@ public class User implements Serializable {
     private String email;
 
     @Column
+    private String card;// 玩家的牌
+    @Column
+    private boolean role;// 玩家的身份 true是detective false是undercover
+    public String getCard() {
+        return card;
+    }
+
+    public void setCard(String card) {
+        this.card = card;
+    }
+
+    public boolean getRole() {
+        return role;
+    }
+
+    public void setRole(boolean role) {
+        this.role = role;
+    }
+
+
+
+    @Column
     @JsonProperty("gender")
     private UserGender gender;
 
