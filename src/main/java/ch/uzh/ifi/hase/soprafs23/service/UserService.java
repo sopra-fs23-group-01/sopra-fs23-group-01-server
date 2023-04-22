@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
+import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
@@ -153,4 +154,18 @@ public class UserService {
     userRepository.flush();
     // return userByUserid;
   }
+    public void userSetReady(User user) {
+        if(!userRepository.existsById(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user ID was not found");
+        }
+        User userByUserid = userRepository.getOne(user.getId());
+
+        if(userByUserid.getReadyStatus().equals(ReadyStatus.FREE)){
+            userByUserid.setReadyStatus(ReadyStatus.READY);
+        }
+        else if (userByUserid.getReadyStatus().equals(ReadyStatus.READY)){
+            userByUserid.setReadyStatus(ReadyStatus.FREE);
+        }
+
+    }
 }

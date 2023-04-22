@@ -108,5 +108,15 @@ public void userEditProfile(@PathVariable("userId") Long userId, @RequestBody Us
     userService.userEditProfile(userInput);
 }
 
+    @PutMapping("/users/room/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void userGetReady(@PathVariable("userId") Long userId, @RequestBody UserPutDTO userPutDTO) {
+        // convert API user to internal representation
+        User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
+        userService.userSetReady(userInput);
+    }
+
+
 
 }

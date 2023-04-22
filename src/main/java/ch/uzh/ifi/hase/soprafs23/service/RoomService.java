@@ -66,6 +66,11 @@ public class RoomService {
         }
     }
 
+    public void enterRoom(Room room, User user){
+        Optional<User> userToAdd = userRepository.findById(user.getId());
+        room.addRoomPlayer(userToAdd);
+    }
+
     /**
      * This is a helper method that will check the uniqueness criteria of the
      * username and the name

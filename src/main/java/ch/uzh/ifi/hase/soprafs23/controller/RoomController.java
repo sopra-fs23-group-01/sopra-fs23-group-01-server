@@ -64,6 +64,17 @@ public class RoomController {
         Room room = roomService.findRoomById(roomId);
         return DTOMapper.INSTANCE.convertEntityToRoomGetDTO(room);
     }
+
+
+    @PutMapping("/room/{roomId}/players")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void enterRoom(@PathVariable("roomId") Long roomId, @RequestBody UserPutDTO userPutDTO) {
+        // convert API user to internal representation
+        User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
+        Room room = roomService.findRoomById(roomId);
+        roomService.enterRoom(room, userInput);
+    }
     //login
 //    @PostMapping("/users/login")
 //    @ResponseStatus(HttpStatus.OK)
