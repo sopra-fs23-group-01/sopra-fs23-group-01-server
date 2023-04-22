@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
+import ch.qos.logback.core.joran.conditional.IfAction;
 import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
 import ch.uzh.ifi.hase.soprafs23.constant.Theme;
 import ch.uzh.ifi.hase.soprafs23.entity.Room;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -69,6 +72,50 @@ public class RoomService {
 
     public void enterRoom(Room room, User user){
         room.addRoomPlayerList(user.getId());
+    }
+
+    public void collectVote(Room room, long voterId, long voteeId) {
+        Map<Long, Long> votingResult = room.getVotingResult();
+        votingResult.put(voterId, voteeId);
+        room.setVotingResult(votingResult);
+    }
+    public boolean checkIfAllVoted(Room room) {
+        return room.getVotingResult().size() == room.getRoomPlayersList().size();
+    }
+
+    public void checkIfSomeoneOut(Room room){
+        Map<Long, Long> votingResult = room.getVotingResult();
+        Map<Long, Integer> voteCounts = new HashMap<>();
+
+        for (Map.Entry<Long, Long> entry : votingResult.entrySet()) {
+            Long voterId = entry.getKey();
+            Long voteeId = entry.getValue();
+
+            Integer voteCount = voteCounts.get(voteeId);
+            if (voteCount == null) {
+                voteCount = 1;
+            } else {
+                voteCount += 1;
+            }
+            voteCounts.put(voteeId, voteCount);
+        }
+
+        Long mostVotedPlayer = null;
+        int maxVotes = -1;
+
+        for (Map.Entry<Long, Integer> entry : voteCounts.entrySet()) {
+            Long playerId = entry.getKey();
+            int voteCount = entry.getValue();
+            if (voteCount > maxVotes) {
+                maxVotes = voteCount;
+                mostVotedPlayer = playerId;
+            }
+        }
+
+        if (mostVotedPlayer != null) {
+            // out the player
+        }//else just continue without anyone out
+
     }
 
     /**

@@ -2,10 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 import ch.uzh.ifi.hase.soprafs23.constant.*;
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 /**
@@ -51,6 +48,77 @@ public class Room implements Serializable {
     @ElementCollection
     private List<Long> roomPlayersList = new ArrayList<>();
 
+    @ElementCollection
+    private Map<Long, Long> votingResult = new Map<Long, Long>() {
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean containsKey(Object key) {
+            return false;
+        }
+
+        @Override
+        public boolean containsValue(Object value) {
+            return false;
+        }
+
+        @Override
+        public Long get(Object key) {
+            return null;
+        }
+
+        @Override
+        public Long put(Long key, Long value) {
+            return null;
+        }
+
+        @Override
+        public Long remove(Object key) {
+            return null;
+        }
+
+        @Override
+        public void putAll(Map<? extends Long, ? extends Long> m) {
+
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public Set<Long> keySet() {
+            return null;
+        }
+
+        @Override
+        public Collection<Long> values() {
+            return null;
+        }
+
+        @Override
+        public Set<Entry<Long, Long>> entrySet() {
+            return null;
+        }
+    };
+
+    public Map<Long, Long> getVotingResult() {
+        return votingResult;
+    }
+
+    public void setVotingResult(Map<Long, Long> votingResult) {
+        this.votingResult = votingResult;
+    }
+
     public long getRoomId() {
         return roomId;
     }
@@ -66,6 +134,7 @@ public class Room implements Serializable {
     public void setTheme(Theme theme) {
         this.theme = theme;
     }
+
 
 //    public String getToken() {
 //        return token;
@@ -95,6 +164,7 @@ public class Room implements Serializable {
         if (user.isPresent()) {
             User owner = user.get();
             this.roomPlayers.add(owner);
+            //this.roomPlayersList.add(owner.getId());
         }
     }
 

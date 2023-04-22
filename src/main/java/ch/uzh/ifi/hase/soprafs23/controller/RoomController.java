@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User Controller
@@ -60,11 +61,10 @@ public class RoomController {
     @GetMapping("/games/{roomId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public RoomGetDTO userProfile (@PathVariable("roomId") Long roomId) {
+    public RoomGetDTO roomInfo (@PathVariable("roomId") Long roomId) {
         Room room = roomService.findRoomById(roomId);
         return DTOMapper.INSTANCE.convertEntityToRoomGetDTO(room);
     }
-
 
     @PutMapping("/room/{roomId}/players")
     @ResponseStatus(HttpStatus.OK)
@@ -75,6 +75,19 @@ public class RoomController {
         Room room = roomService.findRoomById(roomId);
         roomService.enterRoom(room, userInput);
     }
+
+    @PutMapping("/room/{roomId}/vote/{voterId}={voteeId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void castVote(@PathVariable Long roomId,@PathVariable Long voterId,@PathVariable Long voteeId) {
+        Room room = roomService.findRoomById(roomId);
+        roomService.collectVote(room, voterId, voteeId);
+        if (roomService.checkIfAllVoted(room)){
+            roomService.checkIfSomeoneOut(room);
+            //and go to the next stage of game
+        }//not all voted so do nothing
+    }
+
+
     //login
 //    @PostMapping("/users/login")
 //    @ResponseStatus(HttpStatus.OK)

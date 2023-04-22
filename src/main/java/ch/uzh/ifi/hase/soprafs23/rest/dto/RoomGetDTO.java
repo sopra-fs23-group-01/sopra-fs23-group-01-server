@@ -24,14 +24,6 @@ public class RoomGetDTO {
         this.roomOwnerId = roomOwnerId;
     }
 
-    public ArrayList<User> getRoomPlayers() {
-        return roomPlayers;
-    }
-
-    public void setRoomPlayers(ArrayList<User> roomPlayers) {
-        this.roomPlayers = roomPlayers;
-    }
-
     private ArrayList<User> roomPlayers;
 
     public long getRoomId() {
@@ -72,5 +64,13 @@ public class RoomGetDTO {
 
     public void setRoomPlayersList(List<Long> roomPlayersList) {
         this.roomPlayersList = roomPlayersList;
+    }
+
+    public void setRoomPlayers(ArrayList<User> roomPlayers) {
+        this.roomPlayers = roomPlayers;
+    }
+
+    public ArrayList<User> getRoomPlayers() {
+        return roomPlayers;
     }
 }
