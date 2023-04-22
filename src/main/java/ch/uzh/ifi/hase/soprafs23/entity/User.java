@@ -44,6 +44,9 @@ public class User implements Serializable {
   @Column(nullable = false)
   private UserStatus status;
 
+    @Column
+    private ReadyStatus readyStatus;
+
   @Column(nullable = false)
   private String password;
 
@@ -221,5 +224,13 @@ public boolean isPresent() {
 
     public void setIntro(String intro) {
         this.intro = intro;
+    }
+
+    public ReadyStatus getReadyStatus() {
+        return readyStatus;
+    }
+
+    public void setReadyStatus(ReadyStatus readyStatus) {
+        this.readyStatus = readyStatus;
     }
 }

@@ -1,5 +1,4 @@
 package ch.uzh.ifi.hase.soprafs23.service;
-
 import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
@@ -47,6 +46,7 @@ public class UserService {
     checkIfUserExists(newUser);
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.ONLINE);
+    newUser.setReadyStatus(ReadyStatus.FREE);
     newUser.setRegisterDate(new Date());
     // saves the given entity but data is only persisted in the database once
     // flush() is called

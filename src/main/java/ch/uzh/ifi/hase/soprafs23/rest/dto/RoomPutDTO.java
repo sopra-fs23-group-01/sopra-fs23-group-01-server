@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.Theme;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RoomPutDTO {
 

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.UserGender;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -10,6 +11,7 @@ public class UserPutDTO {
     private Long id;
     private String username;
     private String token;
+    private ReadyStatus readyStatus;
 
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date birthday;
@@ -117,4 +119,11 @@ public class UserPutDTO {
         this.registerDate = registerDate;
     }
 
+    public ReadyStatus getReadyStatus() {
+        return readyStatus;
+    }
+
+    public void setReadyStatus(ReadyStatus readyStatus) {
+        this.readyStatus = readyStatus;
+    }
 }
