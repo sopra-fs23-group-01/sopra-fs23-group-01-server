@@ -47,7 +47,8 @@ public class RoomService {
         newRoom.setRoomOwnerId(newRoom.getRoomOwnerId());
         newRoom.setRoomProperty(newRoom.getRoomProperty());
         newRoom.setTheme(newRoom.getTheme());
-        newRoom.addRoomPlayer(userRepository.findById(newRoom.getRoomOwnerId()));
+        newRoom.addRoomPlayerList(newRoom.getRoomOwnerId());
+        //newRoom.addRoomPlayer(userRepository.findById(newRoom.getRoomOwnerId()));
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newRoom = roomRepository.save(newRoom);
@@ -67,8 +68,7 @@ public class RoomService {
     }
 
     public void enterRoom(Room room, User user){
-        Optional<User> userToAdd = userRepository.findById(user.getId());
-        room.addRoomPlayer(userToAdd);
+        room.addRoomPlayerList(user.getId());
     }
 
     /**

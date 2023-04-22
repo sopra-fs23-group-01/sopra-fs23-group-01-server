@@ -47,6 +47,10 @@ public class Room implements Serializable {
     @OneToMany(mappedBy = "room")
     private List<User> roomPlayers = new ArrayList<>();
 
+    @Column
+    @ElementCollection
+    private List<Long> roomPlayersList = new ArrayList<>();
+
     public long getRoomId() {
         return roomId;
     }
@@ -93,6 +97,21 @@ public class Room implements Serializable {
             this.roomPlayers.add(owner);
         }
     }
+
+    public void addRoomPlayerList(Long id) {
+        if (id!=null) {
+            this.roomPlayersList.add(id);
+        }
+    }
+
+    public List<Long> getRoomPlayersList() {
+        return roomPlayersList;
+    }
+
+    public void setRoomPlayersList(List<Long> roomPlayersList) {
+        this.roomPlayersList = roomPlayersList;
+    }
+
     public long getRoomOwnerId() {
         return roomOwnerId;
     }

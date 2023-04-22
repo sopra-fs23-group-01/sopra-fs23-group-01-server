@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
+import java.util.ArrayList;
 import java.util.Date;
 
 import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
@@ -14,7 +16,7 @@ public class UserPostDTO {
   private String password;
   private UserStatus status;
   private ReadyStatus readyStatus;
-  
+
   @JsonFormat(pattern="dd-MM-yyyy")
   private Date birthday;
 
@@ -94,4 +96,5 @@ public class UserPostDTO {
     public void setReadyStatus(ReadyStatus readyStatus) {
         this.readyStatus = readyStatus;
     }
+
 }

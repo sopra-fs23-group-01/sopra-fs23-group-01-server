@@ -16,6 +16,7 @@ public class RoomPostDTO {
 
     private long roomOwnerId;
     private ArrayList<User> roomPlayers;
+    private List<Long> roomPlayersList;
 
     public long getRoomOwnerId() {
         return roomOwnerId;
@@ -65,5 +66,13 @@ public class RoomPostDTO {
 
     public void setMaxPlayersNum(int maxPlayersNum) {
         this.maxPlayersNum = maxPlayersNum;
+    }
+
+    public List<Long> getRoomPlayersList() {
+        return roomPlayersList;
+    }
+
+    public void setRoomPlayersList(List<Long> roomPlayersList) {
+        this.roomPlayersList = roomPlayersList;
     }
 }

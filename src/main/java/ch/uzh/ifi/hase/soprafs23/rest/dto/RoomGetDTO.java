@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.constant.Theme;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RoomGetDTO {
     private long roomId;
@@ -13,6 +14,7 @@ public class RoomGetDTO {
     private int maxPlayersNum;
 
     private long roomOwnerId;
+    private List<Long> roomPlayersList;
 
     public long getRoomOwnerId() {
         return roomOwnerId;
@@ -62,5 +64,13 @@ public class RoomGetDTO {
 
     public void setMaxPlayersNum(int maxPlayersNum) {
         this.maxPlayersNum = maxPlayersNum;
+    }
+
+    public List<Long> getRoomPlayersList() {
+        return roomPlayersList;
+    }
+
+    public void setRoomPlayersList(List<Long> roomPlayersList) {
+        this.roomPlayersList = roomPlayersList;
     }
 }
