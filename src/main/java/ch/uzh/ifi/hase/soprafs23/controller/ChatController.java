@@ -30,10 +30,12 @@ public class ChatController {
         if (message.getStatus() == Status.JOIN) {
             userJoin(message.getSenderName());
             String assignedWord = userWordMap.get(message.getSenderName());
+            String assignedRole = assignUserRole();
             Message wordMessage = new Message();
             wordMessage.setSenderName("system");
             wordMessage.setMessage(assignedWord);
-            wordMessage.setStatus(Status.ASSIGNED_WORD); // 修改状态为 ASSIGNED_WORD
+            wordMessage.setStatus(Status.ASSIGNED_WORD); 
+            wordMessage.setRole(assignedRole); // 修改状态为 ASSIGNED_WORD
             simpMessagingTemplate.convertAndSendToUser(message.getSenderName(), "/private", wordMessage);
         }
         return message;
@@ -52,5 +54,10 @@ public class ChatController {
             String word = chatService.getRandomWord();
             userWordMap.put(username, word);
         }
+    }
+
+    public String assignUserRole() {
+        List<String> roles = Arrays.asList("detective", "spy");
+        return roles.get(new Random().nextInt(roles.size()));
     }
 }

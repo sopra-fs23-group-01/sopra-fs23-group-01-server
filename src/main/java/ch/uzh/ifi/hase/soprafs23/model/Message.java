@@ -14,15 +14,25 @@ public class Message {
 	private String receiverName;
 	private String message;
 	private String date;
+	private String role;
 	private Status status;
 
 	public String getSenderName() {
 		return senderName;
 	}
 
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getRole() {
+		return role;
+	}
+
 	public void setSenderName(String senderName) {
 		this.senderName = senderName;
 	}
+
 
 	public String getReceiverName() {
 		return receiverName;
