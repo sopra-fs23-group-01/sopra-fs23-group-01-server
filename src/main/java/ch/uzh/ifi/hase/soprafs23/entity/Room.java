@@ -49,67 +49,7 @@ public class Room implements Serializable {
     private List<Long> roomPlayersList = new ArrayList<>();
 
     @ElementCollection
-    private Map<Long, Long> votingResult = new Map<Long, Long>() {
-        @Override
-        public int size() {
-            return 0;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
-        }
-
-        @Override
-        public boolean containsKey(Object key) {
-            return false;
-        }
-
-        @Override
-        public boolean containsValue(Object value) {
-            return false;
-        }
-
-        @Override
-        public Long get(Object key) {
-            return null;
-        }
-
-        @Override
-        public Long put(Long key, Long value) {
-            return null;
-        }
-
-        @Override
-        public Long remove(Object key) {
-            return null;
-        }
-
-        @Override
-        public void putAll(Map<? extends Long, ? extends Long> m) {
-
-        }
-
-        @Override
-        public void clear() {
-
-        }
-
-        @Override
-        public Set<Long> keySet() {
-            return null;
-        }
-
-        @Override
-        public Collection<Long> values() {
-            return null;
-        }
-
-        @Override
-        public Set<Entry<Long, Long>> entrySet() {
-            return null;
-        }
-    };
+    private Map<Long, Long> votingResult = new HashMap<>();
 
     public Map<Long, Long> getVotingResult() {
         return votingResult;

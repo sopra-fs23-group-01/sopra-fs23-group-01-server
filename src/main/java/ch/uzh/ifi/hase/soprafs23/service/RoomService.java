@@ -85,37 +85,38 @@ public class RoomService {
 
     public void checkIfSomeoneOut(Room room){
         Map<Long, Long> votingResult = room.getVotingResult();
-        Map<Long, Integer> voteCounts = new HashMap<>();
+        if (votingResult != null) {
+            Map<Long, Integer> voteCounts = new HashMap<>();
+            for (Map.Entry<Long, Long> entry : votingResult.entrySet()) {
+                Long voterId = entry.getKey();
+                Long voteeId = entry.getValue();
 
-        for (Map.Entry<Long, Long> entry : votingResult.entrySet()) {
-            Long voterId = entry.getKey();
-            Long voteeId = entry.getValue();
-
-            Integer voteCount = voteCounts.get(voteeId);
-            if (voteCount == null) {
-                voteCount = 1;
-            } else {
-                voteCount += 1;
+                Integer voteCount = voteCounts.get(voteeId);
+                if (voteCount == null) {
+                    voteCount = 1;
+                }
+                else {
+                    voteCount += 1;
+                }
+                voteCounts.put(voteeId, voteCount);
             }
-            voteCounts.put(voteeId, voteCount);
-        }
 
-        Long mostVotedPlayer = null;
-        int maxVotes = -1;
+            Long mostVotedPlayer = null;
+            int maxVotes = -1;
 
-        for (Map.Entry<Long, Integer> entry : voteCounts.entrySet()) {
-            Long playerId = entry.getKey();
-            int voteCount = entry.getValue();
-            if (voteCount > maxVotes) {
-                maxVotes = voteCount;
-                mostVotedPlayer = playerId;
+            for (Map.Entry<Long, Integer> entry : voteCounts.entrySet()) {
+                Long playerId = entry.getKey();
+                int voteCount = entry.getValue();
+                if (voteCount > maxVotes) {
+                    maxVotes = voteCount;
+                    mostVotedPlayer = playerId;
+                }
             }
+
+            if (mostVotedPlayer != null) {
+                // out the player
+            }//else just continue without anyone out
         }
-
-        if (mostVotedPlayer != null) {
-            // out the player
-        }//else just continue without anyone out
-
     }
 
     /**
