@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import org.junit.jupiter.api.Test;
 
@@ -36,12 +37,12 @@ class RoomTest {
         int falseRoleIndex = -1;
         for (int i = 0; i < roomPlayers.size(); i++) {
             User player = roomPlayers.get(i);
-            if (!player.getRole() && player.getCard().equals("pear")) {
+            if (player.getRole()== Role.UNDERCOVER && player.getCard().equals("pear")) {
                 assertFalse(foundFalseRole, "More than one player has false role");
                 foundFalseRole = true;
                 falseRoleIndex = i;
             } else {
-                assertTrue(player.getRole());
+                assertTrue(player.getRole()==Role.DETECTIVE);
                 assertTrue(player.getCard().equals("apple"));
             }
             System.out.println(player.getRole());
