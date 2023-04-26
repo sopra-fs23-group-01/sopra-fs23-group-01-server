@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 import java.util.Date;
 
 import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.constant.UserGender;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -35,7 +36,7 @@ public class UserGetDTO {
     private String avatarUrl;
 
     private String card;// 玩家的牌
-    private boolean role;// 玩家的身份 true是detective false是undercover
+    private Role role;// 玩家的身份 true是detective false是undercover
 
     public String getCard() {
         return card;
