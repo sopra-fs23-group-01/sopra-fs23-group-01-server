@@ -59,7 +59,9 @@ public class User implements Serializable {
     @Column
     private String card;// 玩家的牌
     @Column
-    private boolean role;// 玩家的身份 true是detective false是undercover
+    private Role role = Role.NOT_ASSIGNED;
+
+
     public String getCard() {
         return card;
     }
