@@ -29,7 +29,7 @@ class RoomTest {
         room.addRoomPlayer(Optional.of(user2));
         room.addRoomPlayer(Optional.of(user3));
         room.addRoomPlayer(Optional.of(user4));
-        room.assignCardsAndRoles();
+        //room.assignCardsAndRoles();
 
         List<User> roomPlayers = room.getRoomPlayers();
         boolean foundFalseRole = false;

@@ -46,7 +46,26 @@ public class Room implements Serializable {
 
     @Column
     @ElementCollection
-    private List<Long> roomPlayersList = new ArrayList<>();
+    private List<Long> roomPlayersList= new ArrayList<>();
+
+    @Column
+    @ElementCollection
+    private List<Long> alivePlayersList = new ArrayList<>();
+
+    @Column
+    @ElementCollection
+    private List<Long> detectivesList= new ArrayList<>();
+
+    @Column
+    @ElementCollection
+    private List<Long> undercoversList = new ArrayList<>();
+
+
+    private int currentPlayerIndex = 0; // index inside
+
+    private GameStage gameStage;
+    private Role winner = null;
+    private Long playToOuted = null;
 
     @ElementCollection
     private Map<Long, Long> votingResult = new HashMap<>();
@@ -133,21 +152,60 @@ public class Room implements Serializable {
         this.maxPlayersNum = maxPlayersNum;
     }
 
-    public void assignCardsAndRoles() {
-        // shuffle the players list
-        Collections.shuffle(roomPlayers);
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
 
-        // assign role and card to each player
-        for (int i = 0; i < roomPlayers.size(); i++) {
-            User player = roomPlayers.get(i);
-            if (i == 0) {
-                player.setRole(false);
-                player.setCard("pear");
-            } else {
-                player.setRole(true);
-                player.setCard("apple");
-            }
-        }
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        this.currentPlayerIndex = currentPlayerIndex;
+    }
 
+    public GameStage getGameStage() {
+        return gameStage;
+    }
+
+    public void setGameStage(GameStage gameStage) {
+        this.gameStage = gameStage;
+    }
+
+
+    public Long getPlayToOuted() {
+        return playToOuted;
+    }
+
+    public void setPlayToOuted(Long playToOuted) {
+        this.playToOuted = playToOuted;
+    }
+
+    public List<Long> getAlivePlayersList() {
+        return alivePlayersList;
+    }
+
+    public void setAlivePlayersList(List<Long> alivePlayersList) {
+        this.alivePlayersList = alivePlayersList;
+    }
+
+    public List<Long> getDetectivesList() {
+        return detectivesList;
+    }
+
+    public void setDetectivesList(List<Long> detectivesList) {
+        this.detectivesList = detectivesList;
+    }
+
+    public List<Long> getUndercoversList() {
+        return undercoversList;
+    }
+
+    public void setUndercoversList(List<Long> undercoversList) {
+        this.undercoversList = undercoversList;
+    }
+
+    public Role getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Role winner) {
+        this.winner = winner;
     }
 }

@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
+import ch.uzh.ifi.hase.soprafs23.service.RoomService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +24,11 @@ import java.util.List;
 public class UserController {
 
   private final UserService userService;
+  private final RoomService roomService;
 
-  UserController(UserService userService) {
+  UserController(UserService userService, RoomService roomService) {
     this.userService = userService;
+      this.roomService = roomService;
   }
 
   @GetMapping("/users")
@@ -108,10 +111,10 @@ public void userEditProfile(@PathVariable("userId") Long userId, @RequestBody Us
     userService.userEditProfile(userInput);
 }
 
-    @PutMapping("/users/room/{userId}")
+    @PutMapping("/users/room/{roomId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void userGetReady(@PathVariable("userId") Long userId, @RequestBody UserPutDTO userPutDTO) {
+    public void userGetReady(@PathVariable("roomId") Long roomId, @RequestBody UserPutDTO userPutDTO) {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
         userService.userSetReady(userInput);

@@ -23,6 +23,7 @@ import java.util.UUID;
  * (e.g., it creates, modifies, deletes, finds). The result will be passed back
  * to the caller.
  */
+
 @Service
 @Transactional
 public class UserService {
@@ -41,6 +42,8 @@ public class UserService {
   public List<User> getUsers() {
     return this.userRepository.findAll();
   }
+
+  public User getUserById(Long id){return userRepository.getOne(id);}
 
   public User createUser(User newUser) {
     checkIfUserExists(newUser);

@@ -54,6 +54,9 @@ public class User implements Serializable {
     private String email;
 
     @Column
+    private Boolean aliveStatus;
+
+    @Column
     private String card;// 玩家的牌
     @Column
     private boolean role;// 玩家的身份 true是detective false是undercover
@@ -65,15 +68,13 @@ public class User implements Serializable {
         this.card = card;
     }
 
-    public boolean getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(boolean role) {
+    public void setRole(Role role) {
         this.role = role;
     }
-
-
 
     @Column
     @JsonProperty("gender")
@@ -90,7 +91,7 @@ public class User implements Serializable {
   @JsonFormat(pattern="dd-MM-yyyy")
   @Column
   private Date registerdate;;
-  
+
   @JsonFormat(pattern="dd-MM-yyyy")
   @Column(nullable = true)
   private Date birthday;
@@ -233,4 +234,14 @@ public boolean isPresent() {
     public void setReadyStatus(ReadyStatus readyStatus) {
         this.readyStatus = readyStatus;
     }
+
+    public Boolean getAliveStatus() {
+        return aliveStatus;
+    }
+
+    public void setAliveStatus(Boolean aliveStatus) {
+        this.aliveStatus = aliveStatus;
+    }
+
+
 }

@@ -4,5 +4,8 @@ public enum Status {
 	JOIN,
 	MESSAGE,
 	LEAVE,
-	ASSIGNED_WORD
+	ASSIGNED_WORD,
+    START,
+    REMINDER,
+    VOTE
 }

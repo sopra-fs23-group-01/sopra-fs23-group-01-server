@@ -74,6 +74,7 @@ public interface DTOMapper {
   @Mapping(source = "roomProperty", target = "roomProperty")
   @Mapping(source = "roomOwnerId", target = "roomOwnerId")
   @Mapping(source = "roomPlayers", target = "roomPlayers")
+  @Mapping(source = "roomPlayersList", target = "roomPlayersList")
   //@Mapping(source = "token", target = "token")
   RoomGetDTO convertEntityToRoomGetDTO(Room room);
 

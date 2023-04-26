@@ -45,11 +45,11 @@ public class UserGetDTO {
         this.card = card;
     }
 
-    public boolean getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(boolean role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 

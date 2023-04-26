@@ -1,25 +1,23 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
-import ch.qos.logback.core.joran.conditional.IfAction;
-import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
-import ch.uzh.ifi.hase.soprafs23.constant.Theme;
+import ch.uzh.ifi.hase.soprafs23.constant.GameStage;
+import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
+import ch.uzh.ifi.hase.soprafs23.constant.Role;
 import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
 
 /**
  * User Service
@@ -36,10 +34,15 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    @Lazy
+    private final ChatService chatService;
+    private final UserService userService;
 
-    public RoomService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("roomRepository") RoomRepository roomRepository) {
+    public RoomService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("roomRepository") RoomRepository roomRepository, ChatService chatService, UserService userService) {
         this.roomRepository = roomRepository;
         this.userRepository = userRepository;
+        this.chatService = chatService;
+        this.userService = userService;
     }
 
     public List<Room> getRooms() {return this.roomRepository.findAll();}
@@ -80,8 +83,46 @@ public class RoomService {
         room.setVotingResult(votingResult);
     }
     public boolean checkIfAllVoted(Room room) {
-        return room.getVotingResult().size() == room.getRoomPlayersList().size();
+        return room.getVotingResult().size() == room.getAlivePlayersList().size();
     }
+
+    public boolean checkIfAllReady(Room room) {
+        int numOfReady = 0;
+         for (long id:room.getRoomPlayersList()){
+             if (userRepository.findById(id).get().getReadyStatus()== ReadyStatus.READY){
+                 numOfReady++;
+             }
+        }
+         if (numOfReady == room.getRoomPlayersList().size()) {
+             return true;}
+         else {return false;}
+    }
+
+    public void startGame(Room room){
+        room.setCurrentPlayerIndex(0);
+        room.setGameStage(GameStage.DESCRIPTION);
+        assignCardsAndRoles(room);
+    }
+
+    public void assignCardsAndRoles(Room room) {
+        int num = room.getRoomPlayersList().size();
+        Random random = new Random();
+        int randomNumber = random.nextInt(num); // 生成的随机数为0-5
+
+        // assign role and card to each player
+        for (int i = 0; i < num; i++) {
+            User player = userRepository.getOne(room.getRoomPlayersList().get(i));
+            if (i == randomNumber) {
+                player.setRole(Role.UNDERCOVER);
+                player.setCard("pear");
+            } else {
+                player.setRole(Role.DETECTIVE);
+                player.setCard("apple");
+            }
+        }
+
+    }
+
 
     public void checkIfSomeoneOut(Room room){
         Map<Long, Long> votingResult = room.getVotingResult();
@@ -114,8 +155,46 @@ public class RoomService {
             }
 
             if (mostVotedPlayer != null) {
-                // out the player
-            }//else just continue without anyone out
+                User userToBeOuted = userService.getUserById(mostVotedPlayer);
+                userToBeOuted.setAliveStatus(false);
+                room.getAlivePlayersList().remove(mostVotedPlayer);
+            }else {
+                //systemReminder
+                chatService.systemReminder("No players out!");
+            }
+        }
+    }
+    public void checkIfGameEnd(Room room){
+        int count_un = 0;
+        int count_de = 0;
+        for (Long id : room.getAlivePlayersList()){
+            if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)){count_de++;}
+            else {count_un++;}
+        }
+        if (count_un==0){
+            room.setWinner(Role.DETECTIVE);
+            room.setGameStage(GameStage.END);
+        }
+        else if (count_un == count_de){
+            room.setWinner(Role.UNDERCOVER);
+            room.setGameStage(GameStage.END);
+        }
+
+    }
+
+    public void EndGame(Room room){
+        for (Long id:room.getRoomPlayersList()){
+            User user = userService.getUserById(id);
+            user.setAliveStatus(null);
+            user.setReadyStatus(ReadyStatus.FREE);
+            user.setRole(Role.NOT_ASSIGNED);
+            user.setCard(null);
+            room.setWinner(null);
+            room.setAlivePlayersList(null);
+            room.setDetectivesList(null);
+            room.setUndercoversList(null);
+            room.setGameStage(GameStage.WAITING);
+            room.setCurrentPlayerIndex(0);
         }
     }
 
@@ -130,90 +209,4 @@ public class RoomService {
      * @see User
      */
 
-//    void checkIfUserExists(User userToBeCreated) {
-//        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-//
-//        String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-//        if (userByUsername != null && userToBeCreated.getId()!= userByUsername.getId()) {
-//            throw new ResponseStatusException(HttpStatus.CONFLICT,
-//                    String.format(baseErrorMessage, "username", "is"));
-//        }
-//    }
-//
-//    public User loginUser(User user) {
-//        user = checkIfPasswordWrong(user);
-//        user.setStatus(UserStatus.ONLINE);
-//        user.setToken(UUID.randomUUID().toString());
-//
-//        return user;
-//    }
-//
-//    User checkIfPasswordWrong(User userToBeLoggedIn) {
-//
-//        User userByUsername = userRepository.findByUsername(userToBeLoggedIn.getUsername());
-//
-//        if (userByUsername == null) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Username not exist!");
-//        }
-//        else if (!userByUsername.getPassword().equals(userToBeLoggedIn.getPassword())) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Password incorrect!");
-//        }
-//        else {
-//            return userByUsername;
-//        }
-//    }
-//
-//    //Define the logout function to set the status to OFFLINE when log out
-//    public User logoutUser(User userToBeLoggedOut) {
-//        User userByUsername = userRepository.getOne(userToBeLoggedOut.getId());
-//        userByUsername.setStatus(UserStatus.OFFLINE);
-//        return userByUsername;
-//    }
-//
-//    public User userProfileById(Long id) {
-//        Optional<User> userByUserid = userRepository.findById(id);
-//        if (userByUserid.isPresent()) {
-//            return userByUserid.get();
-//        }
-//        else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User with this ID:"+id+" not found!");
-//        }
-//    }
-//
-//    public void userEditProfile(User user) {
-//        if(!userRepository.existsById(user.getId())) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user ID was not found");
-//        }
-//        User userByUserid = userRepository.getOne(user.getId());
-//
-//        if(user.getUsername()!=null){
-//            checkIfUserExists(user);
-//            userByUserid.setUsername(user.getUsername());
-//        };
-//        // set the birthday
-//        if(user.getBirthday()!=null){
-//            userByUserid.setBirthday(user.getBirthday());
-//        };
-//        // set the gender
-//        if(user.getGender()!=null){
-//            userByUserid.setGender(user.getGender());
-//        };
-//        // set the email
-//        if(user.getEmail()!=null){
-//            userByUserid.setEmail(user.getEmail());
-//        };
-//        // set the intro
-//        if(user.getIntro()!=null){
-//            userByUserid.setIntro(user.getIntro());
-//        };
-//        if(user.getAvatarUrl()!=null){
-//            userByUserid.setAvatarUrl(user.getAvatarUrl());
-//        };
-//
-//
-//        // saves the given entity but data is only persisted in the database once
-//        // flush() is called
-//        userRepository.flush();
-//        // return userByUserid;
-//    }
 }
