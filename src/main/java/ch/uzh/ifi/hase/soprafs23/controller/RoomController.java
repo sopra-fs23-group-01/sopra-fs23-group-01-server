@@ -81,10 +81,7 @@ public class RoomController {
     public void castVote(@PathVariable Long roomId,@PathVariable Long voterId,@PathVariable Long voteeId) {
         Room room = roomService.findRoomById(roomId);
         roomService.collectVote(room, voterId, voteeId);
-        if (roomService.checkIfAllVoted(room)){
-            roomService.checkIfSomeoneOut(room);
-            //and go to the next stage of game
-        }//not all voted so do nothing
+
     }
 
 
