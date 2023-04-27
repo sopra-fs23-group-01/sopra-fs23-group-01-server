@@ -82,6 +82,7 @@ public class ChatController {
     }
 
     @MessageMapping( "/gamestart/{roomId}")
+    
     public void startGame(@DestinationVariable Long roomId) {
 //        Room roomToDo = roomService.findRoomById(roomId);
         //if (roomService.checkIfAllReady(room)) {
