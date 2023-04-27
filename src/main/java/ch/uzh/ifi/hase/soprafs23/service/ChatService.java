@@ -56,7 +56,7 @@ public class ChatService {
         return words.get(new Random().nextInt(words.size()));
     }
 
-    private List<String> getWordsRelatedTo(String query) throws IOException {
+    public List<String> getWordsRelatedTo(String query) throws IOException {
         List<String> words = new ArrayList<>();
         String apiUrl = "https://api.datamuse.com/words?ml=" + query;
         URL url = new URL(apiUrl);

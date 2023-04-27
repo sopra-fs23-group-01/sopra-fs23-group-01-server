@@ -122,6 +122,7 @@ public class RoomService {
                 player.setCard("apple");
             }
             userRepository.save(player);
+            chatService.systemReminder(player.getId()+player.getCard());
         }
 
     }
@@ -212,6 +213,7 @@ public class RoomService {
     }
 
     public String assignWord(String senderName) {
+        System.out.println(userRepository.findByUsername(senderName).getCard());
         return userRepository.findByUsername(senderName).getCard();
     }
 
