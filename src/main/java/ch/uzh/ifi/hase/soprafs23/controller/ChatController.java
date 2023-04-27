@@ -64,7 +64,7 @@ public class ChatController {
         }
         if (message.getStatus() == Status.ASSIGNED_WORD) {
             String word = roomService.assignWord(message.getSenderName());
-            // chatService.systemReminder(word);
+            chatService.systemReminder(word);
             // String assignedRole = chatService.assignUserRole();
             Message wordMessage = new Message();
             wordMessage.setSenderName("system");
@@ -87,9 +87,8 @@ public class ChatController {
 //        Room roomToDo = roomService.findRoomById(roomId);
         //if (roomService.checkIfAllReady(room)) {
         if (true){
-            chatService.broadcastGameStart();
             chatService.initiateGame(roomService.findRoomById(roomId));
-
+            chatService.broadcastGameStart();
             while(!(roomService.findRoomById(roomId).getGameStage().toString().equals(GameStage.END.toString()))) {
                     chatService.conductTurn(roomService.findRoomById(roomId));
             }
