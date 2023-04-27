@@ -6,6 +6,7 @@ public enum Status {
 	LEAVE,
 	ASSIGNED_WORD,
     START,
+    DESCRIPTION,
     REMINDER,
     VOTE
 }

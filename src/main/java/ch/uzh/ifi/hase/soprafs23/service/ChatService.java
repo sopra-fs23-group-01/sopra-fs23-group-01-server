@@ -82,11 +82,10 @@ public class ChatService {
         Room room = roomService.findRoomById(roomToInitiate.getRoomId());
         room.setCurrentPlayerIndex(0);
         room.setGameStage(GameStage.DESCRIPTION);
-        roomService.assignCardsAndRoles(room);
 
         List<Long> newPlayersList = new ArrayList<>(room.getRoomPlayersList());
         room.setAlivePlayersList(newPlayersList);
-
+        roomService.assignCardsAndRoles(room);
         for (Long id : room.getRoomPlayersList()) {
             if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)) {
                 room.getDetectivesList().add(id);
@@ -134,17 +133,24 @@ public class ChatService {
         simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
     }
 
+    public void descriptionBroadcast(String reminderInfo) {
+        Message gameStartMessage = new Message();
+        gameStartMessage.setSenderName("system");
+        gameStartMessage.setMessage(reminderInfo);
+        gameStartMessage.setStatus(Status.DESCRIPTION); // 设置状态为 GAME_STARTED
+        simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
+    }
+
     public void conductTurn(Room roomToConduct){
         AtomicInteger i = new AtomicInteger();
         Room room = roomService.findRoomById(roomToConduct.getRoomId());
         AtomicInteger currentPlayerIndex = new AtomicInteger(room.getCurrentPlayerIndex());
         AtomicReference<GameStage> currentGameStage = new AtomicReference<>(room.getGameStage());
         AtomicInteger currentAlivePlayersNum = new AtomicInteger(room.getAlivePlayersList().size());
-        systemReminder(room.getGameStage().toString()+"在这");
         if ( currentGameStage.toString().equals(GameStage.DESCRIPTION.toString())){
             while (currentPlayerIndex.get() < currentAlivePlayersNum.get()) {
                     User currentUser = userService.getUserById(room.getAlivePlayersList().get(currentPlayerIndex.get()));
-                    systemReminder("Now it's Player --" + currentUser.getUsername() + "'s turn to describe");
+                    descriptionBroadcast("Now it's Player --" + currentUser.getUsername() + "'s turn to describe");
                     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
                     executor.schedule(() -> {
                         // 这里是15秒后要执行的代码
@@ -158,10 +164,10 @@ public class ChatService {
                             room.setGameStage(GameStage.VOTING);
                             i.set(1);
                         }
-                    }, 5, TimeUnit.SECONDS);
+                    }, 15, TimeUnit.SECONDS);
 
                 try {
-                    Thread.sleep(8000);
+                    Thread.sleep(20000);
                 }
                 catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -175,7 +181,6 @@ public class ChatService {
                 // 这里是15秒后要执行的代码
                 // 展示投票结果
                 // room.getVotingResult();
-                systemReminder(room.getVotingResult().toString()+"conductTurn的东西哦");
                 roomService.checkIfSomeoneOut(room);
                 roomService.checkIfGameEnd(room);
             }, 10, TimeUnit.SECONDS);

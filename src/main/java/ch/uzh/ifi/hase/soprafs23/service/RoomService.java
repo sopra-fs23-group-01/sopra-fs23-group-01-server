@@ -211,6 +211,10 @@ public class RoomService {
         }
     }
 
+    public String assignWord(String senderName) {
+        return userRepository.findByUsername(senderName).getCard();
+    }
+
     /**
      * This is a helper method that will check the uniqueness criteria of the
      * username and the name

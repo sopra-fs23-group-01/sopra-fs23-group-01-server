@@ -56,13 +56,13 @@ public class ChatController {
         // 如果是加入房间的消息，那么发送给他们分配的单词
         if (message.getStatus() == Status.JOIN) {
             chatService.userJoin(message.getSenderName());
-            String assignedWord = userWordMap.get(message.getSenderName());
-            String assignedRole = chatService.assignUserRole();
+            String word = roomService.assignWord(message.getSenderName());
+            chatService.systemReminder(word);
+            // String assignedRole = chatService.assignUserRole();
             Message wordMessage = new Message();
             wordMessage.setSenderName("system");
-            wordMessage.setMessage(assignedWord);
-            wordMessage.setStatus(Status.ASSIGNED_WORD); 
-            wordMessage.setRole(assignedRole); // 修改状态为 ASSIGNED_WORD
+            wordMessage.setStatus(Status.ASSIGNED_WORD);
+            wordMessage.setRole(word); // 修改状态为 ASSIGNED_WORD
             simpMessagingTemplate.convertAndSendToUser(message.getSenderName(), "/private", wordMessage);
         }
         return message;
@@ -82,18 +82,8 @@ public class ChatController {
         if (true){
             chatService.broadcastGameStart();
             chatService.initiateGame(roomService.findRoomById(roomId));
-            //Room room1 = roomService.findRoomById(roomToDo.getRoomId());
-            chatService.systemReminder("刘子涵很牛逼"+roomService.findRoomById(roomId).getGameStage().toString());
-            chatService.systemReminder(GameStage.END.toString()+"这能不一样？");
 
             while(!(roomService.findRoomById(roomId).getGameStage().toString().equals(GameStage.END.toString()))) {
-//                Room room = roomService.findRoomById(room1.getRoomId());
-           chatService.systemReminder(roomService.findRoomById(roomId).getGameStage().toString()+"while里是吗？");
-//                if (room.getGameStage().toString().equals(GameStage.END.toString())) {
-//                    chatService.systemReminder("进了这个if吗？bro");
-//                    break;
-//                }
-                    chatService.systemReminder("进来了");
                     chatService.conductTurn(roomService.findRoomById(roomId));
             }
                 chatService.broadcastGameEnd(roomService.findRoomById(roomId));
