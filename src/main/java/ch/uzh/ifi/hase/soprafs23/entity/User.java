@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Internal User Representation
@@ -102,8 +103,10 @@ public class User implements Serializable {
   @JoinColumn(name = "room_id")
   private Room room;
 
+    Random random = new Random();
+    int randomNumber = random.nextInt(11);
     @Column
-    private String avatarUrl="https://robohash.org/1";
+    private String avatarUrl="https://robohash.org/"+randomNumber;
     public String getAvatarUrl() {
         return avatarUrl;
     }

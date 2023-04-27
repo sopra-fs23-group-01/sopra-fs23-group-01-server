@@ -53,6 +53,7 @@ public class UserController {
   @ResponseStatus(HttpStatus.CREATED)
   @ResponseBody
   public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
+      System.out.println("yhnb");
     // convert API user to internal representation
     User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
@@ -117,6 +118,7 @@ public void userEditProfile(@PathVariable("userId") Long userId, @RequestBody Us
     @ResponseBody
     public void userGetReady(@PathVariable("roomId") Long roomId, @RequestBody UserPutDTO userPutDTO) {
         // convert API user to internal representation
+
         User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
         userService.userSetReady(userInput);
     }

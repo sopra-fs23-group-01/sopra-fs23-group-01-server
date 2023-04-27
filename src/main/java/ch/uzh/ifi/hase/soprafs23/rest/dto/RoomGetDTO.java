@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs23.constant.GameStage;
 import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
 import ch.uzh.ifi.hase.soprafs23.constant.Theme;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
@@ -25,6 +26,7 @@ public class RoomGetDTO {
     }
 
     private ArrayList<User> roomPlayers;
+    private GameStage gameStage;
 
     public long getRoomId() {
         return roomId;
@@ -72,5 +74,13 @@ public class RoomGetDTO {
 
     public ArrayList<User> getRoomPlayers() {
         return roomPlayers;
+    }
+
+    public GameStage getGameStage() {
+        return gameStage;
+    }
+
+    public void setGameStage(GameStage gameStage) {
+        this.gameStage = gameStage;
     }
 }

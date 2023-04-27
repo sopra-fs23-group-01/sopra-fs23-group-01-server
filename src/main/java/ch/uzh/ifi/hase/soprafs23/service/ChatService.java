@@ -17,7 +17,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.model.Message;
 import ch.uzh.ifi.hase.soprafs23.model.Status;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -79,16 +78,24 @@ public class ChatService {
         }
         return words;
     }
-    public void initiateGame(Room room) {
-
+    public void initiateGame(Room roomToInitiate) {
+        Room room = roomService.findRoomById(roomToInitiate.getRoomId());
         room.setCurrentPlayerIndex(0);
         room.setGameStage(GameStage.DESCRIPTION);
         roomService.assignCardsAndRoles(room);
+
         List<Long> newPlayersList = new ArrayList<>(room.getRoomPlayersList());
         room.setAlivePlayersList(newPlayersList);
+
         for (Long id : room.getRoomPlayersList()) {
-            if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)) room.getDetectivesList().add(id);
-            else room.getUndercoversList().add(id);
+            if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)) {
+                room.getDetectivesList().add(id);
+
+            }
+            else {
+                room.getUndercoversList().add(id);
+            }
+
         }
     }
 
@@ -127,37 +134,57 @@ public class ChatService {
         simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
     }
 
-    public void conductTurn(Room room){
+    public void conductTurn(Room roomToConduct){
+        AtomicInteger i = new AtomicInteger();
+        Room room = roomService.findRoomById(roomToConduct.getRoomId());
         AtomicInteger currentPlayerIndex = new AtomicInteger(room.getCurrentPlayerIndex());
         AtomicReference<GameStage> currentGameStage = new AtomicReference<>(room.getGameStage());
         AtomicInteger currentAlivePlayersNum = new AtomicInteger(room.getAlivePlayersList().size());
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        if ( currentGameStage.equals(GameStage.DESCRIPTION)){
+        systemReminder(room.getGameStage().toString()+"在这");
+        if ( currentGameStage.toString().equals(GameStage.DESCRIPTION.toString())){
             while (currentPlayerIndex.get() < currentAlivePlayersNum.get()) {
-                if (currentGameStage.equals(GameStage.DESCRIPTION)) {
                     User currentUser = userService.getUserById(room.getAlivePlayersList().get(currentPlayerIndex.get()));
-                    systemReminder("Now it's Player" + currentUser.getUsername() + "'s turn to describe");
+                    systemReminder("Now it's Player --" + currentUser.getUsername() + "'s turn to describe");
+                    ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
                     executor.schedule(() -> {
                         // 这里是15秒后要执行的代码
-                        if (currentPlayerIndex.get() < currentAlivePlayersNum.get() - 1) {
+                        if (Integer.parseInt(currentPlayerIndex.toString()) < Integer.parseInt(currentAlivePlayersNum.toString()) - 1) {
                             currentPlayerIndex.incrementAndGet();
+                            room.setCurrentPlayerIndex(Integer.parseInt(currentPlayerIndex.toString()));
                         }
                         else {
                             currentPlayerIndex.set(0);
-                            currentGameStage.set(GameStage.VOTING);
+                            room.setCurrentPlayerIndex(0);
+                            room.setGameStage(GameStage.VOTING);
+                            i.set(1);
                         }
-                    }, 15, TimeUnit.SECONDS);
+                    }, 5, TimeUnit.SECONDS);
+
+                try {
+                    Thread.sleep(8000);
                 }
+                catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                if(true) break;//这里要改break的条件
             }
-        }else if (currentGameStage.equals(GameStage.VOTING)) {
+        }else if (currentGameStage.toString().equals(GameStage.VOTING.toString())) {
             broadcastVoteStart();
+            ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             executor.schedule(() -> {
                 // 这里是15秒后要执行的代码
                 // 展示投票结果
                 // room.getVotingResult();
+                systemReminder(room.getVotingResult().toString()+"conductTurn的东西哦");
                 roomService.checkIfSomeoneOut(room);
                 roomService.checkIfGameEnd(room);
-            }, 15, TimeUnit.SECONDS);
+            }, 10, TimeUnit.SECONDS);
+            try {
+                Thread.sleep(15000);
+            }
+            catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             //and go to the next stage of game
             //not all voted so do nothing
