@@ -109,18 +109,19 @@ public class RoomService {
     public void assignCardsAndRoles(Room room) {
         int num = room.getRoomPlayersList().size();
         Random random = new Random();
-        int randomNumber = random.nextInt(num); // 生成的随机数为0-5
-
+        int randomNumber = random.nextInt(num); // 生成的随机数
         // assign role and card to each player
         for (int i = 0; i < num; i++) {
             User player = userRepository.getOne(room.getRoomPlayersList().get(i));
             if (i == randomNumber) {
                 player.setRole(Role.UNDERCOVER);
                 player.setCard("pear");
+
             } else {
                 player.setRole(Role.DETECTIVE);
                 player.setCard("apple");
             }
+            userRepository.save(player);
         }
 
     }
