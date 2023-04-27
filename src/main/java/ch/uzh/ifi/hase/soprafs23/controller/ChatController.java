@@ -56,8 +56,15 @@ public class ChatController {
         // 如果是加入房间的消息，那么发送给他们分配的单词
         if (message.getStatus() == Status.JOIN) {
             chatService.userJoin(message.getSenderName());
+            // String assignedRole = chatService.assignUserRole();
+            Message wordMessage = new Message();
+            wordMessage.setSenderName("system");
+            wordMessage.setStatus(Status.JOIN);
+            simpMessagingTemplate.convertAndSendToUser(message.getSenderName(), "/private", wordMessage);
+        }
+        if (message.getStatus() == Status.ASSIGNED_WORD) {
             String word = roomService.assignWord(message.getSenderName());
-            chatService.systemReminder(word);
+            // chatService.systemReminder(word);
             // String assignedRole = chatService.assignUserRole();
             Message wordMessage = new Message();
             wordMessage.setSenderName("system");
