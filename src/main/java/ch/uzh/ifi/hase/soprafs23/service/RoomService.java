@@ -165,7 +165,8 @@ public class RoomService {
                 User userToBeOuted = userService.getUserById(mostVotedPlayer);
                 userToBeOuted.setAliveStatus(false);
                 chatService.systemReminder("Player " + userToBeOuted.getUsername() +" is voted out!");
-                room.getAlivePlayersList().remove(mostVotedPlayer);
+                findRoomById(room.getRoomId()).getAlivePlayersList().remove(mostVotedPlayer);
+                chatService.systemReminder("Alive: "+findRoomById(room.getRoomId()).getAlivePlayersList());
             }else {
                 //systemReminder
                 chatService.systemReminder("No players out!");
@@ -173,6 +174,7 @@ public class RoomService {
         }
     }
     public void checkIfGameEnd(Room roomToDo){
+
         Room room = findRoomById(roomToDo.getRoomId());
         int count_un = 0;
         int count_de = 0;
