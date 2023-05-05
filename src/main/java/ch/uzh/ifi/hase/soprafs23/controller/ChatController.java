@@ -85,8 +85,8 @@ public class ChatController {
     
     public void startGame(@DestinationVariable Long roomId) {
 //        Room roomToDo = roomService.findRoomById(roomId);
-        //if (roomService.checkIfAllReady(room)) {
-        if (true){
+        if (roomService.checkIfAllReady(roomService.findRoomById(roomId))) {
+        //if (true){
             chatService.initiateGame(roomService.findRoomById(roomId));
             chatService.broadcastGameStart();
             while(!(roomService.findRoomById(roomId).getGameStage().toString().equals(GameStage.END.toString()))) {

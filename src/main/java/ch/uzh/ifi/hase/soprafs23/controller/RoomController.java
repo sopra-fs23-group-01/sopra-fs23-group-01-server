@@ -66,6 +66,7 @@ public class RoomController {
         return DTOMapper.INSTANCE.convertEntityToRoomGetDTO(room);
     }
 
+
     @PutMapping("/room/{roomId}/players")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

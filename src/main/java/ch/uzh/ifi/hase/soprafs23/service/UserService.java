@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
@@ -30,11 +31,9 @@ public class UserService {
 
   private final Logger log = LoggerFactory.getLogger(UserService.class);
 
-  private final RoomRepository roomRepository;
   private final UserRepository userRepository;
 
-  public UserService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("roomRepository") RoomRepository roomRepository) {
-        this.roomRepository = roomRepository;
+  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
         this.userRepository = userRepository;
   }
 
@@ -169,6 +168,13 @@ public class UserService {
         else if (userByUserid.getReadyStatus().equals(ReadyStatus.READY)){
             userByUserid.setReadyStatus(ReadyStatus.FREE);
         }
+    }
 
+    public void userLeaveRoom(User user) {
+        if(!userRepository.existsById(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user ID was not found");
+        }
+        User userByUserid = userRepository.getOne(user.getId());
+        userByUserid.setReadyStatus(ReadyStatus.FREE);
     }
 }

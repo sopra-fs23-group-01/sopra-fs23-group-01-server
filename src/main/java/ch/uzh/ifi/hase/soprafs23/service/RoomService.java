@@ -90,13 +90,16 @@ public class RoomService {
 
     public boolean checkIfAllReady(Room room) {
         int numOfReady = 0;
-         for (long id:room.getRoomPlayersList()){
-             if (userRepository.findById(id).get().getReadyStatus()== ReadyStatus.READY){
+
+         for (long id:findRoomById(room.getRoomId()).getRoomPlayersList()){
+             if (userService.getUserById(id).getReadyStatus().toString().equals(ReadyStatus.READY.toString())){
                  numOfReady++;
              }
+             else break;
         }
-         if (numOfReady == room.getRoomPlayersList().size()) {
-             return true;}
+         if (numOfReady >= 4 && numOfReady == findRoomById(room.getRoomId()).getRoomPlayersList().size()) {
+             return true;
+         }
          else {return false;}
     }
 
@@ -130,7 +133,6 @@ public class RoomService {
 
     public void checkIfSomeoneOut(Room room){
         Map<Long, Long> votingResult = room.getVotingResult();
-        chatService.systemReminder("checkIfSomeoneOut"+votingResult.toString());
         if (votingResult != null) {
             Map<Long, Integer> voteCounts = new HashMap<>();
             for (Map.Entry<Long, Long> entry : votingResult.entrySet()) {
@@ -139,7 +141,6 @@ public class RoomService {
 
                 Integer voteCount = voteCounts.get(voteeId);
                 if (voteCount == null) {
-                    chatService.systemReminder("140行");
                     voteCount = 1;
                 }
                 else {
@@ -147,7 +148,6 @@ public class RoomService {
                 }
                 voteCounts.put(voteeId, voteCount);
             }
-            chatService.systemReminder(voteCounts.toString()+"148行");
 
             Long mostVotedPlayer = null;
             int maxVotes = -1;
@@ -162,7 +162,6 @@ public class RoomService {
             }
 
             if (mostVotedPlayer != null) {
-                chatService.systemReminder("163行");
                 User userToBeOuted = userService.getUserById(mostVotedPlayer);
                 userToBeOuted.setAliveStatus(false);
                 chatService.systemReminder("Player " + userToBeOuted.getUsername() +" is voted out!");
@@ -181,15 +180,12 @@ public class RoomService {
             if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)){count_de++;}
             else {count_un++;}
         }
-        chatService.systemReminder("180行这"+room.getVotingResult().toString());
         if (count_un==0){
             room.setWinner(Role.DETECTIVE);
-            chatService.systemReminder("182行的"+room.getVotingResult().toString());
             room.setGameStage(GameStage.END);
         }
         else if (count_un >= count_de){
             room.setWinner(Role.UNDERCOVER);
-            chatService.systemReminder("188行"+room.getVotingResult().toString());
             room.setGameStage(GameStage.END);
         }
         else {room.setGameStage(GameStage.DESCRIPTION);}
@@ -215,6 +211,14 @@ public class RoomService {
     public String assignWord(String senderName) {
         System.out.println(userRepository.findByUsername(senderName).getCard());
         return userRepository.findByUsername(senderName).getCard();
+    }
+
+    public void deletePlayer(Long userId, Long roomId){
+        Room room = findRoomById(roomId);
+        if (room.getRoomOwnerId()==userId){
+            roomRepository.delete(room);
+        }
+        room.getRoomPlayersList().remove(userId);
     }
 
     /**
