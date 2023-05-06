@@ -135,15 +135,15 @@ public class ChatService {
 
     public void descriptionBroadcast(String userName) {
         Message gameStartMessage = new Message();
-        gameStartMessage.setSenderName("system");
+        gameStartMessage.setSenderName(userName);
         gameStartMessage.setMessage("Now it's Player --" + userName + "'s turn to describe");
         gameStartMessage.setStatus(Status.DESCRIPTION); // 设置状态为 GAME_STARTED
         simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
-        Message currentPlayerMessage = new Message();
-        currentPlayerMessage.setSenderName("system");
-        currentPlayerMessage.setMessage(userName);
-        currentPlayerMessage.setStatus(Status.CURRENT_PLAYER);
-        simpMessagingTemplate.convertAndSend("/chatroom/public",currentPlayerMessage);
+//        Message currentPlayerMessage = new Message();
+//        currentPlayerMessage.setSenderName("system");
+//        currentPlayerMessage.setMessage(userName);
+//        currentPlayerMessage.setStatus(Status.CURRENT_PLAYER);
+//        simpMessagingTemplate.convertAndSend("/chatroom/public",currentPlayerMessage);
     }
 
     public void conductTurn(Room roomToConduct){
