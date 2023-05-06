@@ -133,12 +133,17 @@ public class ChatService {
         simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
     }
 
-    public void descriptionBroadcast(String reminderInfo) {
+    public void descriptionBroadcast(String userName) {
         Message gameStartMessage = new Message();
         gameStartMessage.setSenderName("system");
-        gameStartMessage.setMessage(reminderInfo);
+        gameStartMessage.setMessage("Now it's Player --" + userName + "'s turn to describe");
         gameStartMessage.setStatus(Status.DESCRIPTION); // 设置状态为 GAME_STARTED
         simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
+        Message currentPlayerMessage = new Message();
+        currentPlayerMessage.setSenderName("system");
+        currentPlayerMessage.setMessage(userName);
+        currentPlayerMessage.setStatus(Status.CURRENT_PLAYER);
+        simpMessagingTemplate.convertAndSend("/chatroom/public",currentPlayerMessage);
     }
 
     public void conductTurn(Room roomToConduct){
@@ -150,7 +155,7 @@ public class ChatService {
         if ( currentGameStage.toString().equals(GameStage.DESCRIPTION.toString())){
             while (currentPlayerIndex.get() < currentAlivePlayersNum.get()) {
                     User currentUser = userService.getUserById(room.getAlivePlayersList().get(currentPlayerIndex.get()));
-                    descriptionBroadcast("Now it's Player --" + currentUser.getUsername() + "'s turn to describe");
+                    descriptionBroadcast(currentUser.getUsername());
                     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
                     executor.schedule(() -> {
                         // 这里是15秒后要执行的代码

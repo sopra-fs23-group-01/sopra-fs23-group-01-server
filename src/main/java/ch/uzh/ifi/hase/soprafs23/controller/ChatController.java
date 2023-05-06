@@ -85,18 +85,24 @@ public class ChatController {
     
     public void startGame(@DestinationVariable Long roomId) {
 //        Room roomToDo = roomService.findRoomById(roomId);
-        if (roomService.checkIfAllReady(roomService.findRoomById(roomId))) {
-        //if (true){
-            chatService.initiateGame(roomService.findRoomById(roomId));
-            chatService.broadcastGameStart();
-            while(!(roomService.findRoomById(roomId).getGameStage().toString().equals(GameStage.END.toString()))) {
-                    chatService.conductTurn(roomService.findRoomById(roomId));
-            }
-                chatService.broadcastGameEnd(roomService.findRoomById(roomId));
+//        if (roomService.checkIfAllReady(roomService.findRoomById(roomId))) {
+//        //if (true){
+//            chatService.initiateGame(roomService.findRoomById(roomId));
+//            chatService.broadcastGameStart();
+//            while(!(roomService.findRoomById(roomId).getGameStage().toString().equals(GameStage.END.toString()))) {
+//                    chatService.conductTurn(roomService.findRoomById(roomId));
+//            }
+//                chatService.broadcastGameEnd(roomService.findRoomById(roomId));
+//        }
+//        else {
+//            chatService.systemReminder("Not enough players or not all players are ready yet!");
+//        }
+        chatService.initiateGame(roomService.findRoomById(roomId));
+        chatService.broadcastGameStart();
+        while(!(roomService.findRoomById(roomId).getGameStage().toString().equals(GameStage.END.toString()))) {
+            chatService.conductTurn(roomService.findRoomById(roomId));
         }
-        else {
-            chatService.systemReminder("Not enough players or not all players are ready yet!");
-        }
+        chatService.broadcastGameEnd(roomService.findRoomById(roomId));
     }
 
 

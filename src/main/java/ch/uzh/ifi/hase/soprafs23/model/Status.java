@@ -8,5 +8,6 @@ public enum Status {
     START,
     DESCRIPTION,
     REMINDER,
-    VOTE
+    VOTE,
+    CURRENT_PLAYER
 }
