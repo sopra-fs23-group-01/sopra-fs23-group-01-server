@@ -108,7 +108,7 @@ public class ChatService {
 
     public void broadcastGameEnd(Room room) {
         Message gameStartMessage = new Message();
-        gameStartMessage.setSenderName("system");
+        gameStartMessage.setSenderName(room.getWinner().toString());
         gameStartMessage.setMessage("Game has ended!");
         systemReminder("The winner group is "+room.getWinner().toString()+"!");
 
