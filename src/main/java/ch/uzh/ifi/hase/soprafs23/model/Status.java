@@ -9,5 +9,6 @@ public enum Status {
     DESCRIPTION,
     REMINDER,
     VOTE,
-    CURRENT_PLAYER
+    CURRENT_PLAYER,
+    END
 }

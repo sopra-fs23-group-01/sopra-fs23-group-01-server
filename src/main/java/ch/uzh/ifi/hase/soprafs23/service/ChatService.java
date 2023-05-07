@@ -112,7 +112,7 @@ public class ChatService {
         gameStartMessage.setMessage("Game has ended!");
         systemReminder("The winner group is "+room.getWinner().toString()+"!");
 
-        gameStartMessage.setStatus(Status.START); // 设置状态为 GAME_STARTED
+        gameStartMessage.setStatus(Status.END); // 设置状态为 GAME_STARTED
         simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
         roomService.EndGame(room);
     }
