@@ -7,10 +7,4 @@ env: flex
 automatic_scaling:
   max_num_instances: 1
 
-runtime_config:
-  operatingSystem: ubuntu
-  runtimeVersion: 17
-
-env_variables:
-  SPRING_PROFILES_ACTIVE: 'dev'
 
