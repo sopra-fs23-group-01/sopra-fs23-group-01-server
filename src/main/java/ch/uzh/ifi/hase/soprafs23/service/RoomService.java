@@ -77,12 +77,12 @@ public class RoomService {
         room.addRoomPlayerList(user.getId());
     }
 
-    public void collectVote(Room roomToDo, long voterId, long voteeId) {
+    public void collectVote(Room roomToDo, long voterId, long voteeId, Long roomId) {
         Room room = findRoomById(roomToDo.getRoomId());
         Map<Long, Long> votingResult = room.getVotingResult();
         votingResult.put(voterId, voteeId);
         room.setVotingResult(votingResult);
-        chatService.systemReminder(votingResult.toString()+"collectVote");
+        chatService.systemReminder(votingResult.toString()+"collectVote",roomId);
     }
     public boolean checkIfAllVoted(Room room) {
         return room.getVotingResult().size() == room.getAlivePlayersList().size();
@@ -103,13 +103,13 @@ public class RoomService {
          else {return false;}
     }
 
-    public void startGame(Room room){
+    public void startGame(Room room, Long roomId){
         room.setCurrentPlayerIndex(0);
         room.setGameStage(GameStage.DESCRIPTION);
-        assignCardsAndRoles(room);
+        assignCardsAndRoles(room, roomId);
     }
 
-    public void assignCardsAndRoles(Room room) {
+    public void assignCardsAndRoles(Room room,Long roomId) {
         int num = room.getRoomPlayersList().size();
         Random random = new Random();
         int randomNumber = random.nextInt(num); // 生成的随机数
@@ -125,13 +125,13 @@ public class RoomService {
                 player.setCard("apple");
             }
             userRepository.save(player);
-            chatService.systemReminder(player.getId()+player.getCard());
+            chatService.systemReminder(player.getId()+player.getCard(),roomId);
         }
 
     }
 
 
-    public void checkIfSomeoneOut(Room room){
+    public void checkIfSomeoneOut(Room room, Long roomId){
         Map<Long, Long> votingResult = room.getVotingResult();
         if (votingResult != null) {
             Map<Long, Integer> voteCounts = new HashMap<>();
@@ -164,12 +164,12 @@ public class RoomService {
             if (mostVotedPlayer != null) {
                 User userToBeOuted = userService.getUserById(mostVotedPlayer);
                 userToBeOuted.setAliveStatus(false);
-                chatService.systemReminder("Player " + userToBeOuted.getUsername() +" is voted out!");
+                chatService.systemReminder("Player " + userToBeOuted.getUsername() +" is voted out!",roomId);
                 findRoomById(room.getRoomId()).getAlivePlayersList().remove(mostVotedPlayer);
-                chatService.systemReminder("Alive: "+findRoomById(room.getRoomId()).getAlivePlayersList());
+                chatService.systemReminder("Alive: "+findRoomById(room.getRoomId()).getAlivePlayersList(),roomId);
             }else {
                 //systemReminder
-                chatService.systemReminder("No players out!");
+                chatService.systemReminder("No players out!",roomId);
             }
         }
     }

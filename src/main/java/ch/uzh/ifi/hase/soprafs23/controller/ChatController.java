@@ -1,16 +1,8 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStage;
-import ch.uzh.ifi.hase.soprafs23.entity.Room;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.service.RoomService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +16,6 @@ import org.springframework.stereotype.Controller;
 import ch.uzh.ifi.hase.soprafs23.model.Message;
 import ch.uzh.ifi.hase.soprafs23.model.Status;
 import ch.uzh.ifi.hase.soprafs23.service.ChatService;
-import org.springframework.web.bind.annotation.PathVariable;
-
-import javax.websocket.server.PathParam;
 
 @Controller
 public class ChatController {
@@ -43,27 +32,19 @@ public class ChatController {
     @Lazy
     private ChatService chatService;
 
-    private Map<String, String> userWordMap = new ConcurrentHashMap<>();
-
     public ChatController(RoomService roomService, UserService userService) {
         this.roomService = roomService;
         this.userService = userService;
     }
 
-    @MessageMapping("/message")
-    @SendTo("/chatroom/public")
-    public Message receiveMessage(@Payload Message message) {
-        // 如果是加入房间的消息，那么发送给他们分配的单词
-        if (message.getStatus() == Status.JOIN) {
-            chatService.userJoin(message.getSenderName());
-            // String assignedRole = chatService.assignUserRole();
-            Message wordMessage = new Message();
-            wordMessage.setSenderName("system");
-            wordMessage.setStatus(Status.JOIN);
-        }
+    //mapping to the message sent from the room
+    @MessageMapping("/message/{roomId}")
+    @SendTo("/chatroom/{roomId}/public")
+    public Message receiveMessage(@Payload Message message,@DestinationVariable("roomId") Long roomId) {
+        //if the assigned status is assign word then return a word to the user
         if (message.getStatus() == Status.ASSIGNED_WORD) {
             String word = roomService.assignWord(message.getSenderName());
-            chatService.systemReminder(word);
+            chatService.systemReminder(word,roomId);
             // String assignedRole = chatService.assignUserRole();
             Message wordMessage = new Message();
             wordMessage.setSenderName("system");
@@ -82,20 +63,20 @@ public class ChatController {
     }
 
     @MessageMapping( "/gamestart/{roomId}")
-    
     public void startGame(@DestinationVariable Long roomId) {
 //        Room roomToDo = roomService.findRoomById(roomId);
+
         if (roomService.checkIfAllReady(roomService.findRoomById(roomId))) {
         //if (true){
-            chatService.initiateGame(roomService.findRoomById(roomId));
-            chatService.broadcastGameStart();
+            chatService.initiateGame(roomService.findRoomById(roomId),roomId);
+            chatService.broadcastGameStart(roomId);
             while(!(roomService.findRoomById(roomId).getGameStage().toString().equals(GameStage.END.toString()))) {
-                    chatService.conductTurn(roomService.findRoomById(roomId));
+                    chatService.conductTurn(roomService.findRoomById(roomId),roomId);
             }
-                chatService.broadcastGameEnd(roomService.findRoomById(roomId));
+                chatService.broadcastGameEnd(roomService.findRoomById(roomId),roomId);
         }
         else {
-            chatService.systemReminder("Not enough players or not all players are ready yet!");
+            chatService.systemReminder("Not enough players or not all players are ready yet!",roomId);
         }
     }
 

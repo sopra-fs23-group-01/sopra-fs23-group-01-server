@@ -10,5 +10,7 @@ public enum Status {
     REMINDER,
     VOTE,
     CURRENT_PLAYER,
-    END
+    END,
+    READY,
+    NOT_READY
 }

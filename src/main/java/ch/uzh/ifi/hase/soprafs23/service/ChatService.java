@@ -78,14 +78,14 @@ public class ChatService {
         }
         return words;
     }
-    public void initiateGame(Room roomToInitiate) {
+    public void initiateGame(Room roomToInitiate,Long roomId) {
         Room room = roomService.findRoomById(roomToInitiate.getRoomId());
         room.setCurrentPlayerIndex(0);
         room.setGameStage(GameStage.DESCRIPTION);
 
         List<Long> newPlayersList = new ArrayList<>(room.getRoomPlayersList());
         room.setAlivePlayersList(newPlayersList);
-        roomService.assignCardsAndRoles(room);
+        roomService.assignCardsAndRoles(room,roomId);
         for (Long id : room.getRoomPlayersList()) {
             if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)) {
                 room.getDetectivesList().add(id);
@@ -98,47 +98,47 @@ public class ChatService {
         }
     }
 
-    public void broadcastGameStart() {
+    public void broadcastGameStart(Long roomID) {
         Message gameStartMessage = new Message();
         gameStartMessage.setSenderName("system");
         gameStartMessage.setMessage("Game has started!");
         gameStartMessage.setStatus(Status.START); // 设置状态为 GAME_STARTED
-        simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
+        simpMessagingTemplate.convertAndSend("/chatroom/"+roomID+"/public", gameStartMessage);
     }
 
-    public void broadcastGameEnd(Room room) {
+    public void broadcastGameEnd(Room room,Long roomId) {
         Message gameStartMessage = new Message();
         gameStartMessage.setSenderName(room.getWinner().toString());
         gameStartMessage.setMessage("Game has ended!");
-        systemReminder("The winner group is "+room.getWinner().toString()+"!");
+        systemReminder("The winner group is "+room.getWinner().toString()+"!",roomId);
 
         gameStartMessage.setStatus(Status.END); // 设置状态为 GAME_STARTED
-        simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
+        simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", gameStartMessage);
         roomService.EndGame(room);
     }
 
-    public void broadcastVoteStart() {
+    public void broadcastVoteStart(Long roomId) {
         Message voteStartMessage = new Message();
         voteStartMessage.setSenderName("system");
         voteStartMessage.setMessage("Now it's time to vote!\n You can click avatar to vote");
         voteStartMessage.setStatus(Status.VOTE); // 设置状态为 GAME_STARTED
-        simpMessagingTemplate.convertAndSend("/chatroom/public", voteStartMessage);
+        simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", voteStartMessage);
     }
 
-    public void systemReminder(String reminderInfo) {
+    public void systemReminder(String reminderInfo,Long roomId) {
         Message gameStartMessage = new Message();
         gameStartMessage.setSenderName("system");
         gameStartMessage.setMessage(reminderInfo);
         gameStartMessage.setStatus(Status.REMINDER); // 设置状态为 GAME_STARTED
-        simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
+        simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", gameStartMessage);
     }
 
-    public void descriptionBroadcast(String userName) {
+    public void descriptionBroadcast(String userName, Long roomId) {
         Message gameStartMessage = new Message();
         gameStartMessage.setSenderName(userName);
         gameStartMessage.setMessage("Now it's Player --" + userName + "'s turn to describe");
         gameStartMessage.setStatus(Status.DESCRIPTION); // 设置状态为 GAME_STARTED
-        simpMessagingTemplate.convertAndSend("/chatroom/public", gameStartMessage);
+        simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", gameStartMessage);
 //        Message currentPlayerMessage = new Message();
 //        currentPlayerMessage.setSenderName("system");
 //        currentPlayerMessage.setMessage(userName);
@@ -146,7 +146,7 @@ public class ChatService {
 //        simpMessagingTemplate.convertAndSend("/chatroom/public",currentPlayerMessage);
     }
 
-    public void conductTurn(Room roomToConduct){
+    public void conductTurn(Room roomToConduct, Long roomId){
         AtomicInteger i = new AtomicInteger();
         Room room = roomService.findRoomById(roomToConduct.getRoomId());
         AtomicInteger currentPlayerIndex = new AtomicInteger(room.getCurrentPlayerIndex());
@@ -155,7 +155,7 @@ public class ChatService {
         if ( currentGameStage.toString().equals(GameStage.DESCRIPTION.toString())){
             while (currentPlayerIndex.get() < currentAlivePlayersNum.get()) {
                     User currentUser = userService.getUserById(room.getAlivePlayersList().get(currentPlayerIndex.get()));
-                    descriptionBroadcast(currentUser.getUsername());
+                    descriptionBroadcast(currentUser.getUsername(),roomId);
                     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
                     executor.schedule(() -> {
                         // 这里是15秒后要执行的代码
@@ -180,13 +180,13 @@ public class ChatService {
                 if(true) break;//这里要改break的条件
             }
         }else if (currentGameStage.toString().equals(GameStage.VOTING.toString())) {
-            broadcastVoteStart();
+            broadcastVoteStart(roomId);
             ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             executor.schedule(() -> {
                 // 这里是15秒后要执行的代码
                 // 展示投票结果
                 // room.getVotingResult();
-                roomService.checkIfSomeoneOut(room);
+                roomService.checkIfSomeoneOut(room,roomId);
                 roomService.checkIfGameEnd(room);
             }, 10, TimeUnit.SECONDS);
             try {

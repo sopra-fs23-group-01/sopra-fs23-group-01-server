@@ -81,7 +81,7 @@ public class RoomController {
     @ResponseStatus(HttpStatus.OK)
     public void castVote(@PathVariable Long roomId,@PathVariable Long voterId,@PathVariable Long voteeId) {
         Room room = roomService.findRoomById(roomId);
-        roomService.collectVote(room, voterId, voteeId);
+        roomService.collectVote(room, voterId, voteeId,roomId);
 
     }
 
