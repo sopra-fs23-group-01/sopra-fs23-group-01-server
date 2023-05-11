@@ -74,7 +74,8 @@ public class RoomService {
     }
 
     public void enterRoom(Room room, User user){
-        room.addRoomPlayerList(user.getId());
+        if (room.getRoomPlayersList().size()<room.getMaxPlayersNum()){room.addRoomPlayerList(user.getId());}
+        else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This room is full");
     }
 
     public void collectVote(Room roomToDo, long voterId, long voteeId, Long roomId) {
@@ -221,6 +222,29 @@ public class RoomService {
             roomRepository.delete(room);
         }
         room.getRoomPlayersList().remove(userId);
+    }
+
+    public Room findRoomWithMostPlayers(){
+        Room roomWithMostPlayers = null;
+        int maxPlayers = 0;
+        List<Room> roomList = getRooms();
+
+        for (Room room : roomList) {
+            if (room.getRoomPlayersList().size() == room.getMaxPlayersNum()){
+                continue;
+            }
+
+            if (room.getRoomPlayersList().size() > maxPlayers) {
+                maxPlayers = room.getRoomPlayersList().size();
+                roomWithMostPlayers = room;
+            }
+        }
+
+        if (roomWithMostPlayers == null){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "No room is available!");
+        }
+        else{return roomWithMostPlayers;}
+
     }
 
     /**

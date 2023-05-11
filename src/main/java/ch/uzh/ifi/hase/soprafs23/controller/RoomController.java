@@ -85,5 +85,15 @@ public class RoomController {
 
     }
 
+    @PostMapping("/room/quickStart")
+    @ResponseStatus(HttpStatus.OK)
+    public RoomGetDTO quickStart(@RequestBody UserPostDTO userPostDTO) {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        Room roomToStart = roomService.findRoomWithMostPlayers();
+        roomService.enterRoom(roomToStart, userInput);
+        return DTOMapper.INSTANCE.convertEntityToRoomGetDTO(roomToStart);
+
+    }
+
 
 }
