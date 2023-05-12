@@ -34,13 +34,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             Room room1 = new Room();
             room1.setRoomId(10001l);
             room1.setRoomOwnerId(1l);
-            room1.setRoomProperty(RoomProperty.PUBLIC);
+            room1.setRoomProperty(RoomProperty.WAITING);
             roomService.createRoom(room1);
 
             Room room2 = new Room();
             room2.setRoomId(10002l);
             room2.setRoomOwnerId(2l);
-            room2.setRoomProperty(RoomProperty.PUBLIC);
+            room2.setRoomProperty(RoomProperty.WAITING);
             roomService.createRoom(room2);
 
             // send GET request to "/games"
@@ -51,8 +51,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                     .andExpect(jsonPath("$.[1].roomId").value(10002l))
                     .andExpect(jsonPath("$.[0].roomOwnerId").value( 1l))
                     .andExpect(jsonPath("$.[1].roomOwnerId").value(2l))
-                    .andExpect(jsonPath("$.[0].roomProperty").value( RoomProperty.PUBLIC.toString()))
-                    .andExpect(jsonPath("$.[1].roomProperty").value(RoomProperty.PUBLIC.toString()));
+                    .andExpect(jsonPath("$.[0].roomProperty").value( RoomProperty.WAITING.toString()))
+                    .andExpect(jsonPath("$.[1].roomProperty").value(RoomProperty.WAITING.toString()));
         }
 
 //        @Test
