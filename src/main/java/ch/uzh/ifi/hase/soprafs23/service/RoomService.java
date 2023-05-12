@@ -77,12 +77,10 @@ public class RoomService {
 
     public void enterRoom(Room room, User user){
         for (Long id: room.getRoomPlayersList()) {
-            if (id != user.getId()) {
-                continue;
-            }
-            else {
+            if (id == user.getId()) {
                 userService.getUserById(id).setReadyStatus(ReadyStatus.FREE);
                 room.getRoomPlayersList().remove(id);
+                break;
             }
         }
 
