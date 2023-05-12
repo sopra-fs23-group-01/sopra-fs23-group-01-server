@@ -87,7 +87,7 @@ public class RoomService {
         }
 
         if (room.getRoomPlayersList().size()<room.getMaxPlayersNum()){room.addRoomPlayerList(user.getId());}
-        else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This room is full, you are now in the observer mode");
+        else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This room is full!");
     }
 
     public void collectVote(Room roomToDo, long voterId, long voteeId, Long roomId) {
