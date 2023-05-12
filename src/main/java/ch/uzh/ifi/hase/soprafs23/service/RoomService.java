@@ -228,13 +228,13 @@ public class RoomService {
             user.setReadyStatus(ReadyStatus.FREE);
             user.setRole(Role.NOT_ASSIGNED);
             user.setCard(null);
-            room.setWinner(null);
-            room.setAlivePlayersList(null);
-            room.setDetectivesList(null);
-            room.setUndercoversList(null);
-            room.setGameStage(GameStage.WAITING);
-            room.setCurrentPlayerIndex(0);
         }
+        room.setWinner(null);
+        room.setAlivePlayersList(null);
+        room.setDetectivesList(null);
+        room.setUndercoversList(null);
+        room.setGameStage(GameStage.WAITING);
+        room.setCurrentPlayerIndex(0);
     }
 
     public String assignWord(String senderName) {
