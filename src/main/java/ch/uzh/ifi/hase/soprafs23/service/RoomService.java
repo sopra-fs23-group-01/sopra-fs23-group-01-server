@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -197,6 +198,7 @@ public class RoomService {
 
     public void EndGame(Room roomToDo){
         Room room = findRoomById(roomToDo.getRoomId());
+        DecimalFormat decimalFormat = new DecimalFormat("0.0");
         for (Long id:room.getRoomPlayersList()){
             User user = userService.getUserById(id);
             chatService.systemReminder("end game", room.getRoomId());
@@ -205,23 +207,23 @@ public class RoomService {
                 if(room.getWinner().equals(Role.DETECTIVE)){
                     user.setNumOfWinGameDe(user.getNumOfWinGameDe()+1);
                     user.setRateDe(user.getNumOfWinGameDe()/user.getNumOfGameDe());
-                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now"+Float.toString(user.getRateDe()), room.getRoomId());
+                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
                 else if (room.getWinner().equals(Role.UNDERCOVER)) {
                     user.setRateDe(user.getNumOfWinGameDe()/user.getNumOfGameDe());
-                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now"+Float.toString(user.getRateDe()), room.getRoomId());
+                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
             }
             else if (user.getRole().equals(Role.UNDERCOVER)) {
                 user.setNumOfGameUn(user.getNumOfGameUn()+1);
                 if(room.getWinner().equals(Role.DETECTIVE)){
                     user.setRateUn(user.getNumOfWinGameUn()/user.getNumOfGameUn());
-                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now" + Float.toString(user.getRateUn()), room.getRoomId());
+                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now" +decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
                 else if (room.getWinner().equals(Role.UNDERCOVER)) {
                     user.setNumOfWinGameUn(user.getNumOfWinGameUn()+1);
                     user.setRateDe(user.getNumOfWinGameUn()/user.getNumOfGameUn());
-                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now" + Float.toString(user.getRateUn()), room.getRoomId());
+                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now" +decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
             }
             user.setAliveStatus(null);
