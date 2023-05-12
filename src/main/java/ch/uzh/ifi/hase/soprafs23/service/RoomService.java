@@ -194,9 +194,35 @@ public class RoomService {
 
     }
 
-    public void EndGame(Room room){
+    public void EndGame(Room roomToDo){
+        Room room = findRoomById(roomToDo.getRoomId());
         for (Long id:room.getRoomPlayersList()){
             User user = userService.getUserById(id);
+            chatService.systemReminder("end game", room.getRoomId());
+            if(user.getRole().equals(Role.DETECTIVE)){
+                user.setNumOfGameDe(user.getNumOfGameDe()+1);
+                if(room.getWinner().equals(Role.DETECTIVE)){
+                    user.setNumOfWinGameDe(user.getNumOfWinGameDe()+1);
+                    user.setRateDe(user.getNumOfWinGameDe()/user.getNumOfGameDe());
+                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now"+Float.toString(user.getRateDe()), room.getRoomId());
+                }
+                else if (room.getWinner().equals(Role.UNDERCOVER)) {
+                    user.setRateDe(user.getNumOfWinGameDe()/user.getNumOfGameDe());
+                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now"+Float.toString(user.getRateDe()), room.getRoomId());
+                }
+            }
+            else if (user.getRole().equals(Role.UNDERCOVER)) {
+                user.setNumOfGameUn(user.getNumOfGameUn()+1);
+                if(room.getWinner().equals(Role.DETECTIVE)){
+                    user.setRateUn(user.getNumOfWinGameUn()/user.getNumOfGameUn());
+                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now" + Float.toString(user.getRateUn()), room.getRoomId());
+                }
+                else if (room.getWinner().equals(Role.UNDERCOVER)) {
+                    user.setNumOfWinGameUn(user.getNumOfWinGameUn()+1);
+                    user.setRateDe(user.getNumOfWinGameUn()/user.getNumOfGameUn());
+                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now" + Float.toString(user.getRateUn()), room.getRoomId());
+                }
+            }
             user.setAliveStatus(null);
             user.setReadyStatus(ReadyStatus.FREE);
             user.setRole(Role.NOT_ASSIGNED);

@@ -50,6 +50,12 @@ public class UserService {
     newUser.setStatus(UserStatus.ONLINE);
     newUser.setReadyStatus(ReadyStatus.FREE);
     newUser.setRegisterDate(new Date());
+    newUser.setNumOfGameDe(0);
+    newUser.setNumOfGameUn(0);
+    newUser.setNumOfWinGameDe(0);
+    newUser.setNumOfWinGameUn(0);
+    newUser.setRateDe(0);
+    newUser.setRateUn(0);
     // saves the given entity but data is only persisted in the database once
     // flush() is called
     newUser = userRepository.save(newUser);

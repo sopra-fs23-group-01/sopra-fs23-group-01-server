@@ -45,22 +45,22 @@ public class User implements Serializable {
   @Column(nullable = false)
   private UserStatus status;
 
-    @Column
-    private ReadyStatus readyStatus;
+  @Column
+  private ReadyStatus readyStatus;
 
   @Column(nullable = false)
   private String password;
 
-    @Column
-    private String email;
+  @Column
+  private String email;
 
-    @Column
-    private Boolean aliveStatus;
+  @Column
+  private Boolean aliveStatus;
 
-    @Column
-    private String card;// 玩家的牌
-    @Column
-    private Role role = Role.NOT_ASSIGNED;
+  @Column
+  private String card;// 玩家的牌
+  @Column
+  private Role role = Role.NOT_ASSIGNED;
 
 
     public String getCard() {
@@ -88,6 +88,54 @@ public class User implements Serializable {
 
     @Column
     private float rateUn=0;
+
+    @Column
+    private int numOfGameDe=0;
+
+    @Column
+    private int numOfGameUn=0;
+
+    public int getNumOfWinGameDe() {
+        return numOfWinGameDe;
+    }
+
+    public void setNumOfWinGameDe(int numOfWinGameDe) {
+        this.numOfWinGameDe = numOfWinGameDe;
+    }
+
+    public int getNumOfWinGameUn() {
+        return numOfWinGameUn;
+    }
+
+    public void setNumOfWinGameUn(int numOfWinGameUn) {
+        this.numOfWinGameUn = numOfWinGameUn;
+    }
+
+    @Column
+    private int numOfWinGameDe=0;
+
+    @Column
+    private int numOfWinGameUn=0;
+
+    public int getNumOfGameDe() {
+        return numOfGameDe;
+    }
+
+
+
+    public void setNumOfGameDe(int numOfGameDe) {
+        this.numOfGameDe = numOfGameDe;
+    }
+
+    public int getNumOfGameUn() {
+        return numOfGameUn;
+    }
+
+    public void setNumOfGameUn(int numOfGameUn) {
+        this.numOfGameUn = numOfGameUn;
+    }
+
+
 
     @Column
     private String intro="Let's Go!!!";
