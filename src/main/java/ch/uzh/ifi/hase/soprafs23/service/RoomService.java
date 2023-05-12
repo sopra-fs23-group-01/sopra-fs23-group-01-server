@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.constant.GameStage;
 import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
 import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
@@ -52,7 +53,7 @@ public class RoomService {
     public Room createRoom(Room newRoom) {
         //newRoom.setToken(UUID.randomUUID().toString());
         newRoom.setRoomOwnerId(newRoom.getRoomOwnerId());
-        newRoom.setRoomProperty(newRoom.getRoomProperty());
+        newRoom.setRoomProperty(RoomProperty.WAITING);
         newRoom.setTheme(newRoom.getTheme());
         newRoom.addRoomPlayerList(newRoom.getRoomOwnerId());
         //newRoom.addRoomPlayer(userRepository.findById(newRoom.getRoomOwnerId()));
@@ -75,8 +76,18 @@ public class RoomService {
     }
 
     public void enterRoom(Room room, User user){
+        for (Long id: room.getRoomPlayersList()) {
+            if (id != user.getId()) {
+                continue;
+            }
+            else {
+                userService.getUserById(id).setReadyStatus(ReadyStatus.FREE);
+                room.getRoomPlayersList().remove(id);
+            }
+        }
+
         if (room.getRoomPlayersList().size()<room.getMaxPlayersNum()){room.addRoomPlayerList(user.getId());}
-        else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This room is full");
+        else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This room is full, you are now in the observer mode");
     }
 
     public void collectVote(Room roomToDo, long voterId, long voteeId, Long roomId) {
@@ -237,6 +248,7 @@ public class RoomService {
         room.setUndercoversList(null);
         room.setGameStage(GameStage.WAITING);
         room.setCurrentPlayerIndex(0);
+        room.setRoomProperty(RoomProperty.WAITING);
     }
 
     public String assignWord(String senderName) {
@@ -246,10 +258,11 @@ public class RoomService {
 
     public void deletePlayer(Long userId, Long roomId){
         Room room = findRoomById(roomId);
-        if (room.getRoomOwnerId()==userId){
-            roomRepository.delete(room);
+        if (room.getRoomPlayersList().size()>1){
+            room.setRoomOwnerId(room.getRoomPlayersList().get(1));
+            room.getRoomPlayersList().remove(userId);
         }
-        room.getRoomPlayersList().remove(userId);
+        else{roomRepository.delete(room);}
     }
 
     public Room findRoomWithMostPlayers(){

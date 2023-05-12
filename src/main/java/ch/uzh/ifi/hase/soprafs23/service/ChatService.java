@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStage;
 import ch.uzh.ifi.hase.soprafs23.constant.Role;
+import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
 import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.model.Message;
@@ -82,6 +83,7 @@ public class ChatService {
         Room room = roomService.findRoomById(roomToInitiate.getRoomId());
         room.setCurrentPlayerIndex(0);
         room.setGameStage(GameStage.DESCRIPTION);
+        room.setRoomProperty(RoomProperty.INGAME);
 
         List<Long> newPlayersList = new ArrayList<>(room.getRoomPlayersList());
         room.setAlivePlayersList(newPlayersList);

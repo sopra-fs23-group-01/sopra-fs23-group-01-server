@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 import java.util.*;
 
 import ch.uzh.ifi.hase.soprafs23.constant.GameStage;
+import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
 import ch.uzh.ifi.hase.soprafs23.service.RoomService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
