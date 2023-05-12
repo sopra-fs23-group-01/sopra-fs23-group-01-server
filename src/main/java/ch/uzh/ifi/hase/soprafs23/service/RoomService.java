@@ -127,7 +127,7 @@ public class RoomService {
                 player.setCard("apple");
             }
             userRepository.save(player);
-            chatService.systemReminder(player.getId()+player.getCard(),roomId);
+            //chatService.systemReminder(player.getId()+player.getCard(),roomId);
         }
 
     }
