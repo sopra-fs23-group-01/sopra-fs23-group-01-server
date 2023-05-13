@@ -56,6 +56,15 @@ public class ChatController {
         return message;
     }
 
+    @MessageMapping("/roomcreat")
+    @SendTo("/room")
+    public Message receiveCreationMessage(@Payload Message message) {
+        //if the assigned status is assign word then return a word to the user
+        message.setStatus(Status.ROOM_UPDATE);
+        simpMessagingTemplate.convertAndSend("/room", message);
+        return message;
+    }
+
     @MessageMapping("/private-message")
     public Message recMessage(@Payload Message message) {
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(), "/private", message);

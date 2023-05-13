@@ -12,5 +12,6 @@ public enum Status {
     CURRENT_PLAYER,
     END,
     READY,
-    NOT_READY
+    NOT_READY, 
+    ROOM_UPDATE
 }
