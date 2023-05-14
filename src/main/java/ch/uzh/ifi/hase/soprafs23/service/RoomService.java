@@ -216,23 +216,23 @@ public class RoomService {
                 if(room.getWinner().equals(Role.DETECTIVE)){
                     user.setNumOfWinGameDe(user.getNumOfWinGameDe()+1);
                     user.setRateDe(user.getNumOfWinGameDe()/user.getNumOfGameDe());
-                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
+                    chatService.systemReminder("Player " + user.getUsername() +" winningrate of Detective is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
                 else if (room.getWinner().equals(Role.UNDERCOVER)) {
                     user.setRateDe(user.getNumOfWinGameDe()/user.getNumOfGameDe());
-                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
+                    chatService.systemReminder("Player " + user.getUsername() +" winningrate of Detective is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
             }
             else if (user.getRole().equals(Role.UNDERCOVER)) {
                 user.setNumOfGameUn(user.getNumOfGameUn()+1);
                 if(room.getWinner().equals(Role.DETECTIVE)){
                     user.setRateUn(user.getNumOfWinGameUn()/user.getNumOfGameUn());
-                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now" +decimalFormat.format(user.getRateDe()*100), room.getRoomId());
+                    chatService.systemReminder("Player " + user.getUsername() +" winningrate of Undercover is now" +decimalFormat.format(user.getRateUn()*100), room.getRoomId());
                 }
                 else if (room.getWinner().equals(Role.UNDERCOVER)) {
                     user.setNumOfWinGameUn(user.getNumOfWinGameUn()+1);
-                    user.setRateDe(user.getNumOfWinGameUn()/user.getNumOfGameUn());
-                    chatService.systemReminder("Player " + user.getUsername() +" gamerate is now" +decimalFormat.format(user.getRateDe()*100), room.getRoomId());
+                    user.setRateUn(user.getNumOfWinGameUn()/user.getNumOfGameUn());
+                    chatService.systemReminder("Player " + user.getUsername() +" winningrate of Undercover is now" +decimalFormat.format(user.getRateUn()*100), room.getRoomId());
                 }
             }
             user.setAliveStatus(null);
