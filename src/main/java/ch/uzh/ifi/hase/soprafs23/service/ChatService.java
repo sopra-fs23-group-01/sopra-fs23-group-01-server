@@ -87,7 +87,7 @@ public class ChatService {
 
         List<Long> newPlayersList = new ArrayList<>(room.getRoomPlayersList());
         room.setAlivePlayersList(newPlayersList);
-        roomService.assignCardsAndRoles(room,roomId);
+        roomService.assignCardsAndRoles(room);
         for (Long id : room.getRoomPlayersList()) {
             if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)) {
                 room.getDetectivesList().add(id);

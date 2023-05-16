@@ -1,9 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
-import ch.uzh.ifi.hase.soprafs23.constant.GameStage;
-import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
-import ch.uzh.ifi.hase.soprafs23.constant.Role;
-import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
+import ch.uzh.ifi.hase.soprafs23.constant.*;
 import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
@@ -39,6 +36,7 @@ public class RoomService {
     @Lazy
     private final ChatService chatService;
     private final UserService userService;
+
 
     public RoomService(@Qualifier("userRepository") UserRepository userRepository, @Qualifier("roomRepository") RoomRepository roomRepository, ChatService chatService, UserService userService) {
         this.roomRepository = roomRepository;
@@ -114,31 +112,50 @@ public class RoomService {
          else {return false;}
     }
 
-    public void startGame(Room room, Long roomId){
-        room.setCurrentPlayerIndex(0);
-        room.setGameStage(GameStage.DESCRIPTION);
-        assignCardsAndRoles(room, roomId);
-    }
-
-    public void assignCardsAndRoles(Room room,Long roomId) {
+    public void assignCardsAndRoles(Room room) {
         int num = room.getRoomPlayersList().size();
+        // Get words list according to theme
+        List<String> wordsList = assignWordsAccordingToTheme(room.getTheme());
         Random random = new Random();
-        int randomNumber = random.nextInt(num); // 生成的随机数
+        int randomNumber = random.nextInt(num);
+        // Generate a second random number excluding the first random number
+        int secondRandomNumber;
+        do {
+            secondRandomNumber = random.nextInt(num);
+        } while (secondRandomNumber == randomNumber);
         // assign role and card to each player
         for (int i = 0; i < num; i++) {
             User player = userRepository.getOne(room.getRoomPlayersList().get(i));
-            if (i == randomNumber) {
+            if (i == randomNumber || (num >= 6 && i == secondRandomNumber)) {
                 player.setRole(Role.UNDERCOVER);
-                player.setCard("pear");
-
+                player.setCard(wordsList.get(0));
             } else {
                 player.setRole(Role.DETECTIVE);
-                player.setCard("apple");
+                player.setCard(wordsList.get(1));
             }
             userRepository.save(player);
             //chatService.systemReminder(player.getId()+player.getCard(),roomId);
         }
 
+    }
+
+    private List<String> assignWordsAccordingToTheme(Theme theme){
+        List<String> wordsList = new ArrayList<>();
+        switch (theme){
+            case SPORTS:
+                wordsList.add("Soccer");
+                wordsList.add("Basketball");
+                break;
+            case FURNITURE:
+                wordsList.add("Sofa");
+                wordsList.add("Chair");
+                break;
+            case JOB:
+                wordsList.add("Policeman");
+                wordsList.add("Soldier");
+                break;
+        }
+        return wordsList;
     }
 
 
