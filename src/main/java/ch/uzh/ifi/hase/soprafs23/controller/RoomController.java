@@ -95,5 +95,14 @@ public class RoomController {
 
     }
 
+    @PostMapping("/games/guard")
+    @ResponseStatus(HttpStatus.OK)
+    public RoomGetDTO playerGuard(@RequestBody UserPostDTO userPostDTO) {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        Room roomToEnter = roomService.findRoomWithThisPlayer(userInput.getId());
+        //roomService.enterRoom(roomToEnter, userInput);
+        return DTOMapper.INSTANCE.convertEntityToRoomGetDTO(roomToEnter);
+    }
+
 
 }
