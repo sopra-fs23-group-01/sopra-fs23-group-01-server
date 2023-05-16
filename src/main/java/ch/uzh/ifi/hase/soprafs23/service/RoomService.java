@@ -141,18 +141,22 @@ public class RoomService {
 
     private List<String> assignWordsAccordingToTheme(Theme theme){
         List<String> wordsList = new ArrayList<>();
+        Random random = new Random();
         switch (theme){
             case SPORTS:
-                wordsList.add("Soccer");
-                wordsList.add("Basketball");
+                List<String> sportsWords = Arrays.asList("Soccer", "Basketball", "TennisBall", "Baseball", "Bowling");
+                Collections.shuffle(sportsWords, random);
+                wordsList.addAll(sportsWords.subList(0, 2));
                 break;
             case FURNITURE:
-                wordsList.add("Sofa");
-                wordsList.add("Chair");
+                List<String> furnitureWords = Arrays.asList("Sofa", "Chair", "Table", "Bed");
+                Collections.shuffle(furnitureWords, random);
+                wordsList.addAll(furnitureWords.subList(0, 2));
                 break;
             case JOB:
-                wordsList.add("Policeman");
-                wordsList.add("Soldier");
+                List<String> jobWords = Arrays.asList("Policeman", "Engineer", "Teacher", "Doctor");
+                Collections.shuffle(jobWords, random);
+                wordsList.addAll(jobWords.subList(0, 2));
                 break;
         }
         return wordsList;

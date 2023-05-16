@@ -152,7 +152,7 @@ public class User implements Serializable {
   private Room room;
 
     Random random = new Random();
-    int randomNumber = random.nextInt(11);
+    int randomNumber = random.nextInt(14);
     @Column
     private String avatarUrl="https://robohash.org/"+randomNumber;
     public String getAvatarUrl() {

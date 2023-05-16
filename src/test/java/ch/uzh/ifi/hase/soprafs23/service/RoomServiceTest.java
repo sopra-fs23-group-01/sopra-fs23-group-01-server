@@ -103,7 +103,7 @@
          Room room = new Room();
          room.setRoomPlayersList(Arrays.asList(1L, 2L, 3L, 4L));
          room.setTheme(Theme.SPORTS); // Set the theme explicitly
-         int i = 0,j = 0;
+         int i = 0;
 
          // Call the method to assign cards and roles
          roomService.assignCardsAndRoles(room);
@@ -114,13 +114,10 @@
              //System.out.println("playerId"+player.getId()+"card"+player.getCard()+"Role"+player.getRole());
              if(player.getRole()==Role.UNDERCOVER)
                  i++;
-             if (player.getCard().equals("Soccer"))
-                 j++;
          }
          assertEquals(i,1);
-         assertEquals(j,1);
 
-         i = 0;j = 0;
+         i = 0;
          room.setTheme(Theme.FURNITURE);
          // Call the method to assign cards and roles
          roomService.assignCardsAndRoles(room);
@@ -130,11 +127,8 @@
              //System.out.println("playerId"+player.getId()+"card"+player.getCard()+"Role"+player.getRole());
              if(player.getRole()==Role.UNDERCOVER)
                  i++;
-             if (player.getCard().equals("Sofa"))
-                 j++;
          }
          assertEquals(i,1);
-         assertEquals(j,1);
      }
 
      @Test
@@ -143,7 +137,7 @@
          Room room = new Room();
          room.setRoomPlayersList(Arrays.asList(1L, 2L, 3L, 4L,5L,6L));
          room.setTheme(Theme.JOB); // Set the theme explicitly
-         int i = 0,j = 0;
+         int i = 0;
 
          // Call the method to assign cards and roles
          roomService.assignCardsAndRoles(room);
@@ -154,11 +148,8 @@
              //System.out.println("playerId"+player.getId()+"card"+player.getCard()+"Role"+player.getRole());
              if(player.getRole()==Role.UNDERCOVER)
                  i++;
-             if (player.getCard().equals("Policeman"))
-                 j++;
          }
          assertEquals(i,2);
-         assertEquals(j,2);
      }
 
  //    @Test
