@@ -307,6 +307,18 @@ public class RoomService {
 
     }
 
+    public Room findRoomWithThisPlayer(Long userId){
+        Room roomToGo = null;
+        for (Room room :getRooms()){
+            if (room.getRoomPlayersList().contains(userId)){
+                roomToGo = room;
+                break;
+            }
+        }
+        return roomToGo;
+    }
+
+
     /**
      * This is a helper method that will check the uniqueness criteria of the
      * username and the name
