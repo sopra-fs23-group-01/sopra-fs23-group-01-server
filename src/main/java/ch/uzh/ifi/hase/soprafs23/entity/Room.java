@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 import ch.uzh.ifi.hase.soprafs23.constant.*;
 import javax.persistence.*;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
@@ -19,6 +20,7 @@ import java.util.*;
 @Table(name = "ROOM")
 public class Room implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -26,17 +28,14 @@ public class Room implements Serializable {
     @SequenceGenerator(name = "room_sequence", sequenceName = "room_sequence", allocationSize = 1, initialValue = 10001)
     private long roomId;
 
-    @Column(nullable = true)
+    @Column()
     private Theme theme;
 
     @Column(nullable = false)
     private long roomOwnerId;
 
-    @Column(nullable = true)
+    @Column()
     private int maxPlayersNum;
-
-//    @Column(nullable = false, unique = true)
-//    private String token;
 
     @Column(nullable = false)
     private RoomProperty roomProperty;
@@ -94,15 +93,6 @@ public class Room implements Serializable {
         this.theme = theme;
     }
 
-
-//    public String getToken() {
-//        return token;
-//    }
-//
-//    public void setToken(String token) {
-//        this.token = token;
-//    }
-
     public RoomProperty getRoomProperty() {
         return roomProperty;
     }
@@ -123,7 +113,6 @@ public class Room implements Serializable {
         if (user.isPresent()) {
             User owner = user.get();
             this.roomPlayers.add(owner);
-            //this.roomPlayersList.add(owner.getId());
         }
     }
 

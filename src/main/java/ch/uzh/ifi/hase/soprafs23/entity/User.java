@@ -7,6 +7,7 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
@@ -26,6 +27,7 @@ import java.util.Random;
 @Table(name = "USER")
 public class User implements Serializable {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -33,7 +35,7 @@ public class User implements Serializable {
   @Column(name = "user_id")
   private long id;
 
-  @Column(nullable = true)
+  @Column()
   private String name;
 
   @Column(nullable = false, unique = true)
@@ -154,10 +156,10 @@ public class User implements Serializable {
     private String intro="Let's Go!!!";
     @JsonFormat(pattern="dd-MM-yyyy")
     @Column
-    private Date registerdate;;
+    private Date registerdate;
 
     @JsonFormat(pattern="dd-MM-yyyy")
-    @Column(nullable = true)
+    @Column()
     private Date birthday;
 
     @ManyToOne
