@@ -2,12 +2,8 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto;
 
 import java.util.Date;
 
-import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
-import ch.uzh.ifi.hase.soprafs23.constant.Role;
-import ch.uzh.ifi.hase.soprafs23.constant.UserGender;
+import ch.uzh.ifi.hase.soprafs23.constant.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
-import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 
 import javax.persistence.Column;
 
@@ -17,6 +13,7 @@ public class UserGetDTO {
   private String username;
   private UserStatus status;
   private ReadyStatus readyStatus;
+  private GameStatus gameStatus;
   
   @JsonFormat(pattern="dd-MM-yyyy")
   private Date birthday;
@@ -62,6 +59,13 @@ public class UserGetDTO {
         this.avatarUrl = avatarUrl;
     }
 
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
 
 
     public String getEmail() {

@@ -77,6 +77,7 @@ public class RoomService {
         for (Long id: room.getRoomPlayersList()) {
             if (id == user.getId()) {
                 userService.getUserById(id).setReadyStatus(ReadyStatus.FREE);
+                userService.getUserById(id).setGameStatus(GameStatus.ALIVE);
                 room.getRoomPlayersList().remove(id);
                 break;
             }
@@ -208,8 +209,8 @@ public class RoomService {
         }
     }
     public void checkIfGameEnd(Room roomToDo){
-
         Room room = findRoomById(roomToDo.getRoomId());
+        room.setVotingResult(null);
         int count_un = 0;
         int count_de = 0;
         for (Long id : room.getAlivePlayersList()){

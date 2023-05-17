@@ -57,12 +57,23 @@ public class User implements Serializable {
   @Column
   private Boolean aliveStatus;
 
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+  @Column
+  private GameStatus gameStatus;
   @Column
   private String card;// 玩家的牌
   @Column
   private Role role = Role.NOT_ASSIGNED;
   @Column
   private Long enteredRoom;// 玩家的牌
+
 
 
     public String getCard() {

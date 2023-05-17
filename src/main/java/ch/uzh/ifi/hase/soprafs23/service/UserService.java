@@ -1,4 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23.service;
+import ch.uzh.ifi.hase.soprafs23.constant.GameStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.Room;
@@ -56,6 +57,7 @@ public class UserService {
     newUser.setNumOfWinGameUn(0);
     newUser.setRateDe(0);
     newUser.setRateUn(0);
+    newUser.setGameStatus(GameStatus.ALIVE);
     // saves the given entity but data is only persisted in the database once
     // flush() is called
     newUser = userRepository.save(newUser);

@@ -89,6 +89,7 @@ public class ChatService {
         room.setAlivePlayersList(newPlayersList);
         roomService.assignCardsAndRoles(room);
         for (Long id : room.getRoomPlayersList()) {
+
             if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)) {
                 room.getDetectivesList().add(id);
 

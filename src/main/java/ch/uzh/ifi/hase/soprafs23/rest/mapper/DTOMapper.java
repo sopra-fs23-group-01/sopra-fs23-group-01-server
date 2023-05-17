@@ -44,6 +44,7 @@ public interface DTOMapper {
   @Mapping(source = "avatarUrl", target = "avatarUrl")
   @Mapping(source = "role", target = "role")
   @Mapping(source = "card", target = "card")
+  @Mapping(source = "gameStatus", target = "gameStatus")
   UserGetDTO convertEntityToUserGetDTO(User user);
 
 
