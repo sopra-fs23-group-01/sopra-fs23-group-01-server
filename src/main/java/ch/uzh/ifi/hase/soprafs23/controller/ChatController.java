@@ -1,9 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
-import java.util.*;
-
 import ch.uzh.ifi.hase.soprafs23.constant.GameStage;
-import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
 import ch.uzh.ifi.hase.soprafs23.service.RoomService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +43,6 @@ public class ChatController {
         if (message.getStatus() == Status.ASSIGNED_WORD) {
             String word = roomService.assignWord(message.getSenderName());
             chatService.systemReminder(word,roomId);
-            // String assignedRole = chatService.assignUserRole();
             Message wordMessage = new Message();
             wordMessage.setSenderName("system");
             wordMessage.setStatus(Status.ASSIGNED_WORD);
@@ -69,16 +65,12 @@ public class ChatController {
     @MessageMapping("/private-message")
     public Message recMessage(@Payload Message message) {
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(), "/private", message);
-        System.out.println(message.toString());
         return message;
     }
 
     @MessageMapping( "/gamestart/{roomId}")
     public void startGame(@DestinationVariable Long roomId) {
-//        Room roomToDo = roomService.findRoomById(roomId);
-
         if (roomService.checkIfAllReady(roomService.findRoomById(roomId))) {
-        //if (true){
             chatService.initiateGame(roomService.findRoomById(roomId),roomId);
             chatService.broadcastGameStart(roomId);
             while(!(roomService.findRoomById(roomId).getGameStage().toString().equals(GameStage.END.toString()))) {

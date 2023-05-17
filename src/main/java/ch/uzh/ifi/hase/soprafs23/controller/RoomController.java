@@ -5,13 +5,10 @@ import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.RoomService;
-import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * User Controller
@@ -100,7 +97,6 @@ public class RoomController {
     public RoomGetDTO playerGuard(@RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         Room roomToEnter = roomService.findRoomWithThisPlayer(userInput.getId());
-        //roomService.enterRoom(roomToEnter, userInput);
         return DTOMapper.INSTANCE.convertEntityToRoomGetDTO(roomToEnter);
     }
 

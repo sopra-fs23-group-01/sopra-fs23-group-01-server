@@ -2,8 +2,6 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.RoomGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.UserPutDTO;
@@ -12,7 +10,6 @@ import ch.uzh.ifi.hase.soprafs23.service.RoomService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,7 +130,6 @@ public void userEditProfile(@PathVariable("userId") Long userId, @RequestBody Us
     @ResponseBody
     public void userGetReady(@PathVariable("roomId") Long roomId, @RequestBody UserPutDTO userPutDTO) {
         // convert API user to internal representation
-
         User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
         userService.userSetReady(userInput);
     }
@@ -142,15 +138,10 @@ public void userEditProfile(@PathVariable("userId") Long userId, @RequestBody Us
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void userLeaveRoom(@PathVariable("roomId") Long roomId, @RequestBody UserPutDTO userPutDTO) {
-
         //To change the readyStatus of users to be FREE;
         User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
         userService.userLeaveRoom(userInput);
         roomService.deletePlayer(userInput.getId(), roomId);
-
-        //To delete the user from the roomPlayerList.
-//        Room roomToQuit = roomService.findRoomById(roomId);
-//        roomToQuit.getRoomPlayersList().remove(userInput.getId());
     }
 
 
