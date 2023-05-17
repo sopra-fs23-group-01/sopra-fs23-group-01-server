@@ -53,6 +53,7 @@ public class ChatController {
             wordMessage.setRole(word); // 修改状态为 ASSIGNED_WORD
             simpMessagingTemplate.convertAndSendToUser(message.getSenderName(), "/private", wordMessage);
         }
+        
         return message;
     }
 

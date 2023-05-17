@@ -61,6 +61,8 @@ public class User implements Serializable {
   private String card;// 玩家的牌
   @Column
   private Role role = Role.NOT_ASSIGNED;
+  @Column
+  private Long enteredRoom;// 玩家的牌
 
 
     public String getCard() {
@@ -139,17 +141,17 @@ public class User implements Serializable {
 
     @Column
     private String intro="Let's Go!!!";
-  @JsonFormat(pattern="dd-MM-yyyy")
-  @Column
-  private Date registerdate;;
+    @JsonFormat(pattern="dd-MM-yyyy")
+    @Column
+    private Date registerdate;;
 
-  @JsonFormat(pattern="dd-MM-yyyy")
-  @Column(nullable = true)
-  private Date birthday;
+    @JsonFormat(pattern="dd-MM-yyyy")
+    @Column(nullable = true)
+    private Date birthday;
 
-  @ManyToOne
-  @JoinColumn(name = "room_id")
-  private Room room;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     Random random = new Random();
     int randomNumber = random.nextInt(14);
@@ -238,6 +240,14 @@ public Object getLastUpdated() {
 
 public boolean isPresent() {
     return false;
+}
+
+public Long geEnteredRoom() {
+  return enteredRoom;
+}
+
+public void setEnteredRoom(Long enteredRoom) {
+  this.enteredRoom= enteredRoom;
 }
 
     public String getEmail() {

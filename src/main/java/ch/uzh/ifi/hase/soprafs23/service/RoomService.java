@@ -82,7 +82,9 @@ public class RoomService {
             }
         }
 
-        if (room.getRoomPlayersList().size()<room.getMaxPlayersNum()){room.addRoomPlayerList(user.getId());}
+        if (room.getRoomPlayersList().size()<room.getMaxPlayersNum()){
+            room.addRoomPlayerList(user.getId());
+        }
         else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This room is full!");
     }
 
