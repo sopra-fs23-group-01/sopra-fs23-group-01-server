@@ -166,22 +166,32 @@ public class RoomService {
     }
 
 
-    public void checkIfSomeoneOut(Room room, Long roomId){
+    public void checkIfSomeoneOut(Room room, Long roomId) {
         Map<Long, Long> votingResult = room.getVotingResult();
         if (votingResult != null) {
             Map<Long, Integer> voteCounts = new HashMap<>();
+            Map<Long, List<Long>> votesByPlayer = new HashMap<>();
+
             for (Map.Entry<Long, Long> entry : votingResult.entrySet()) {
                 Long voterId = entry.getKey();
                 Long voteeId = entry.getValue();
 
+                // Increase vote count
                 Integer voteCount = voteCounts.get(voteeId);
                 if (voteCount == null) {
                     voteCount = 1;
-                }
-                else {
+                } else {
                     voteCount += 1;
                 }
                 voteCounts.put(voteeId, voteCount);
+
+                // Collect voting information by player
+                List<Long> votes = votesByPlayer.get(voteeId);
+                if (votes == null) {
+                    votes = new ArrayList<>();
+                }
+                votes.add(voterId);
+                votesByPlayer.put(voteeId, votes);
             }
 
             Long mostVotedPlayer = null;
@@ -199,15 +209,33 @@ public class RoomService {
             if (mostVotedPlayer != null) {
                 User userToBeOuted = userService.getUserById(mostVotedPlayer);
                 userToBeOuted.setAliveStatus(false);
-                chatService.systemReminder("Player " + userToBeOuted.getUsername() +" is voted out!",roomId);
+
+                // Prepare voting information string
+                StringBuilder voteInfo = new StringBuilder("Player ")
+                        .append(userToBeOuted.getUsername())
+                        .append(" is voted out by: ");
+
+                List<Long> voters = votesByPlayer.get(mostVotedPlayer);
+                for (Long voterId : voters) {
+                    User voter = userService.getUserById(voterId);
+                    voteInfo.append(voter.getUsername()).append(", ");
+                }
+
+                // Remove the trailing comma and space
+                voteInfo.setLength(voteInfo.length() - 2);
+
+                chatService.systemReminder(voteInfo.toString(), roomId);
+
                 findRoomById(room.getRoomId()).getAlivePlayersList().remove(mostVotedPlayer);
-                chatService.systemReminder("Alive: "+findRoomById(room.getRoomId()).getAlivePlayersList(),roomId);
-            }else {
+
+                chatService.systemReminder("Alive: " + findRoomById(room.getRoomId()).getAlivePlayersList(), roomId);
+            } else {
                 //systemReminder
-                chatService.systemReminder("No players out!",roomId);
+                chatService.systemReminder("No players out!", roomId);
             }
         }
     }
+
     public void checkIfGameEnd(Room roomToDo){
         Room room = findRoomById(roomToDo.getRoomId());
         room.setVotingResult(null);
@@ -260,6 +288,7 @@ public class RoomService {
                 }
             }
             user.setAliveStatus(null);
+            user.setGameStatus(GameStatus.ALIVE);
             user.setReadyStatus(ReadyStatus.FREE);
             user.setRole(Role.NOT_ASSIGNED);
             user.setCard(null);
