@@ -300,11 +300,15 @@ public class RoomService {
                 user.setNumOfGameDe(user.getNumOfGameDe()+1);
                 if(room.getWinner().equals(Role.DETECTIVE)){
                     user.setNumOfWinGameDe(user.getNumOfWinGameDe()+1);
+                    chatService.systemReminder("卧底总场数数"+Integer.toString(user.getNumOfGameDe()), room.getRoomId());
+                    chatService.systemReminder("卧底总场数数"+Integer.toString(user.getNumOfWinGameDe()), room.getRoomId());
                     user.setRateDe(user.getNumOfWinGameDe()/user.getNumOfGameDe());
                     chatService.systemReminder("Player " + user.getUsername() +" winningrate of Detective is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
                 else if (room.getWinner().equals(Role.UNDERCOVER)) {
                     user.setRateDe(user.getNumOfWinGameDe()/user.getNumOfGameDe());
+                    chatService.systemReminder("侦探总场数"+Integer.toString(user.getNumOfGameDe()), room.getRoomId());
+                    chatService.systemReminder("侦探总场数"+Integer.toString(user.getNumOfWinGameDe()), room.getRoomId());
                     chatService.systemReminder("Player " + user.getUsername() +" winningrate of Detective is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
             }
@@ -312,11 +316,15 @@ public class RoomService {
                 user.setNumOfGameUn(user.getNumOfGameUn()+1);
                 if(room.getWinner().equals(Role.DETECTIVE)){
                     user.setRateUn(user.getNumOfWinGameUn()/user.getNumOfGameUn());
+                    chatService.systemReminder("卧底总场数数"+Integer.toString(user.getNumOfGameUn()), room.getRoomId());
+                    chatService.systemReminder("卧底胜场数"+Integer.toString(user.getNumOfWinGameUn()), room.getRoomId());
                     chatService.systemReminder("Player " + user.getUsername() +" winningrate of Undercover is now" +decimalFormat.format(user.getRateUn()*100), room.getRoomId());
                 }
                 else if (room.getWinner().equals(Role.UNDERCOVER)) {
                     user.setNumOfWinGameUn(user.getNumOfWinGameUn()+1);
                     user.setRateUn(user.getNumOfWinGameUn()/user.getNumOfGameUn());
+                    chatService.systemReminder("侦探总场数"+Integer.toString(user.getNumOfGameUn()), room.getRoomId());
+                    chatService.systemReminder("侦探胜场数"+Integer.toString(user.getNumOfWinGameUn()), room.getRoomId());
                     chatService.systemReminder("Player " + user.getUsername() +" winningrate of Undercover is now" +decimalFormat.format(user.getRateUn()*100), room.getRoomId());
                 }
             }
