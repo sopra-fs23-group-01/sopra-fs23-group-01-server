@@ -165,11 +165,8 @@ public class User implements Serializable {
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
-
-    Random random = new Random();
-    int randomNumber = random.nextInt(14);
     @Column
-    private String avatarUrl="https://robohash.org/"+randomNumber;
+    private String avatarUrl;
     public String getAvatarUrl() {
         return avatarUrl;
     }

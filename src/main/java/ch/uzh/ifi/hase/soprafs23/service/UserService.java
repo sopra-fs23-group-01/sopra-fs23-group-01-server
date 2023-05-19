@@ -51,6 +51,7 @@ public class UserService {
     newUser.setStatus(UserStatus.ONLINE);
     newUser.setReadyStatus(ReadyStatus.FREE);
     newUser.setRegisterDate(new Date());
+    newUser.setAvatarUrl("https://robohash.org/"+newUser.getUsername());
     newUser.setNumOfGameDe(0);
     newUser.setNumOfGameUn(0);
     newUser.setNumOfWinGameDe(0);
