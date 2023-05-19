@@ -194,6 +194,27 @@ public class RoomService {
                 votesByPlayer.put(voteeId, votes);
             }
 
+            // Broadcast vote information for each player
+            for (Map.Entry<Long, List<Long>> entry : votesByPlayer.entrySet()) {
+                Long playerId = entry.getKey();
+                User player = userService.getUserById(playerId);
+
+                StringBuilder voteInfo = new StringBuilder("Player ")
+                        .append(player.getUsername())
+                        .append(" is voted by: ");
+
+                List<Long> voters = entry.getValue();
+                for (Long voterId : voters) {
+                    User voter = userService.getUserById(voterId);
+                    voteInfo.append(voter.getUsername()).append(", ");
+                }
+
+                // Remove the trailing comma and space
+                voteInfo.setLength(voteInfo.length() - 2);
+
+                chatService.systemReminder(voteInfo.toString(), roomId);
+            }
+
             Long mostVotedPlayer = null;
             int maxVotes = -1;
 
@@ -206,13 +227,14 @@ public class RoomService {
                 }
             }
 
+
             if (mostVotedPlayer != null) {
                 User userToBeOuted = userService.getUserById(mostVotedPlayer);
                 userToBeOuted.setAliveStatus(false);
                 userToBeOuted.setGameStatus(GameStatus.OUT);
 
                 // Prepare voting information string
-                StringBuilder voteInfo = new StringBuilder("Player ")
+                StringBuilder voteInfo = new StringBuilder("SO Player ")
                         .append(userToBeOuted.getUsername())
                         .append(" is voted out by: ");
 
