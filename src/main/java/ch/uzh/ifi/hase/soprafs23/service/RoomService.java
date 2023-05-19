@@ -235,6 +235,8 @@ public class RoomService {
                 if (voteCount > maxVotes) {
                     maxVotes = voteCount;
                     mostVotedPlayer = playerId;
+                }else{
+                    mostVotedPlayer = null;
                 }
             }
 
