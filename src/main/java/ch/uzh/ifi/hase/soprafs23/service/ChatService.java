@@ -110,13 +110,13 @@ public class ChatService {
     }
 
     public void broadcastGameEnd(Room room,Long roomId) {
-        Message gameStartMessage = new Message();
-        gameStartMessage.setSenderName(room.getWinner().toString());
-        gameStartMessage.setMessage("Game has ended!");
-        systemReminder("The winner group is "+room.getWinner().toString()+"!",roomId);
-
-        gameStartMessage.setStatus(Status.END); // 设置状态为 GAME_STARTED
-        simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", gameStartMessage);
+        Message gameEndMessage = new Message();
+        gameEndMessage.setSenderName(room.getWinner().toString());
+        gameEndMessage.setMessage("Undercover Word:"+ room.getUndercoverWord()
+                +"\nDetective Word:"+ room.getDetectiveWord());
+        //systemReminder("The winner group is "+room.getWinner().toString()+"!",roomId);
+        gameEndMessage.setStatus(Status.END); // 设置状态为 GAME_STARTED
+        simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", gameEndMessage);
         roomService.EndGame(room);
     }
 
