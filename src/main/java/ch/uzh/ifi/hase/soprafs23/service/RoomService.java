@@ -91,11 +91,18 @@ public class RoomService {
 
     public void collectVote(Room roomToDo, long voterId, long voteeId, Long roomId) {
         Room room = findRoomById(roomToDo.getRoomId());
+
+        // Check if both voter and votee are alive players
+        List<Long> alivePlayersList = room.getAlivePlayersList();
+        if (!alivePlayersList.contains(voterId) || !alivePlayersList.contains(voteeId)) {
+            return;
+        }
         Map<Long, Long> votingResult = room.getVotingResult();
         votingResult.put(voterId, voteeId);
         room.setVotingResult(votingResult);
-        chatService.systemReminder(votingResult.toString()+"collectVote",roomId);
+        chatService.systemReminder(votingResult.toString() + " collectVote", roomId);
     }
+
     public boolean checkIfAllVoted(Room room) {
         return room.getVotingResult().size() == room.getAlivePlayersList().size();
     }
