@@ -30,6 +30,27 @@ public class Room implements Serializable {
 
     @Column()
     private Theme theme;
+    @Column()
+    private String undercoverWord;
+
+    public String getUndercoverWord() {
+        return undercoverWord;
+    }
+
+    public void setUndercoverWord(String undercoverWord) {
+        this.undercoverWord = undercoverWord;
+    }
+
+    public String getDetectiveWord() {
+        return detectiveWord;
+    }
+
+    public void setDetectiveWord(String detectiveWord) {
+        this.detectiveWord = detectiveWord;
+    }
+
+    @Column()
+    private String detectiveWord;
 
     @Column(nullable = false)
     private long roomOwnerId;

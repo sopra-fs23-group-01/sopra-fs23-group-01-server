@@ -126,6 +126,9 @@ public class RoomService {
         do {
             secondRandomNumber = random.nextInt(num);
         } while (secondRandomNumber == randomNumber);
+        // record words in room
+        room.setUndercoverWord(wordsList.get(0));
+        room.setDetectiveWord(wordsList.get(1));
         // assign role and card to each player
         for (int i = 0; i < num; i++) {
             User player = userRepository.getOne(room.getRoomPlayersList().get(i));
@@ -139,6 +142,7 @@ public class RoomService {
             userRepository.save(player);
             //chatService.systemReminder(player.getId()+player.getCard(),roomId);
         }
+        roomRepository.save(room);
 
     }
 
