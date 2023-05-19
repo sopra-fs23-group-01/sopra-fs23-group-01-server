@@ -209,6 +209,7 @@ public class RoomService {
             if (mostVotedPlayer != null) {
                 User userToBeOuted = userService.getUserById(mostVotedPlayer);
                 userToBeOuted.setAliveStatus(false);
+                userToBeOuted.setGameStatus(GameStatus.OUT);
 
                 // Prepare voting information string
                 StringBuilder voteInfo = new StringBuilder("Player ")
@@ -228,7 +229,17 @@ public class RoomService {
 
                 findRoomById(room.getRoomId()).getAlivePlayersList().remove(mostVotedPlayer);
 
-                chatService.systemReminder("Alive: " + findRoomById(room.getRoomId()).getAlivePlayersList(), roomId);
+                List<Long> alivePlayerIds = findRoomById(room.getRoomId()).getAlivePlayersList();
+                StringBuilder alivePlayersInfo = new StringBuilder("Alive Players: ");
+                for (Long playerId : alivePlayerIds) {
+                    String username = userService.getUserById(playerId).getUsername();
+                    alivePlayersInfo.append(username).append(", ");
+                }
+
+                alivePlayersInfo.setLength(alivePlayersInfo.length() - 2);
+
+                chatService.systemReminder(alivePlayersInfo.toString(), roomId);
+
             } else {
                 //systemReminder
                 chatService.systemReminder("No players out!", roomId);
