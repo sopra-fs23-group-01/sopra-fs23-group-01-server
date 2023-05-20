@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import lombok.ToString;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
@@ -16,6 +18,7 @@ public class Message {
 	private String date;
 	private String role;
 	private Status status;
+
 
 	public String getSenderName() {
 		return senderName;

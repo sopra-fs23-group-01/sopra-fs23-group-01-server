@@ -42,11 +42,13 @@ public class ChatController {
         //if the assigned status is assign word then return a word to the user
         if (message.getStatus() == Status.ASSIGNED_WORD) {
             String word = roomService.assignWord(message.getSenderName());
+            String side = roomService.assignSide(message.getSenderName());
             chatService.systemReminder(word,roomId);
             Message wordMessage = new Message();
             wordMessage.setSenderName("system");
             wordMessage.setStatus(Status.ASSIGNED_WORD);
             wordMessage.setRole(word); // 修改状态为 ASSIGNED_WORD
+            wordMessage.setMessage(side);
             simpMessagingTemplate.convertAndSendToUser(message.getSenderName(), "/private", wordMessage);
         }
         

@@ -396,6 +396,10 @@ public class RoomService {
         System.out.println(userRepository.findByUsername(senderName).getUsername()+userRepository.findByUsername(senderName).getCard());
         return userRepository.findByUsername(senderName).getCard();
     }
+    public String assignSide(String senderName) {
+        //System.out.println(userRepository.findByUsername(senderName).getUsername()+userRepository.findByUsername(senderName).getCard());
+        return userRepository.findByUsername(senderName).getRole().toString();
+    }
 
     public void deletePlayer(Long userId, Long roomId){
         Room room = findRoomById(roomId);

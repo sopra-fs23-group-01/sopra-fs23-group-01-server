@@ -18,6 +18,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.model.Message;
 import ch.uzh.ifi.hase.soprafs23.model.Status;
+import org.hibernate.Hibernate;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ChatService {
 
-    private List<String> words;
     @Lazy
     private final RoomService roomService;
     private final UserService userService;
@@ -40,45 +40,12 @@ public class ChatService {
 
     private Map<String, String> userWordMap = new ConcurrentHashMap<>();
 
-    public ChatService(@Lazy RoomService roomService,@Lazy UserService userService, SimpMessagingTemplate simpMessagingTemplate) {
+    public ChatService(@Lazy RoomService roomService,UserService userService, SimpMessagingTemplate simpMessagingTemplate) {
         this.roomService = roomService;
         this.userService = userService;
         this.simpMessagingTemplate = simpMessagingTemplate;
-        try {
-            words = getWordsRelatedTo("sport");
-        } catch (IOException e) {
-            e.printStackTrace();
-            words = Arrays.asList("bike", "banana", "cherry", "orange", "grape");
-        }
     }
 
-
-    public String getRandomWord() {
-        return words.get(new Random().nextInt(words.size()));
-    }
-
-    public List<String> getWordsRelatedTo(String query) throws IOException {
-        List<String> words = new ArrayList<>();
-        String apiUrl = "https://api.datamuse.com/words?ml=" + query;
-        URL url = new URL(apiUrl);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.connect();
-        int responseCode = connection.getResponseCode();
-
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                JsonNode jsonNode = objectMapper.readTree(connection.getInputStream());
-                for (JsonNode wordNode : jsonNode) {
-                    words.add(wordNode.get("word").asText());
-                }
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        }
-        return words;
-    }
     public void initiateGame(Room roomToInitiate,Long roomId) {
         Room room = roomService.findRoomById(roomToInitiate.getRoomId());
         room.setCurrentPlayerIndex(0);
@@ -89,10 +56,8 @@ public class ChatService {
         room.setAlivePlayersList(newPlayersList);
         roomService.assignCardsAndRoles(room);
         for (Long id : room.getRoomPlayersList()) {
-
             if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)) {
                 room.getDetectivesList().add(id);
-
             }
             else {
                 room.getUndercoversList().add(id);
@@ -114,11 +79,38 @@ public class ChatService {
         gameEndMessage.setSenderName(room.getWinner().toString());
         gameEndMessage.setMessage("Undercover Word:"+ room.getUndercoverWord()
                 +"\nDetective Word:"+ room.getDetectiveWord());
-        //systemReminder("The winner group is "+room.getWinner().toString()+"!",roomId);
         gameEndMessage.setStatus(Status.END); // 设置状态为 GAME_STARTED
         simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", gameEndMessage);
         roomService.EndGame(room);
-    }
+        //        String message = "Undercover Word: " + room.getUndercoverWord()
+//                + "\nDetective Word: " + room.getDetectiveWord()
+//                + "\nWinner: ";
+//
+//        List<String> winnerUsernames = new ArrayList<>();
+//
+//        if (room.getWinner() == Role.UNDERCOVER) {
+//            Hibernate.initialize(room.getUndercoversList());
+//            List<Long> undercoverIds = room.getUndercoversList();
+//            for (Long undercoverId : undercoverIds) {
+//                User undercover = userService.getUserById(undercoverId);
+//                winnerUsernames.add(undercover.getUsername());
+//            }
+//        } else {
+//            Hibernate.initialize(room.getDetectivesList());
+//            List<Long> detectiveIds = room.getDetectivesList();
+//            for (Long detectiveId : detectiveIds) {
+//                User detective = userService.getUserById(detectiveId);
+//                winnerUsernames.add(detective.getUsername());
+//            }
+//        }
+//
+//        message += String.join(", ", winnerUsernames);
+//
+//        message += String.join(", ", winnerUsernames);
+//
+//        gameEndMessage.setMessage(message);
+//        //systemReminder("The winner group is "+room.getWinner().toString()+"!",roomId);
+        }
 
     public void broadcastVoteStart(Long roomId) {
         Message voteStartMessage = new Message();
@@ -172,10 +164,10 @@ public class ChatService {
                             room.setGameStage(GameStage.VOTING);
                             i.set(1);
                         }
-                    }, 15, TimeUnit.SECONDS);
+                    }, 5, TimeUnit.SECONDS);//15
 
                 try {
-                    Thread.sleep(20000);
+                    Thread.sleep(6000);//20000
                 }
                 catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -204,15 +196,6 @@ public class ChatService {
         }
 
 
-    }
-
-
-    public void userJoin(String username) {
-        if (!userWordMap.containsKey(username)) {
-            // 从词汇表中随机选择一个单词
-            String word = getRandomWord();
-            userWordMap.put(username, word);
-        }
     }
 
     public String assignUserRole() {
