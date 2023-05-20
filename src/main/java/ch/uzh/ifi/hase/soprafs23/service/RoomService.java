@@ -5,6 +5,9 @@ import ch.uzh.ifi.hase.soprafs23.entity.Room;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -168,14 +174,44 @@ public class RoomService {
                 wordsList.addAll(furnitureWords.subList(0, 2));
                 break;
             case JOB:
-                List<String> jobWords = Arrays.asList("Policeman", "Engineer", "Teacher", "Doctor");
-                Collections.shuffle(jobWords, random);
-                wordsList.addAll(jobWords.subList(0, 2));
+                List<String> jobWords = Arrays.asList("Policeman", "Engineer", "Teacher", "Doctor","Firefighter","Student","Driver");
+                int num = random.nextInt(6);
+                List<String> randomWords;
+                try {
+                    randomWords = getWordsRelatedTo(jobWords.get(num));
+                }
+                catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                Collections.shuffle(randomWords, random);
+                wordsList.addAll(randomWords.subList(0, 2));
                 break;
         }
         return wordsList;
     }
 
+    public List<String> getWordsRelatedTo(String query) throws IOException {
+        List<String> words = new ArrayList<>();
+        String apiUrl = "https://api.datamuse.com/words?ml=" + query;
+        URL url = new URL(apiUrl);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.connect();
+        int responseCode = connection.getResponseCode();
+
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                JsonNode jsonNode = objectMapper.readTree(connection.getInputStream());
+                for (JsonNode wordNode : jsonNode) {
+                    words.add(wordNode.get("word").asText());
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+        return words;
+    }
 
     public void checkIfSomeoneOut(Room room, Long roomId) {
         Map<Long, Long> votingResult = room.getVotingResult();
@@ -357,7 +393,7 @@ public class RoomService {
     }
 
     public String assignWord(String senderName) {
-        System.out.println(userRepository.findByUsername(senderName).getCard());
+        System.out.println(userRepository.findByUsername(senderName).getUsername()+userRepository.findByUsername(senderName).getCard());
         return userRepository.findByUsername(senderName).getCard();
     }
 
