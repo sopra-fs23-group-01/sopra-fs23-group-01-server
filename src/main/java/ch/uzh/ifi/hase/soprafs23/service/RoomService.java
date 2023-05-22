@@ -56,9 +56,9 @@ public class RoomService {
     //Here we create a new room and we need to set the room property and theme according to the input from client
     public Room createRoom(Room newRoom) {
         //newRoom.setToken(UUID.randomUUID().toString());
-        newRoom.setRoomOwnerId(newRoom.getRoomOwnerId());
+        //newRoom.setRoomOwnerId(newRoom.getRoomOwnerId());
         newRoom.setRoomProperty(RoomProperty.WAITING);
-        newRoom.setTheme(newRoom.getTheme());
+        //newRoom.setTheme(newRoom.getTheme());
         newRoom.addRoomPlayerList(newRoom.getRoomOwnerId());
         //newRoom.addRoomPlayer(userRepository.findById(newRoom.getRoomOwnerId()));
         // saves the given entity but data is only persisted in the database once
@@ -393,7 +393,7 @@ public class RoomService {
     }
 
     public String assignWord(String senderName) {
-        System.out.println(userRepository.findByUsername(senderName).getUsername()+userRepository.findByUsername(senderName).getCard());
+//        System.out.println(userRepository.findByUsername(senderName).getUsername()+userRepository.findByUsername(senderName).getCard());
         return userRepository.findByUsername(senderName).getCard();
     }
     public String assignSide(String senderName) {
