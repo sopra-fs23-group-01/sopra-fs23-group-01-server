@@ -45,56 +45,45 @@
          // Set up test data
          user1 = new User();
          user1.setId(1L);
-         user1.setName("Alice");
-         user1.setUsername("alice123");
+         user1.setUsername("testUser1");
          user1.setPassword("password");
-         when(userRepository.getOne(Mockito.anyLong())).thenReturn(user1);
 
          user2 = new User();
          user2.setId(2L);
-         user2.setName("Bob");
-         user2.setUsername("bob456");
+         user2.setUsername("testUser2");
          user2.setPassword("password");
-         when(userRepository.getOne(Mockito.anyLong())).thenReturn(user2);
 
          user3 = new User();
          user3.setId(3L);
-         user3.setName("Alice3");
-         user3.setUsername("alice1233");
-         user3.setPassword("password1");
-         when(userRepository.getOne(Mockito.anyLong())).thenReturn(user3);
+         user3.setUsername("testUser3");
+         user3.setPassword("password");
 
          user4 = new User();
          user4.setId(4L);
-         user4.setName("Bob4");
-         user4.setUsername("bob4567");
-         user4.setPassword("password2");
-         when(userRepository.getOne(Mockito.anyLong())).thenReturn(user4);
+         user4.setUsername("testUser4");
+         user4.setPassword("password");
 
          user5 = new User();
          user5.setId(5L);
-         user5.setName("Bob45");
-         user5.setUsername("bob45667");
-         user5.setPassword("password2");
-         when(userRepository.getOne(Mockito.anyLong())).thenReturn(user5);
+         user5.setUsername("testUser5");
+         user5.setPassword("password");
 
          user6 = new User();
          user6.setId(6L);
-         user6.setName("Bob46");
-         user6.setUsername("bob45657");
-         user6.setPassword("password2");
-         when(userRepository.getOne(Mockito.anyLong())).thenReturn(user6);
+         user6.setUsername("testUser6");
+         user6.setPassword("password");
+
          when(userRepository.save(Mockito.any(User.class))).thenReturn(user1);
          when(userRepository.getOne(1L)).thenReturn(user1);
          when(userRepository.getOne(2L)).thenReturn(user2);
          when(userRepository.getOne(3L)).thenReturn(user3);
          when(userRepository.getOne(4L)).thenReturn(user4);
          when(userRepository.getOne(5L)).thenReturn(user5);
-         when(userRepository.getOne(6L)).thenReturn(user6);
+         when(userRepository.getOne(6L)).thenReturn(user6);/*
          Room room = new Room();
          room.setTheme(Theme.SPORTS);
          room.setRoomId(1L);
-         when(roomRepository.getOne(Mockito.anyLong())).thenReturn(room);
+         when(roomRepository.getOne(Mockito.anyLong())).thenReturn(room);*/
      }
 
      @Test
@@ -189,3 +178,81 @@
  //    }
 
  }
+
+
+
+/*
+ class RoomServiceTest1 {
+
+     @BeforeEach
+     void setUp() {
+     }
+
+     @Test
+     void getRooms() {
+     }
+
+     @Test
+     void createRoom() {
+     }
+
+     @Test
+     void findRoomById() {
+     }
+
+     @Test
+     void enterRoom() {
+     }
+
+     @Test
+     void collectVote() {
+     }
+
+     @Test
+     void checkIfAllVoted() {
+     }
+
+     @Test
+     void checkIfAllReady() {
+     }
+
+     @Test
+     void assignCardsAndRoles() {
+     }
+
+     @Test
+     void getWordsRelatedTo() {
+     }
+
+     @Test
+     void checkIfSomeoneOut() {
+     }
+
+     @Test
+     void checkIfGameEnd() {
+     }
+
+     @Test
+     void endGame() {
+     }
+
+     @Test
+     void assignWord() {
+     }
+
+     @Test
+     void assignSide() {
+     }
+
+     @Test
+     void deletePlayer() {
+     }
+
+     @Test
+     void findRoomWithMostPlayers() {
+     }
+
+     @Test
+     void findRoomWithThisPlayer() {
+     }
+ }*/
