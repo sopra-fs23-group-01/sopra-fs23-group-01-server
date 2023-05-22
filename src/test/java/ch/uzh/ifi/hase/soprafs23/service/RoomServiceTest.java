@@ -145,7 +145,7 @@
          // Check if each player has been assigned a role and card
          for (Long playerId : room.getRoomPlayersList()) {
              User player = userRepository.getOne(playerId);
-             //System.out.println("playerId"+player.getId()+"card"+player.getCard()+"Role"+player.getRole());
+             System.out.println("playerId"+player.getId()+"card:"+player.getCard());
              if(player.getRole()==Role.UNDERCOVER)
                  i++;
          }

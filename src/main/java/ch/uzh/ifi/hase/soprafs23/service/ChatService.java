@@ -190,9 +190,6 @@ public class ChatService {
             catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
-            //and go to the next stage of game
-            //not all voted so do nothing
         }
 
 
