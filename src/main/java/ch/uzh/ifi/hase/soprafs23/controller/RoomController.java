@@ -47,7 +47,7 @@ public class RoomController {
     public RoomGetDTO createRoom(@RequestBody RoomPostDTO roomPostDTO) {
         // convert API user to internal representation
         Room roomInput = DTOMapper.INSTANCE.convertRoomPostDTOtoEntity(roomPostDTO);
-        roomInput.getRoomOwnerId();
+        //roomInput.getRoomOwnerId();
         // create user
         Room createdRoom = roomService.createRoom(roomInput);
         // convert internal representation of user back to API
