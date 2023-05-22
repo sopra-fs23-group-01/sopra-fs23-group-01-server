@@ -56,8 +56,7 @@ public class ChatService {
         room.setAlivePlayersList(newPlayersList);
         roomService.assignCardsAndRoles(room);
         for (Long id : room.getRoomPlayersList()) {
-            if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)) {
-                room.getDetectivesList().add(id);
+            if (userService.getUserById(id).getRole().equals(Role.DETECTIVE)) {room.getDetectivesList().add(id);
             }
             else {
                 room.getUndercoversList().add(id);
@@ -149,6 +148,7 @@ public class ChatService {
         AtomicInteger currentAlivePlayersNum = new AtomicInteger(room.getAlivePlayersList().size());
         if ( currentGameStage.toString().equals(GameStage.DESCRIPTION.toString())){
             while (currentPlayerIndex.get() < currentAlivePlayersNum.get()) {
+                System.out.println("size:"+ room.getAlivePlayersList().size()+ "index:"+room.getCurrentPlayerIndex());
                     User currentUser = userService.getUserById(room.getAlivePlayersList().get(currentPlayerIndex.get()));
                     descriptionBroadcast(currentUser.getUsername(),roomId);
                     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
@@ -158,8 +158,7 @@ public class ChatService {
                             currentPlayerIndex.incrementAndGet();
                             room.setCurrentPlayerIndex(Integer.parseInt(currentPlayerIndex.toString()));
                         }
-                        else {
-                            currentPlayerIndex.set(0);
+                        else {currentPlayerIndex.set(0);
                             room.setCurrentPlayerIndex(0);
                             room.setGameStage(GameStage.VOTING);
                             i.set(1);
@@ -168,8 +167,7 @@ public class ChatService {
 
                 try {
                     Thread.sleep(6000);//20000
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
                 if(true) break;//这里要改break的条件
@@ -186,8 +184,7 @@ public class ChatService {
             }, 10, TimeUnit.SECONDS);
             try {
                 Thread.sleep(15000);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
