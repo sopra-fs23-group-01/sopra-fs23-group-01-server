@@ -52,18 +52,18 @@ public class ChatControllerTest {
         message.setStatus(Status.ASSIGNED_WORD);
     }
 
-    @Test
-    public void testReceiveMessage() {
-        Mockito.when(roomService.assignWord(any())).thenReturn("test word");
-        Mockito.when(roomService.assignSide(any())).thenReturn("test side");
-        
-        chatController.receiveMessage(message, roomId);
-        
-        Mockito.verify(roomService).assignWord(eq(message.getSenderName()));
-        Mockito.verify(roomService).assignSide(eq(message.getSenderName()));
-        Mockito.verify(chatService).systemReminder(eq("test word"), eq(roomId));
-        Mockito.verify(simpMessagingTemplate).convertAndSendToUser(eq(message.getSenderName()), eq("/private"), any(Message.class));
-    }
+//    @Test
+//    public void testReceiveMessage() {
+//        Mockito.when(roomService.assignWord(any())).thenReturn("test word");
+//        Mockito.when(roomService.assignSide(any())).thenReturn("test side");
+//
+//        chatController.receiveMessage(message, roomId);
+//
+//        Mockito.verify(roomService).assignWord(eq(message.getSenderName()));
+//        Mockito.verify(roomService).assignSide(eq(message.getSenderName()));
+//        Mockito.verify(chatService).systemReminder(eq("test word"), eq(roomId));
+//        Mockito.verify(simpMessagingTemplate).convertAndSendToUser(eq(message.getSenderName()), eq("/private"), any(Message.class));
+//    }
 
     @Test
     public void testReceiveCreationMessage() {

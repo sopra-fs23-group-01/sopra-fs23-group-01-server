@@ -148,7 +148,6 @@ public class ChatService {
         AtomicInteger currentAlivePlayersNum = new AtomicInteger(room.getAlivePlayersList().size());
         if ( currentGameStage.toString().equals(GameStage.DESCRIPTION.toString())){
             while (currentPlayerIndex.get() < currentAlivePlayersNum.get()) {
-                System.out.println("size:"+ room.getAlivePlayersList().size()+ "index:"+room.getCurrentPlayerIndex());
                     User currentUser = userService.getUserById(room.getAlivePlayersList().get(currentPlayerIndex.get()));
                     descriptionBroadcast(currentUser.getUsername(),roomId);
                     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
