@@ -43,7 +43,7 @@ public class ChatController {
         if (message.getStatus() == Status.ASSIGNED_WORD) {
             String word = roomService.assignWord(message.getSenderName());
             String side = roomService.assignSide(message.getSenderName());
-            chatService.systemReminder(word,roomId);
+            //chatService.systemReminder(word,roomId);
             Message wordMessage = new Message();
             wordMessage.setSenderName("system");
             wordMessage.setStatus(Status.ASSIGNED_WORD);

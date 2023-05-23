@@ -106,7 +106,7 @@ public class RoomService {
         Map<Long, Long> votingResult = room.getVotingResult();
         votingResult.put(voterId, voteeId);
         room.setVotingResult(votingResult);
-        chatService.systemReminder(votingResult.toString() + " collectVote", roomId);
+        //chatService.systemReminder(votingResult.toString() + " collectVote", roomId);
     }
 
     public boolean checkIfAllReady(Room room) {
@@ -340,7 +340,7 @@ public class RoomService {
         DecimalFormat decimalFormat = new DecimalFormat("0.0");
         for (Long id:room.getRoomPlayersList()){
             User user = userService.getUserById(id);
-            chatService.systemReminder("end game", room.getRoomId());
+            //chatService.systemReminder("end game", room.getRoomId());
             if(user.getRole().equals(Role.DETECTIVE)){
                 user.setNumOfGameDe(user.getNumOfGameDe()+1);
                 if(room.getWinner().equals(Role.DETECTIVE)){
