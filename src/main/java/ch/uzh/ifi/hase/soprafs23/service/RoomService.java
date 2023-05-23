@@ -123,12 +123,11 @@ public class RoomService {
          }
          else {return false;}
     }
-
+    private Random random = new Random();
     public void assignCardsAndRoles(Room room) {
         int num = room.getRoomPlayersList().size();
         // Get words list according to theme
         List<String> wordsList = assignWordsAccordingToTheme(room.getTheme());
-        Random random = new Random();
         int randomNumber = random.nextInt(num);
         // Generate a second random number excluding the first random number
         int secondRandomNumber;
@@ -155,23 +154,23 @@ public class RoomService {
 
     }
 
+    private Random randomWord = new Random();
     private List<String> assignWordsAccordingToTheme(Theme theme){
         List<String> wordsList = new ArrayList<>();
-        Random random = new Random();
         switch (theme){
             case SPORTS:
                 List<String> sportsWords = Arrays.asList("Soccer", "Basketball", "TennisBall", "Baseball", "Bowling");
-                Collections.shuffle(sportsWords, random);
+                Collections.shuffle(sportsWords, randomWord);
                 wordsList.addAll(sportsWords.subList(0, 2));
                 break;
             case FURNITURE:
                 List<String> furnitureWords = Arrays.asList("Sofa", "Chair", "Table", "Bed");
-                Collections.shuffle(furnitureWords, random);
+                Collections.shuffle(furnitureWords, randomWord);
                 wordsList.addAll(furnitureWords.subList(0, 2));
                 break;
             case JOB:
                 List<String> jobWords = Arrays.asList("Policeman", "Engineer", "Teacher", "Doctor","Firefighter","Student","Driver");
-                int num = random.nextInt(6);
+                int num = randomWord.nextInt(6);
                 List<String> randomWords;
                 try {
                     randomWords = getWordsRelatedTo(jobWords.get(num));
@@ -179,7 +178,7 @@ public class RoomService {
                 catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                Collections.shuffle(randomWords, random);
+                Collections.shuffle(randomWords, randomWord);
                 wordsList.addAll(randomWords.subList(0, 2));
                 break;
         }

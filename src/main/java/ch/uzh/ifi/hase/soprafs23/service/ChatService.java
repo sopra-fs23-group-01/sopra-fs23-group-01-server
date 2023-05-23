@@ -191,6 +191,7 @@ public class ChatService {
 
     }
 
+    private Random random = new Random();
     public String assignUserRole() {
         List<String> roles = Arrays.asList("detective", "spy");
         return roles.get(new Random().nextInt(roles.size()));
