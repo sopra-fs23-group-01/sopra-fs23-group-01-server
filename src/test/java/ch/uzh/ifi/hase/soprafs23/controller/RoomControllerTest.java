@@ -52,6 +52,9 @@ public class RoomControllerTest {
         @MockBean
         private RoomService roomService;
 
+        @MockBean
+        private DTOMapper mapper;
+
     @Test
     public void testGetAllRooms() throws Exception{
         //given
@@ -272,77 +275,75 @@ public class RoomControllerTest {
                     String.format("The request body could not be created.%s", e));
         }
     }
-
-
-//        @Test
-//        void createRoom() throws Exception {
-//            // create a test room DTO
-//            RoomPostDTO roomPostDTO = new RoomPostDTO();
-//            roomPostDTO.setRoomName("Test Room");
-//
-//            // send POST request to "/games/room" with the test room DTO as the request body
-//            mockMvc.perform(post("/games/room")
-//                            .contentType(MediaType.APPLICATION_JSON)
-//                            .content(asJsonString(roomPostDTO)))
-//                    .andExpect(status().isCreated())
-//                    .andExpect(jsonPath("$.roomName").value("Test Room"));
-//
-//            // verify that the room was actually created in the database
-//            List<Room> rooms = roomService.getRooms();
-//            assertThat(rooms.size()).isEqualTo(1);
-//            assertThat(rooms.get(0).getRoomName()).isEqualTo("Test Room");
-//        }
-//
-//        @Test
-//        void roomInfo() throws Exception {
-//            // create a test room
-//            Room room = new Room();
-//            room.setRoomName("Test Room");
-//            roomService.createRoom(room);
-//
-//            // send GET request to "/games/{roomId}"
-//            mockMvc.perform(get("/games/{roomId}", room.getId()))
-//                    .andExpect(status().isOk())
-//                    .andExpect(jsonPath("$.roomName").value("Test Room"));
-//        }
-//
-//        @Test
-//        void enterRoom() throws Exception {
-//            // create a test room
-//            Room room = new Room();
-//            room.setRoomName("Test Room");
-//            roomService.createRoom(room);
-//
-//            // create a test user DTO
-//            UserPutDTO userPutDTO = new UserPutDTO();
-//            userPutDTO.setUsername("Test User");
-//
-//            // send PUT request to "/room/{roomId}/players" with the test user DTO as the request body
-//            mockMvc.perform(put("/room/{roomId}/players", room.getId())
-//                            .contentType(MediaType.APPLICATION_JSON)
-//                            .content(asJsonString(userPutDTO)))
-//                    .andExpect(status().isOk());
-//
-//            // verify that the user was actually added to the room in the database
-//            List<User> players = roomService.getPlayers(room.getId());
-//            assertThat(players.size()).isEqualTo(1);
-//            assertThat(players.get(0).getUsername()).isEqualTo("Test User");
-//        }
-
-
-
     @Test
-    void castVote() {
+    public void testCastVote_success() throws Exception {
+        // Prepare input data
+        Long roomId = 1L;
+        Long voterId = 2L;
+        Long voteeId = 3L;
+
+        // Create mock objects
+        Room room = new Room();
+        // Set necessary properties of the room object
+
+        // Configure mock behavior
+        given(roomService.findRoomById(roomId)).willReturn(room);
+
+        // Execute the request
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/room/{roomId}/vote/{voterId}={voteeId}", roomId, voterId, voteeId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // Add assertions or verifications if needed
+        // For example:
+        verify(roomService).collectVote(eq(room), eq(voterId), eq(voteeId), eq(roomId));
     }
 
     @Test
-    void quickStart() {
+    public void testCastVote_roomNotFound() throws Exception {
+        // Prepare input data
+        Long roomId = 1L;
+        Long voterId = 2L;
+        Long voteeId = 3L;
+
+        // Configure mock behavior to throw exception
+        given(roomService.findRoomById(roomId)).willReturn(null);
+
+        // Execute the request
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/room/{roomId}/vote/{voterId}={voteeId}", roomId, voterId, voteeId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+        // Add assertions or verifications if needed
+        // For example:
+        verify(roomService, never()).collectVote(any(Room.class), anyLong(), anyLong(), anyLong());
     }
 
     @Test
-    void playerGuard() {
-    }
-//
-//
+    public void testGetRoomInfo() throws Exception {
+        // given
+        Long roomId = 1L;
+        Room room = new Room();
+        room.setRoomId(roomId);
+        room.setRoomOwnerId(123L);
 
-        }
+        RoomGetDTO expectedDTO = new RoomGetDTO();
+        expectedDTO.setRoomId(roomId);
+        expectedDTO.setRoomOwnerId(123L);
+
+        given(roomService.findRoomById(roomId)).willReturn(room);
+        given(mapper.convertEntityToRoomGetDTO(room)).willReturn(expectedDTO);
+
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/games/{roomId}", roomId)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        mockMvc.perform(getRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.roomId").value(roomId))
+                .andExpect(jsonPath("$.roomOwnerId").value(123L));
+    }
+
+}

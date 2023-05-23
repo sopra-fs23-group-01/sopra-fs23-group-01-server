@@ -7,6 +7,8 @@ import ch.uzh.ifi.hase.soprafs23.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs23.service.RoomService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,10 +78,16 @@ public class RoomController {
 
     @PutMapping("/room/{roomId}/vote/{voterId}={voteeId}")
     @ResponseStatus(HttpStatus.OK)
-    public void castVote(@PathVariable Long roomId,@PathVariable Long voterId,@PathVariable Long voteeId) {
+    public void castVote(@PathVariable Long roomId, @PathVariable Long voterId, @PathVariable Long voteeId) {
         Room room = roomService.findRoomById(roomId);
-        roomService.collectVote(room, voterId, voteeId,roomId);
+        if (room == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found");
+        }else{
+
+            roomService.collectVote(room, voterId, voteeId, roomId);
+        }
     }
+
 
     @PostMapping("/room/quickStart")
     @ResponseStatus(HttpStatus.OK)
