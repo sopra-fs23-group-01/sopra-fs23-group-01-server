@@ -167,6 +167,7 @@ public class ChatService {
                 try {
                     Thread.sleep(6000);//20000
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
                 if(true) break;//这里要改break的条件
@@ -184,6 +185,7 @@ public class ChatService {
             try {
                 Thread.sleep(15000);
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 throw new RuntimeException(e);
             }
         }
