@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
+import ch.uzh.ifi.hase.soprafs23.constant.ReadyStatus;
 import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
@@ -13,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import static org.mockito.BDDMockito.given;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.Optional;
@@ -39,7 +41,7 @@ public class UserServiceTest {
 
     // when -> any object is being save in the userRepository -> return the dummy
     // testUser
-    Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
+    when(userRepository.save(Mockito.any())).thenReturn(testUser);
   }
 
   @Test
@@ -68,7 +70,7 @@ public class UserServiceTest {
 
       userService.createUser(testUser);
       // when -> setup additional mocks for UserRepository
-      Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+      when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
 
       // then -> attempt to create second user with same user -> check that an error
       // is thrown
@@ -85,7 +87,7 @@ public class UserServiceTest {
     userService.createUser(testUser);
 
     // when -> setup additional mocks for UserRepository
-    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(existuser);
+    when(userRepository.findByUsername(Mockito.any())).thenReturn(existuser);
 
     // then -> attempt to create second user with same user -> check that an error
     // is thrown
@@ -116,7 +118,7 @@ public class UserServiceTest {
   public void getUserById_invalidInput_fail() {
       userService.createUser(testUser);
 
-      Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.empty());
+      when(userRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
       assertThrows( ResponseStatusException.class, () -> userService.userProfileById(10L));
   }
@@ -128,7 +130,7 @@ public class UserServiceTest {
       user.setPassword(testUser.getPassword());
 
       // when -> setup additional mocks for UserRepository
-      Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+      when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
 
       User loginUser = userService.loginUser(user);
 
@@ -139,7 +141,7 @@ public class UserServiceTest {
   public void login_fail_username() {
       userService.createUser(testUser);
 
-      Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
+      when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
 
       assertThrows(ResponseStatusException.class, () -> userService.loginUser(testUser));
   }
@@ -151,7 +153,7 @@ public class UserServiceTest {
       user.setUsername(testUser.getUsername());
       user.setPassword("wrong password");
 
-      Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+      when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
 
       assertThrows(ResponseStatusException.class, () -> userService.loginUser(user));
   }
@@ -165,9 +167,9 @@ public class UserServiceTest {
       userService.createUser(newUser);
 
       // when -> any object is being updated in the userRepository -> return the testUpdateUser
-      Mockito.when(userRepository.save(Mockito.any())).thenReturn(newUser);
-      Mockito.when(userRepository.existsById(Mockito.any())).thenReturn(true);
-      Mockito.when(userRepository.getOne(Mockito.any())).thenReturn(testUser);
+      when(userRepository.save(Mockito.any())).thenReturn(newUser);
+      when(userRepository.existsById(Mockito.any())).thenReturn(true);
+      when(userRepository.getOne(Mockito.any())).thenReturn(testUser);
 
       // when -> any object is being saved in the userRepository -> return the testUser
       userService.userEditProfile(newUser);
@@ -179,5 +181,111 @@ public class UserServiceTest {
       assertEquals(testUser.getUsername(), newUser.getUsername());
       assertEquals(testUser.getBirthday(), newUser.getBirthday());
   }
+
+    @Test
+    public void userLeaveRoom_ValidUser_Success() {
+        // 准备数据
+        User user = new User();
+        user.setId(1L);
+        user.setReadyStatus(ReadyStatus.READY);
+
+        // 模拟 userRepository 的行为
+        when(userRepository.existsById(user.getId())).thenReturn(true);
+        when(userRepository.getOne(user.getId())).thenReturn(user);
+
+        // 调用被测试方法
+        userService.userLeaveRoom(user);
+
+        // 验证状态是否正确更新
+        assertEquals(ReadyStatus.FREE, user.getReadyStatus());
+    }
+
+    @Test
+    public void userLeaveRoom_InvalidUser_NotFoundException() {
+        // 准备数据
+        User user = new User();
+        user.setId(1L);
+
+        // 模拟 userRepository 的行为
+        when(userRepository.existsById(user.getId())).thenReturn(false);
+
+        // 调用被测试方法并断言抛出预期的异常
+        assertThrows(NullPointerException.class, () -> {
+            userService.userLeaveRoom(user);
+        });
+
+    }
+
+    @Test
+    public void userSetReady_UserFreeStatus_SetToReadyStatus() {
+        // 准备数据
+        User user = new User();
+        user.setId(1L);
+        user.setReadyStatus(ReadyStatus.FREE);
+
+        // 模拟 userRepository 的行为
+        when(userRepository.existsById(user.getId())).thenReturn(true);
+        when(userRepository.getOne(user.getId())).thenReturn(user);
+
+        // 调用被测试方法
+        userService.userSetReady(user);
+
+        // 验证状态是否正确更新
+        assertEquals(ReadyStatus.READY, user.getReadyStatus());
+    }
+
+    @Test
+    public void userSetReady_UserReadyStatus_SetToFreeStatus() {
+        // 准备数据
+        User user = new User();
+        user.setId(1L);
+        user.setReadyStatus(ReadyStatus.READY);
+
+        // 模拟 userRepository 的行为
+        when(userRepository.existsById(user.getId())).thenReturn(true);
+        when(userRepository.getOne(user.getId())).thenReturn(user);
+
+        // 调用被测试方法
+        userService.userSetReady(user);
+
+        // 验证状态是否正确更新
+        assertEquals(ReadyStatus.FREE, user.getReadyStatus());
+
+    }
+
+    @Test
+    public void userProfileById_ValidId_Success() {
+        // 准备数据
+        Long userId = 1L;
+        User user = new User();
+        user.setId(userId);
+        user.setUsername("exampleUser");
+
+        // 模拟 userRepository 的行为
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        // 调用被测试方法
+        User result = userService.userProfileById(userId);
+
+        // 验证返回的结果是否正确
+        assertEquals(user, result);
+
+    }
+
+    @Test
+    public void userProfileById_InvalidId_NotFoundException() {
+        // 准备数据
+        Long userId = 1L;
+
+        // 模拟 userRepository 的行为
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        // 调用被测试方法并断言抛出预期的异常
+        assertThrows(ResponseStatusException.class, () -> {
+            userService.userProfileById(userId);
+        });
+
+    }
+
 
 }
