@@ -90,11 +90,7 @@
          when(userRepository.getOne(3L)).thenReturn(user3);
          when(userRepository.getOne(4L)).thenReturn(user4);
          when(userRepository.getOne(5L)).thenReturn(user5);
-         when(userRepository.getOne(6L)).thenReturn(user6);/*
-         Room room = new Room();
-         room.setTheme(Theme.SPORTS);
-         room.setRoomId(1L);
-         when(roomRepository.getOne(Mockito.anyLong())).thenReturn(room);*/
+         when(userRepository.getOne(6L)).thenReturn(user6);
      }
 
      @Test
@@ -404,108 +400,446 @@
          assertNull(result);
      }
 
+     @Test
+     public void testFindRoomById_existingRoomId_shouldReturnRoom() {
+         // Arrange
+         Long roomId = 1L;
+         Room room = new Room();
+         when(roomRepository.findById(roomId)).thenReturn(Optional.of(room));
+
+         // Act
+         Room result = roomService.findRoomById(roomId);
+
+         // Assert
+         assertEquals(room, result);
+     }
+
+     @Test
+     public void testFindRoomById_nonExistingRoomId_shouldThrowException() {
+         // Arrange
+         Long roomId = 1L;
+         when(roomRepository.findById(roomId)).thenReturn(Optional.empty());
+
+         // Act and Assert
+         assertThrows(ResponseStatusException.class, () -> {
+             roomService.findRoomById(roomId);
+         });
+     }
+
+     @Test
+     public void testCheckIfSomeoneOut_votesExist_shouldVoteOutPlayer() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+
+         Map<Long, Long> votingResult = new HashMap<>();
+         votingResult.put(1L, 2L);
+         votingResult.put(3L, 2L);
+         room.setVotingResult(votingResult);
+
+         User user1 = new User();
+         user1.setId(1L);
+         user1.setUsername("testUser1");
+         user1.setAliveStatus(true);
+         user1.setGameStatus(GameStatus.ALIVE);
+
+         User user2 = new User();
+         user2.setId(2L);
+         user2.setUsername("testUser2");
+         user2.setAliveStatus(true);
+         user2.setGameStatus(GameStatus.ALIVE);
+
+         User user3 = new User();
+         user3.setId(3L);
+         user3.setUsername("testUser3");
+         user3.setAliveStatus(true);
+         user3.setGameStatus(GameStatus.ALIVE);
+
+         when(userService.getUserById(1L)).thenReturn(user1);
+         when(userService.getUserById(2L)).thenReturn(user2);
+         when(userService.getUserById(3L)).thenReturn(user3);
+
+         List<Long> playersList = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
+         List<Long> alivePlayersList = new ArrayList<>(Arrays.asList(1L, 2L,3L));
+         room.setRoomPlayersList(playersList);
+         room.setAlivePlayersList(alivePlayersList);
+
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+         when(userRepository.save(user1)).thenReturn(user1);
+         when(userRepository.save(user2)).thenReturn(user2);
+         when(userRepository.save(user3)).thenReturn(user3);
+
+         // Act
+         roomService.checkIfSomeoneOut(room, 1L);
+
+         // Assert
+         assertFalse(user2.getAliveStatus());
+         assertEquals(GameStatus.OUT, user2.getGameStatus());
+         assertFalse(room.getAlivePlayersList().contains(2L));
+     }
 
 
+     @Test
+     public void testCheckIfSomeoneOut_noVotesExist_shouldNotVoteOutPlayer() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+         room.setVotingResult(null);
+
+         // Act
+         roomService.checkIfSomeoneOut(room, 1L);
+
+         // Assert
+         verifyZeroInteractions(userService);
+         verifyZeroInteractions(chatService);
+     }
+
+     @Test
+     public void testCheckIfSomeoneOut_tieVote_shouldNotVoteOutPlayer() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+
+         Map<Long, Long> votingResult = new HashMap<>();
+         votingResult.put(1L, 2L);
+         votingResult.put(2L, 3L);
+         votingResult.put(3L, 1L);
+         room.setVotingResult(votingResult);
+
+         User user1 = new User();
+         user1.setId(1L);
+         user1.setUsername("testUser1");
+         user1.setAliveStatus(true);
+         user1.setGameStatus(GameStatus.ALIVE);
+
+         User user2 = new User();
+         user2.setId(2L);
+         user2.setUsername("testUser2");
+         user2.setAliveStatus(true);
+         user2.setGameStatus(GameStatus.ALIVE);
+
+         User user3 = new User();
+         user3.setId(3L);
+         user3.setUsername("testUser3");
+         user3.setAliveStatus(true);
+         user3.setGameStatus(GameStatus.ALIVE);
+
+         when(userService.getUserById(1L)).thenReturn(user1);
+         when(userService.getUserById(2L)).thenReturn(user2);
+         when(userService.getUserById(3L)).thenReturn(user3);
 
 
+         List<Long> playersList = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
+         List<Long> alivePlayersList = new ArrayList<>(Arrays.asList(1L, 2L,3L));
+         room.setRoomPlayersList(playersList);
+         room.setAlivePlayersList(alivePlayersList);
+
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+         // Act
+         roomService.checkIfSomeoneOut(room, 1L);
+
+         // Assert
+         assertTrue(user1.getAliveStatus());
+         assertEquals(GameStatus.ALIVE, user1.getGameStatus());
+         assertTrue(user2.getAliveStatus());
+         assertEquals(GameStatus.ALIVE, user2.getGameStatus());
+         assertTrue(user3.getAliveStatus());
+         assertEquals(GameStatus.ALIVE, user3.getGameStatus());
+         assertTrue(room.getAlivePlayersList().containsAll(Arrays.asList(1L, 2L, 3L)));
+         verify(chatService, times(1)).systemReminder(eq("No players out!"), eq(1L));
+     }
+
+     @Test
+     public void testCollectVote_validVote_shouldUpdateVotingResultAndNotify() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+
+         List<Long> playersList = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
+         List<Long> alivePlayersList = new ArrayList<>(Arrays.asList(1L, 2L,3L));
+         room.setRoomPlayersList(playersList);
+         room.setAlivePlayersList(alivePlayersList);
+
+         Map<Long, Long> votingResult = new HashMap<>();
+         room.setVotingResult(votingResult);
+
+         long voterId = 1L;
+         long voteeId = 2L;
+         long roomId = 1L;
+
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+         // Act
+         roomService.collectVote(room, voterId, voteeId, roomId);
+
+         // Assert
+         Map<Long, Long> updatedVotingResult = room.getVotingResult();
+         assertEquals(voteeId, updatedVotingResult.get(voterId));
+     }
 
 
-     //    @Test
- //    void testCollectVote() {
- //        // Create a new room with some players and assign their roles
- //        Room room = new Room();
- //        List<Long> players = new ArrayList<>();
- //        User player1 = new User();
- //        User player2 = new User();
- //        players.add(user1.getId());
- //        players.add(user2.getId());
- //        room.setAlivePlayersList(players);
- //        List<Long> deList = new ArrayList<>();
- //        deList.add(user1.getId());
- //        List<Long> unList = new ArrayList<>();
- //        unList.add(user2.getId());
- //        room.setDetectivesList(deList);
- //        room.setUndercoversList(unList);
- //        room.setRoomId(1L);
- //        roomRepository.save(room);
- //        Long roomId = room.getRoomId();
- //
- //
- //        // Cast a vote
- //        long voterId = player1.getId();
- //        long voteeId = player2.getId();
- //        when(roomService.findRoomById(1L)).thenReturn(room);
- //        roomService.collectVote(room, voterId, voteeId);
- //        when(roomService.findRoomById(roomId)).thenReturn(room);
- //        // Check that the vote was recorded
- //        Room updatedRoom = roomService.findRoomById(roomId);
- //        Map<Long, Long> votingResult = updatedRoom.getVotingResult();
- //        assertEquals(voteeId, votingResult.get(voterId));
- //
- //        // Check that the system reminder was sent
- //        verify(chatService, times(1)).systemReminder(anyString());
- //    }
+     @Test
+     public void testCollectVote_outPlayerCannotVote_shouldNotUpdateVotingResult() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+
+         List<Long> playersList = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
+         List<Long> alivePlayersList = new ArrayList<>(Arrays.asList(1L, 2L));
+         room.setRoomPlayersList(playersList);
+         room.setAlivePlayersList(alivePlayersList);
+
+         Map<Long, Long> votingResult = new HashMap<>();
+         room.setVotingResult(votingResult);
+
+         long voterId = 3L; // OUT player
+         long voteeId = 1L;
+         long roomId = 1L;
+
+         User outPlayer = new User();
+         outPlayer.setId(3L);
+         outPlayer.setAliveStatus(false);
+         outPlayer.setGameStatus(GameStatus.OUT);
+
+         when(userService.getUserById(3L)).thenReturn(outPlayer);
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+         // Act
+         roomService.collectVote(room, voterId, voteeId, roomId);
+
+         // Assert
+         Map<Long, Long> updatedVotingResult = room.getVotingResult();
+         assertTrue(updatedVotingResult.isEmpty());
+         verify(chatService, never()).systemReminder(anyString(), anyLong());
+     }
+
+     @Test
+     public void testCheckIfAllReady_allPlayersReady_shouldReturnTrue() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+
+         List<Long> roomPlayersList = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L));
+         room.setRoomPlayersList(roomPlayersList);
+
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+         for (long id : roomPlayersList) {
+             User user = new User();
+             user.setId(id);
+             user.setReadyStatus(ReadyStatus.READY);
+             when(userService.getUserById(id)).thenReturn(user);
+         }
+
+         // Act
+         boolean result = roomService.checkIfAllReady(room);
+
+         // Assert
+         assertTrue(result);
+     }
+
+     @Test
+     public void testCheckIfAllReady_notAllPlayersReady_shouldReturnFalse() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+
+         List<Long> roomPlayersList = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L));
+         room.setRoomPlayersList(roomPlayersList);
+
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+         User readyUser = new User();
+         readyUser.setId(1L);
+         readyUser.setReadyStatus(ReadyStatus.READY);
+         when(userService.getUserById(1L)).thenReturn(readyUser);
+
+         User notReadyUser = new User();
+         notReadyUser.setId(2L);
+         notReadyUser.setReadyStatus(ReadyStatus.FREE);
+         when(userService.getUserById(2L)).thenReturn(notReadyUser);
+
+         // Act
+         boolean result = roomService.checkIfAllReady(room);
+
+         // Assert
+         assertFalse(result);
+     }
+
+     @Test
+     public void testCheckIfGameEnd_detectiveWins_shouldSetWinnerAndGameStageToEnd() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+
+         List<Long> alivePlayersList = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
+         room.setAlivePlayersList(alivePlayersList);
+
+         User detective1 = new User();
+         detective1.setId(1L);
+         detective1.setRole(Role.DETECTIVE);
+
+         User detective2 = new User();
+         detective2.setId(2L);
+         detective2.setRole(Role.DETECTIVE);
+
+         User detective3 = new User();
+         detective3.setId(3L);
+         detective3.setRole(Role.DETECTIVE);
+
+         when(userService.getUserById(1L)).thenReturn(detective1);
+         when(userService.getUserById(2L)).thenReturn(detective2);
+         when(userService.getUserById(3L)).thenReturn(detective3);
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+         // Act
+         roomService.checkIfGameEnd(room);
+
+         // Assert
+         assertEquals(Role.DETECTIVE, room.getWinner());
+         assertEquals(GameStage.END, room.getGameStage());
+     }
+
+     @Test
+     public void testCheckIfGameEnd_undercoverWins_shouldSetWinnerAndGameStageToEnd() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+
+         List<Long> alivePlayersList = new ArrayList<>(Arrays.asList(1L, 2L, 3L, 4L));
+         room.setAlivePlayersList(alivePlayersList);
+
+         User detective1 = new User();
+         detective1.setId(1L);
+         detective1.setRole(Role.DETECTIVE);
+
+         User detective2 = new User();
+         detective2.setId(2L);
+         detective2.setRole(Role.UNDERCOVER);
+
+         User undercover2 = new User();
+         undercover2.setId(3L);
+         undercover2.setRole(Role.UNDERCOVER);
+
+         User undercover3 = new User();
+         undercover3.setId(4L);
+         undercover3.setRole(Role.UNDERCOVER);
+
+         when(userService.getUserById(1L)).thenReturn(detective1);
+         when(userService.getUserById(2L)).thenReturn(detective2);
+         when(userService.getUserById(3L)).thenReturn(undercover2);
+         when(userService.getUserById(4L)).thenReturn(undercover3);
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+         // Act
+         roomService.checkIfGameEnd(room);
+
+         // Assert
+         assertEquals(Role.UNDERCOVER, room.getWinner());
+         assertEquals(GameStage.END, room.getGameStage());
+     }
+
+     @Test
+     public void testCheckIfGameEnd_gameContinues_shouldSetGameStageToDescription() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+
+         List<Long> alivePlayersList = new ArrayList<>(Arrays.asList(1L, 2L,3L));
+         room.setAlivePlayersList(alivePlayersList);
+
+         User detective1 = new User();
+         detective1.setId(1L);
+         detective1.setRole(Role.DETECTIVE);
+
+         User detective2 = new User();
+         detective2.setId(2L);
+         detective2.setRole(Role.DETECTIVE);
+
+         User undercover = new User();
+         undercover.setId(3L);
+         undercover.setRole(Role.UNDERCOVER);
+
+         when(userService.getUserById(1L)).thenReturn(detective1);
+         when(userService.getUserById(2L)).thenReturn(detective2);
+         when(userService.getUserById(3L)).thenReturn(undercover);
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+         // Act
+         roomService.checkIfGameEnd(room);
+
+         // Assert
+         assertEquals(GameStage.DESCRIPTION, room.getGameStage());
+     }
+
+     @Test
+     public void testEndGame_updateStatisticsAndResetRoomProperties() {
+         // Arrange
+         Room room = new Room();
+         room.setRoomId(1L);
+         room.setWinner(Role.UNDERCOVER);
+
+         List<Long> roomPlayersList = new ArrayList<>(Arrays.asList(1L, 2L, 3L));
+         room.setRoomPlayersList(roomPlayersList);
+
+         User detective = new User();
+         detective.setId(1L);
+         detective.setUsername("Detective");
+         detective.setRole(Role.DETECTIVE);
+         detective.setNumOfGameDe(1);
+         detective.setNumOfWinGameDe(1);
+         detective.setRateDe(1f);
+
+         User undercover1 = new User();
+         undercover1.setId(2L);
+         undercover1.setUsername("Undercover1");
+         undercover1.setRole(Role.UNDERCOVER);
+         undercover1.setNumOfGameUn(0);
+         undercover1.setNumOfWinGameUn(0);
+         undercover1.setRateUn(0f);
+
+         User undercover2 = new User();
+         undercover2.setId(3L);
+         undercover2.setUsername("Undercover2");
+         undercover2.setRole(Role.UNDERCOVER);
+         undercover2.setNumOfGameUn(1);
+         undercover2.setNumOfWinGameUn(0);
+         undercover2.setRateUn(0f);
+
+         when(userService.getUserById(1L)).thenReturn(detective);
+         when(userService.getUserById(2L)).thenReturn(undercover1);
+         when(userService.getUserById(3L)).thenReturn(undercover2);
+         when(roomRepository.findById(1L)).thenReturn(Optional.of(room));
+
+         // Act
+         roomService.EndGame(room);
+
+         // Assert
+         assertEquals(Role.NOT_ASSIGNED, detective.getRole());
+         assertEquals(2, detective.getNumOfGameDe());
+         assertEquals(1, detective.getNumOfWinGameDe());
+         assertEquals(0.5f, detective.getRateDe(), 0.001f);
+
+         assertEquals(Role.NOT_ASSIGNED, undercover1.getRole());
+         assertEquals(1, undercover1.getNumOfGameUn());
+         assertEquals(1, undercover1.getNumOfWinGameUn());
+         assertEquals(1.0f, undercover1.getRateUn(), 0.001f);
+
+         assertEquals(Role.NOT_ASSIGNED, undercover2.getRole());
+         assertEquals(2, undercover2.getNumOfGameUn());
+         assertEquals(1, undercover2.getNumOfWinGameUn());
+         assertEquals(0.5f, undercover2.getRateUn(), 0.001f);
+
+         assertNull(room.getWinner());
+         assertNull(room.getAlivePlayersList());
+         assertNull(room.getDetectivesList());
+         assertNull(room.getUndercoversList());
+         assertEquals(GameStage.WAITING, room.getGameStage());
+         assertEquals(0, room.getCurrentPlayerIndex());
+         assertEquals(RoomProperty.WAITING, room.getRoomProperty());
+
+         //verify(chatService, times(3)).systemReminder(anyString(), eq(room.getRoomId()));
+     }
 
  }
-
-
-
-/*
- class RoomServiceTest1 {
-
-     @BeforeEach
-     void setUp() {
-     }
-
-     @Test
-     void getRooms() {
-     }
-
-
-
-     @Test
-     void findRoomById() {
-     }
-
-
-     @Test
-     void collectVote() {
-     }
-
-     @Test
-     void checkIfAllVoted() {
-     }
-
-     @Test
-     void checkIfAllReady() {
-     }
-
-     @Test
-     void assignCardsAndRoles() {
-     }
-
-     @Test
-     void getWordsRelatedTo() {
-     }
-
-     @Test
-     void checkIfSomeoneOut() {
-     }
-
-     @Test
-     void checkIfGameEnd() {
-     }
-
-     @Test
-     void endGame() {
-     }
-
-     @Test
-     void assignWord() {
-     }
-
-     @Test
-     void assignSide() {
-     }
-
- }*/

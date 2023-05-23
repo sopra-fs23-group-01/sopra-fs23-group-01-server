@@ -109,10 +109,6 @@ public class RoomService {
         chatService.systemReminder(votingResult.toString() + " collectVote", roomId);
     }
 
-    public boolean checkIfAllVoted(Room room) {
-        return room.getVotingResult().size() == room.getAlivePlayersList().size();
-    }
-
     public boolean checkIfAllReady(Room room) {
         int numOfReady = 0;
 
@@ -349,15 +345,11 @@ public class RoomService {
                 user.setNumOfGameDe(user.getNumOfGameDe()+1);
                 if(room.getWinner().equals(Role.DETECTIVE)){
                     user.setNumOfWinGameDe(user.getNumOfWinGameDe()+1);
-                    chatService.systemReminder("侦探总场数数"+Integer.toString(user.getNumOfGameDe()), room.getRoomId());
-                    chatService.systemReminder("侦场数"+Integer.toString(user.getNumOfWinGameDe()), room.getRoomId());
                     user.setRateDe((float)user.getNumOfWinGameDe()/(float)user.getNumOfGameDe());
                     chatService.systemReminder("Player " + user.getUsername() +" winningrate of Detective is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
                 else if (room.getWinner().equals(Role.UNDERCOVER)) {
                     user.setRateDe((float)user.getNumOfWinGameDe()/(float)user.getNumOfGameDe());
-                    chatService.systemReminder("侦探总场数"+Integer.toString(user.getNumOfGameDe()), room.getRoomId());
-                    chatService.systemReminder("侦探总场数"+Integer.toString(user.getNumOfWinGameDe()), room.getRoomId());
                     chatService.systemReminder("Player " + user.getUsername() +" winningrate of Detective is now"+decimalFormat.format(user.getRateDe()*100), room.getRoomId());
                 }
             }
@@ -365,15 +357,11 @@ public class RoomService {
                 user.setNumOfGameUn(user.getNumOfGameUn()+1);
                 if(room.getWinner().equals(Role.DETECTIVE)){
                     user.setRateUn(((float)user.getNumOfWinGameUn())/((float)user.getNumOfGameUn()));
-                    chatService.systemReminder("卧底总场数数"+Integer.toString(user.getNumOfGameUn()), room.getRoomId());
-                    chatService.systemReminder("卧底胜场数"+Integer.toString(user.getNumOfWinGameUn()), room.getRoomId());
                     chatService.systemReminder("Player " + user.getUsername() +" winningrate of Undercover is now" +decimalFormat.format(user.getRateUn()*100), room.getRoomId());
                 }
                 else if (room.getWinner().equals(Role.UNDERCOVER)) {
                     user.setNumOfWinGameUn(user.getNumOfWinGameUn()+1);
                     user.setRateUn(((float)user.getNumOfWinGameUn())/((float)user.getNumOfGameUn()));
-                    chatService.systemReminder("侦探总场数"+Integer.toString(user.getNumOfGameUn()), room.getRoomId());
-                    chatService.systemReminder("侦探胜场数"+Integer.toString(user.getNumOfWinGameUn()), room.getRoomId());
                     chatService.systemReminder("Player " + user.getUsername() +" winningrate of Undercover is now" +decimalFormat.format(user.getRateUn()*100), room.getRoomId());
                 }
             }
