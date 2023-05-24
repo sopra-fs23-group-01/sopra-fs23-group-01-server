@@ -46,14 +46,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(RoomController.class)
 public class RoomControllerTest {
 
-        @Autowired
-        private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-        @MockBean
-        private RoomService roomService;
+    @MockBean
+    private RoomService roomService;
 
-        @MockBean
-        private DTOMapper mapper;
+    @MockBean
+    private DTOMapper mapper;
 
     @Test
     public void testGetAllRooms() throws Exception{

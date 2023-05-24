@@ -80,15 +80,6 @@ public class RoomService {
     }
 
     public void enterRoom(Room room, User user){
-//        for (Long id: room.getRoomPlayersList()) {
-//            if (id == user.getId()) {
-//                userService.getUserById(id).setReadyStatus(ReadyStatus.FREE);
-//                userService.getUserById(id).setGameStatus(GameStatus.ALIVE);
-//                room.getRoomPlayersList().remove(id);
-//                break;
-//            }
-//        }
-
         if (room.getRoomPlayersList().size()<room.getMaxPlayersNum()){
             room.addRoomPlayerList(user.getId());
         }
@@ -391,7 +382,15 @@ public class RoomService {
     public void deletePlayer(Long userId, Long roomId){
         Room room = findRoomById(roomId);
         if (room.getRoomPlayersList().size()>1){
-            room.setRoomOwnerId(room.getRoomPlayersList().get(1));
+            if(userId == room.getRoomOwnerId()) {room.setRoomOwnerId(room.getRoomPlayersList().get(1));}
+            room.getRoomPlayersList().remove(userId);
+        }
+        else{roomRepository.delete(room);}
+    }
+
+    public void leaveRoom(Room room, Long userId){
+        if (room.getRoomPlayersList().size()>1){
+            if(userId == room.getRoomOwnerId()) {room.setRoomOwnerId(room.getRoomPlayersList().get(1));}
             room.getRoomPlayersList().remove(userId);
         }
         else{roomRepository.delete(room);}

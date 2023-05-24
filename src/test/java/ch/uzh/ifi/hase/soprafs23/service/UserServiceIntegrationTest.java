@@ -1,151 +1,162 @@
-// package ch.uzh.ifi.hase.soprafs23.service;
+package ch.uzh.ifi.hase.soprafs23.service;
 
-// import ch.uzh.ifi.hase.soprafs23.entity.User;
-// import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
-// import org.junit.jupiter.api.BeforeEach;
-// import org.junit.jupiter.api.Test;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.beans.factory.annotation.Qualifier;
-// import org.springframework.boot.test.context.SpringBootTest;
-// import org.springframework.test.context.web.WebAppConfiguration;
-// import org.springframework.web.server.ResponseStatusException;
+import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.web.server.ResponseStatusException;
 
-// import java.util.Date;
-// import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.List;
 
-// import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-// /**
-//  * Test class for the UserResource REST resource.
-//  *
-//  * @see UserService
-//  */
-// @WebAppConfiguration
-// @SpringBootTest
-// public class UserServiceIntegrationTest {
+@WebAppConfiguration
+@SpringBootTest
+public class UserServiceIntegrationTest {
 
-//     @Qualifier("userRepository")
-//     @Autowired
-//     private UserRepository userRepository;
+    @Qualifier("userRepository")
+    @Autowired
+    private UserRepository userRepository;
 
-//     @Autowired
-//     private UserService userService;
+    @Autowired
+    private UserService userService;
 
-//     @BeforeEach
-//     public void setup() {
-//         userRepository.deleteAll();
-//     }
-//     @Transactional
+    @BeforeEach
+    public void setup() {
+        userRepository.deleteAll();
+    }
 
-//     //1. mapping: to test the /users add user success-post method success
-//     @Test
-//     public void createUser_validInputs_success() {
-//         // given
-//         assertNull(userRepository.findByUsername("testUsername"));
+    @Test
+    public void createUser_validInputs_success() {
+        assertNull(userRepository.findByUsername("testUsername"));
 
-//         User testUser = new User();
-//         testUser.setUsername("testUsername");
-//         testUser.setPassword("testPassword");
+        User testUser = new User();
+        testUser.setUsername("testUsername");
+        testUser.setPassword("testPassword");
 
-//         // when
-//         User createdUser = userService.createUser(testUser);
+        User createdUser = userService.createUser(testUser);
 
-//         // then
-//         assertEquals(testUser.getId(), createdUser.getId());
-//         assertEquals(testUser.getUsername(), createdUser.getUsername());
-//         assertNotNull(createdUser.getToken());
-//     }
+        assertNotNull(createdUser.getId());
+        assertEquals(testUser.getUsername(), createdUser.getUsername());
+        assertNotNull(createdUser.getToken());
+    }
 
-//      //2. mapping: to test the /users add user fail(409 exception)-post method failed
-//     @Test
-//     public void createUser_duplicateUsername_throwsException() {
-//         assertNull(userRepository.findByUsername("testUsername"));
+    @Test
+    public void createUser_duplicateUsername_throwsException() {
+        assertNull(userRepository.findByUsername("testUsername"));
 
-//         User testUser = new User();
-//         testUser.setUsername("testUsername");
-//         testUser.setPassword("testPassword");
-//         userService.createUser(testUser);
+        User testUser = new User();
+        testUser.setUsername("testUsername");
+        testUser.setPassword("testPassword");
+        userService.createUser(testUser);
 
-//         // attempt to create second user with same username
-//         User testUser2 = new User();
-//         testUser2.setUsername("testUsername");
-//         testUser2.setPassword("testPassword2");
+        User testUser2 = new User();
+        testUser2.setUsername("testUsername");
+        testUser2.setPassword("testPassword2");
 
-//         // check that an error is thrown
-//         assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));
-//     }
+        assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));
+    }
 
-//     //3. mapping: Get method success
-//     @Test
-//     @Transactional
-//     public void getUserById_success() {
-//         User testUser = new User();
-//         testUser.setUsername("testUsername");
-//         testUser.setPassword("testPassword");
-//         User createdUser = userService.createUser(testUser);
+    @Test
+    public void loginUser_validCredentials_success() {
+        User testUser = new User();
+        testUser.setUsername("testUsername");
+        testUser.setPassword("testPassword");
+        userService.createUser(testUser);
 
-//         User foundUser = userService.userProfileById(createdUser.getId());
+        User loginUser = userService.loginUser(testUser);
 
-//         assertEquals(testUser.getUsername(), foundUser.getUsername());
-//     }
-    
-//     //4. mapping: Get method failed
-//     @Test
-//     @Transactional
-//     public void getUserById_fail() {
-//         User testUser = new User();
-//         testUser.setUsername("testUsername");
-//         testUser.setPassword("testPassword");
-//         userService.createUser(testUser);
+        assertEquals(testUser.getUsername(), loginUser.getUsername());
+        assertNotNull(loginUser.getToken());
+        assertEquals(UserStatus.ONLINE, loginUser.getStatus());
+    }
 
-//         assertThrows(ResponseStatusException.class, () -> userService.userProfileById(1000L));
-//     }
-    
-//     //5. mapping: post method success
-//     @Test
-//     public void test_login_success() {
-//         User testUser = new User();
-//         testUser.setUsername("testUsername");
-//         testUser.setPassword("testPassword");
-//         userService.createUser(testUser);
+    @Test
+    public void loginUser_invalidUsername_throwsException() {
+        User testUser = new User();
+        testUser.setUsername("testUsername");
+        testUser.setPassword("testPassword");
+        userService.createUser(testUser);
 
-//         User loginUser = userService.loginUser(testUser);
+        User invalidUser = new User();
+        invalidUser.setUsername("wrongUsername");
+        invalidUser.setPassword("testPassword");
 
-//         assertEquals(testUser.getUsername(), loginUser.getUsername());
-//     }
+        assertThrows(ResponseStatusException.class, () -> userService.loginUser(invalidUser));
+    }
 
-//     //6. mapping: put method success
-//     @Test
-//     public void editUser_success() {
-//         User testUser = new User();
-//         testUser.setUsername("testUsername");
-//         testUser.setPassword("testPassword");
-//         User oldUser = userService.createUser(testUser);
+    @Test
+    public void loginUser_invalidPassword_throwsException() {
+        User testUser = new User();
+        testUser.setUsername("testUsername");
+        testUser.setPassword("testPassword");
+        userService.createUser(testUser);
 
-//         User newUser = new User();
-//         newUser.setId(oldUser.getId());
-//         newUser.setUsername("newName");
-//         newUser.setBirthday(new Date());
-//         userService.userEditProfile(newUser);
+        User invalidUser = new User();
+        invalidUser.setUsername("testUsername");
+        invalidUser.setPassword("wrongPassword");
 
-//         assertEquals(userRepository.findByUsername("newName").getId(), newUser.getId());
-//         assertEquals(userRepository.findByUsername("newName").getUsername(), newUser.getUsername());
+        assertThrows(ResponseStatusException.class, () -> userService.loginUser(invalidUser));
+    }
 
-//     }
+    @Test
+    public void userProfileById_existingUserId_success() {
+        User testUser = new User();
+        testUser.setUsername("testUsername");
+        testUser.setPassword("testPassword");
+        User createdUser = userService.createUser(testUser);
 
-//     //7. mapping: put method fail (the user not exist)
-//     @Test
-//     public void editUser_fail() {
-//         User testUser = new User();
-//         testUser.setUsername("testUsername");
-//         testUser.setPassword("testPassword");
-//         userService.createUser(testUser);
+        User foundUser = userService.userProfileById(createdUser.getId());
 
-//         User newUser = new User();
-//         newUser.setId(100000L);
-//         newUser.setUsername("testUsername1");
+        assertEquals(testUser.getUsername(), foundUser.getUsername());
+    }
 
-//         assertThrows(ResponseStatusException.class, () -> userService.userEditProfile(newUser));
-//     }
-// }
+    @Test
+    public void userProfileById_nonExistingUserId_throwsException() {
+        assertThrows(ResponseStatusException.class, () -> userService.userProfileById(1000L));
+    }
 
+    @Test
+    public void userEditProfile_existingUser_success() {
+        User testUser = new User();
+        testUser.setUsername("testUsername");
+        testUser.setPassword("testPassword");
+        User oldUser = userService.createUser(testUser);
+
+        User newUser = new User();
+        newUser.setId(oldUser.getId());
+        newUser.setUsername("newName");
+        newUser.setBirthday(new Date());
+        userService.userEditProfile(newUser);
+
+        User updatedUser = userService.userProfileById(newUser.getId());
+
+        assertEquals(newUser.getUsername(), updatedUser.getUsername());
+        assertEquals(newUser.getBirthday(), updatedUser.getBirthday());
+    }
+
+    @Test
+    public void userEditProfile_nonExistingUser_throwsException() {
+        User newUser = new User();
+        newUser.setId(100000L);
+        newUser.setUsername("testUsername1");
+
+        assertThrows(ResponseStatusException.class, () -> userService.userEditProfile(newUser));
+    }
+
+    @Test
+    public void getUsers_emptyList_success() {
+        List<User> users = userService.getUsers();
+
+        assertNotNull(users);
+        assertTrue(users.isEmpty());
+    }
+}
+
+//
