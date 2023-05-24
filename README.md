@@ -1,13 +1,36 @@
-# SoPra RESTful Service Template FS23
+# Who is undercover?  :shipit:
+[![Deploy Project to App Engine](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/actions/workflows/main.yml/badge.svg)](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/actions/workflows/main.yml)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.4.13-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring WebSocket](https://img.shields.io/badge/Spring%20WebSocket-latest-blue.svg)](https://spring.io/projects/spring-websocket) 
 
-## Getting started with Spring Boot
--   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides
-    -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
-    -   Building REST services with Spring: https://spring.io/guides/tutorials/rest/
 
-## Setup this Template with your IDE of choice
-Download your IDE of choice (e.g., [IntelliJ](https://www.jetbrains.com/idea/download/), [Visual Studio Code](https://code.visualstudio.com/), or [Eclipse](http://www.eclipse.org/downloads/)). Make sure Java 17 is installed on your system (for Windows, please make sure your `JAVA_HOME` environment variable is set to the correct version of Java).
+## Table of Content
+
+- [Introduction](#introduction)
+- [Built With](#built-with)
+- [High-level components](#main-components)
+- [Deployment](#deployment)
+- [Illustrations](#illustrations)
+- [Roadmap](#roadmap)
+- [Authors & Acknowledgments](#authors--acknowledgments)
+- [License](#license)
+
+## Introduction
+"Who's Undercover" is a very popular social party game from China that usually requires 4 or more players to play together. The game aims to find out the "Undercover" characters hidden among all players through description and reasoning.
+
+## Built With
+* [React](https://react.dev/) - Frontend JavaScript library developed by facebook
+* [Spring](https://spring.io/projects/spring-framework) - Framework that enables running JVM
+* [Gradle](https://gradle.org/) - Build automation tool
+* [STOMP](https://stomp-js.github.io/stomp-websocket/) - Text agreement for configuring WebSocket connections 
+* [Spring WebSocket ](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#websocket) - Real-time interactive applications
+* [SockJS](https://github.com/sockjs) - API compatible with WebSocket
+* [Datamuse API](https://www.datamuse.com/api/) - Datamuse Api to get synonyms
+
+## Main Components
+
+#### User
+The [User](https://github.com/sopra-fs23-group-10/sopra-fs23-group-10-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/entity/User.java) JPA entity, the most important part of the whole game is user, they are the main participants of the game, this class determines their identity information and winning information in the game, these information play an important role in the whole game
 
 ### IntelliJ
 1. File -> Open... -> SoPra server template
