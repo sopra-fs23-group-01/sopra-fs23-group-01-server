@@ -16,7 +16,11 @@
 - [License](#license)
 
 ## Introduction
-"Who's Undercover" is a very popular social party game from China that usually requires 4 or more players to play together. The game aims to find out the "Undercover" characters hidden among all players through description and reasoning.
+"Who's Undercover" is a very popular social party game from China that usually requires 4 or more players to play together. The game aims to find out the "Undercover" characters hidden among all players through description and reasoning. 
+
+The game consists of at least 4 people and at most 8 people. After the game starts, everyone will be assigned a word. You may be assigned a different word, which means you are undercover. Usually in a game Among them, if there are 5 players, including games with less than 5 players, one person is undercover, and games with more than 5 players have two undercovers. Each round of the game has a description link. As an undercover, you should try your best to hide your identity. 
+
+As a detective, you Carefully observe whether other players are undercover. After each round of description, players must vote for a player. When the number of undercovers is the same as the number of detectives, the undercover victory is declared. If all undercovers are voted out, the detection wins. Have fun !
 
 ## Built With
 * [React](https://react.dev/) - Frontend JavaScript library developed by facebook
