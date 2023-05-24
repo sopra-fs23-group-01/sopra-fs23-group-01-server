@@ -401,7 +401,7 @@ public class RoomService {
         List<Room> roomList = getRooms();
 
         for (Room room : roomList) {
-            if (room.getRoomPlayersList().size() == room.getMaxPlayersNum()){
+            if (room.getRoomPlayersList().size() == room.getMaxPlayersNum()||room.getRoomProperty().equals(RoomProperty.INGAME)){
                 continue;
             }
 

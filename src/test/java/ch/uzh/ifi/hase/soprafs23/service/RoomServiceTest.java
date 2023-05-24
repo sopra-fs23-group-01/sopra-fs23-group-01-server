@@ -273,12 +273,14 @@
          // 创建测试用的房间列表
          Room room1 = new Room();
          room1.setRoomId(1L);
+         room1.setRoomProperty(RoomProperty.WAITING);
          room1.setMaxPlayersNum(4);
          room1.addRoomPlayerList(123L);
          room1.addRoomPlayerList(456L);
 
          Room room2 = new Room();
          room2.setRoomId(2L);
+         room2.setRoomProperty(RoomProperty.WAITING);
          room2.setMaxPlayersNum(4);
          room2.addRoomPlayerList(789L);
          room2.addRoomPlayerList(1011L);
@@ -305,12 +307,14 @@
          Room room1 = new Room();
          room1.setRoomId(1L);
          room1.setMaxPlayersNum(4);
+         room1.setRoomProperty(RoomProperty.WAITING);
          room1.addRoomPlayerList(123L);
          room1.addRoomPlayerList(456L);
 
          Room room2 = new Room();
          room2.setRoomId(2L);
          room2.setMaxPlayersNum(3);
+         room2.setRoomProperty(RoomProperty.WAITING);
          room2.addRoomPlayerList(789L);
          room2.addRoomPlayerList(1011L);
          room2.addRoomPlayerList(1213L);
