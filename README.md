@@ -97,6 +97,8 @@ New developers who want to contribute to your projec could add:
 * **Yixuan Zhou** - [yixuan-zhou-uzh](https://github.com/yixuan-zhou-uzh)
 * **Zehao Zhang** - [Zehao-Zhang](https://github.com/Zehao-Zhang)
 
-## Testing
-Have a look here: https://www.baeldung.com/spring-boot-testing
-# debug
+### Acknowledgments
+We extend our deepest gratitude to our tutor, [Valentin](https://github.com/v4lentin1879) as well as to the entire team involved in the Software Engineering Lab course at the University of Zurich.
+
+## License
+This project is licensed under the Apache License 2.0 - see the [LICENSE](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/blob/main/LICENSE) file for details.
