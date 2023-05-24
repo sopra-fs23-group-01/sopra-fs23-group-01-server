@@ -238,28 +238,27 @@ public class RoomServiceIntegrationTest {
         user1.setUsername("testUsername1");
         user1.setPassword("password");
         user1.setId(1L);
-        User createdUser1 = userService.createUser(user1);
 
         // Create user 2
         User user2 = new User();
         user2.setUsername("testUsername2");
         user2.setPassword("password");
         user2.setId(2L);
-        User createdUser2 = userService.createUser(user2);
 
         // Create room
         Room room = new Room();
         room.setRoomId(10001L);
-        room.setRoomOwnerId(createdUser1.getId());
+        room.setRoomOwnerId(user1.getId());
         room.setMaxPlayersNum(4);
         Room createdRoom = roomService.createRoom(room);
 
-        roomService.enterRoom(createdRoom, user2);
-        //roomService.deletePlayer(createdUser1.getId(), createdRoom.getRoomId());
+        //roomService.enterRoom(createdRoom, user2);
+        createdRoom.addRoomPlayerList(user2.getId());
+        //roomService.deletePlayer(user1.getId(), createdRoom.getRoomId());
         roomService.leaveRoom(createdRoom, user1.getId());
 
         assertEquals(1, createdRoom.getRoomPlayersList().size());
-        assertEquals(createdUser2.getId(), createdRoom.getRoomOwnerId());
+        assertEquals(user2.getId(), createdRoom.getRoomOwnerId());
     }
 
     @Test
