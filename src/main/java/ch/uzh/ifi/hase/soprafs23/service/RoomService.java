@@ -96,7 +96,7 @@ public class RoomService {
         Map<Long, Long> votingResult = room.getVotingResult();
         votingResult.put(voterId, voteeId);
         room.setVotingResult(votingResult);
-        //chatService.systemReminder(votingResult.toString() + " collectVote", roomId);
+        chatService.systemReminder(votingResult.toString() + " collectVote", roomId);
     }
 
     public boolean checkIfAllReady(Room room) {
@@ -256,7 +256,7 @@ public class RoomService {
                 if (voteCount > maxVotes) {
                     maxVotes = voteCount;
                     mostVotedPlayer = playerId;
-                }else{
+                }else if(voteCount == maxVotes){
                     mostVotedPlayer = null;
                 }
             }

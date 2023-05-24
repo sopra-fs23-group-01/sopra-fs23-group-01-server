@@ -435,6 +435,7 @@
          Map<Long, Long> votingResult = new HashMap<>();
          votingResult.put(1L, 2L);
          votingResult.put(3L, 2L);
+         votingResult.put(2L, 1L);
          room.setVotingResult(votingResult);
 
          User user1 = new User();
