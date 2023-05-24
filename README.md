@@ -1,43 +1,70 @@
-# SoPra RESTful Service Template FS23
+# Who is undercover?  :shipit:
+[![Deploy Project to App Engine](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/actions/workflows/main.yml/badge.svg)](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/actions/workflows/main.yml)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.4.13-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Spring WebSocket](https://img.shields.io/badge/Spring%20WebSocket-latest-blue.svg)](https://spring.io/projects/spring-websocket) 
 
-## Getting started with Spring Boot
--   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides
-    -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
-    -   Building REST services with Spring: https://spring.io/guides/tutorials/rest/
 
-## Setup this Template with your IDE of choice
-Download your IDE of choice (e.g., [IntelliJ](https://www.jetbrains.com/idea/download/), [Visual Studio Code](https://code.visualstudio.com/), or [Eclipse](http://www.eclipse.org/downloads/)). Make sure Java 17 is installed on your system (for Windows, please make sure your `JAVA_HOME` environment variable is set to the correct version of Java).
+## Table of Content
 
-### IntelliJ
-1. File -> Open... -> SoPra server template
-2. Accept to import the project as a `gradle project`
-3. To build right click the `build.gradle` file and choose `Run Build`
+- [Introduction](#introduction)
+- [Built With](#built-with)
+- [High-level components](#main-components)
+- [Deployment](#deployment)
+- [Illustrations](#illustrations)
+- [Roadmap](#roadmap)
+- [Authors & Acknowledgments](#authors--acknowledgments)
+- [License](#license)
 
-### VS Code
-The following extensions can help you get started more easily:
--   `vmware.vscode-spring-boot`
--   `vscjava.vscode-spring-initializr`
--   `vscjava.vscode-spring-boot-dashboard`
--   `vscjava.vscode-java-pack`
+## Introduction
+"Who's Undercover" is a very popular social party game from China that usually requires 4 or more players to play together. The game aims to find out the "Undercover" characters hidden among all players through description and reasoning. 
 
-**Note:** You'll need to build the project first with Gradle, just click on the `build` command in the _Gradle Tasks_ extension. Then check the _Spring Boot Dashboard_ extension if it already shows `soprafs23` and hit the play button to start the server. If it doesn't show up, restart VS Code and check again.
+The game consists of at least 4 people and at most 8 people. After the game starts, everyone will be assigned a word. You may be assigned a different word, which means you are undercover. Usually in a game Among them, if there are 5 players, including games with less than 5 players, one person is undercover, and games with more than 5 players have two undercovers. Each round of the game has a description link. As an undercover, you should try your best to hide your identity. 
 
-## Building with Gradle
-You can use the local Gradle Wrapper to build the application.
--   macOS: `./gradlew`
--   Linux: `./gradlew`
--   Windows: `./gradlew.bat`
+As a detective, you Carefully observe whether other players are undercover. After each round of description, players must vote for a player. When the number of undercovers is the same as the number of detectives, the undercover victory is declared. If all undercovers are voted out, the detection wins. Have fun !
 
-More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) and [Gradle](https://gradle.org/docs/).
+## Built With
+* [React](https://react.dev/) - Frontend JavaScript library developed by facebook
+* [Spring](https://spring.io/projects/spring-framework) - Framework that enables running JVM
+* [Gradle](https://gradle.org/) - Build automation tool
+* [STOMP](https://stomp-js.github.io/stomp-websocket/) - Text agreement for configuring WebSocket connections 
+* [Spring WebSocket ](https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#websocket) - Real-time interactive applications
+* [SockJS](https://github.com/sockjs) - API compatible with WebSocket
+* [Datamuse API](https://www.datamuse.com/api/) - Datamuse Api to get synonyms
 
-### Build
+## Main Components
+
+#### User
+The [User](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/entity/User.java) JPA entity, the most important part of the whole game is user, they are the main participants of the game, this class determines their identity information and winning information in the game, these information play an important role in the whole game
+
+#### UserController
+The [UserController](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/controller/UserController.java) is mainly responsible for processing the RESTful request from the client related to user, and directing it to the correct service function in the server side
+
+
+#### Room
+The [Room](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/entity/Room.java) JPA entity, another important part is mainly responsible for storing the information we need to use in the game process, such as the player list in the room, and the process status of the game, etc., as an important part of controlling our game information
+
+#### RoomService
+The [RoomService](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/service/RoomService.java) contains the main logic function that controls the overall process of the game. It fully cooperates with [RoomController](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/controller/RoomController.java) and [ChatService](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/service/ChatService.java) to precisely control the correct operation of the game, including the assignment of words, identities and voting, etc.
+
+#### WebSocketConfig
+The [WebSocketConfig](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/blob/main/src/main/java/ch/uzh/ifi/hase/soprafs23/config/WebSocketConfig.java) is a Spring Boot configuration class, which is used to set the relevant configuration of WebSocket and STOMP message proxy. After configuration, the client can connect to "/ws" through WebSocket, and send and receive messages through STOMP protocol to realize real-time communication
+
+## Deployment
+
+### 1. Local Deployment
+#### Clone Repository
+Clone the client-repository onto your local machine with the help of [Git](https://git-scm.com/downloads).
+```bash 
+git clone https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server.git
+```
+
+#### Build
 
 ```bash
 ./gradlew build
 ```
 
-### Run
+#### Run
 
 ```bash
 ./gradlew bootRun
@@ -45,43 +72,37 @@ More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguid
 
 You can verify that the server is running by visiting `localhost:8080` in your browser.
 
-### Test
+#### Test
 
 ```bash
 ./gradlew test
 ```
 
-### Development Mode
-You can start the backend in development mode, this will automatically trigger a new build and reload the application
-once the content of a file has been changed.
+### 2. Remote Deployment
+In this project, we applied Google Cloud to realize our remote deployment. You can set up Google Cloud App Engine to deploy synchronously. When the content of Github is updated, it will be automatically checked and remotely deployed to the cloud
 
-Start two terminal windows and run:
+For more inforamtion please refer to [Google Cloud Deployment](https://cloud.google.com/deploy/docs).
 
-`./gradlew build --continuous`
 
-and in the other one:
+## Illustrition
+The main user flow(s) please refer to our [client](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-client) side.
 
-`./gradlew bootRun`
 
-If you want to avoid running all tests with every change, use the following command instead:
+## Roadmap
+New developers who want to contribute to your projec could add:
+- More game modes, such as more themes
+- Add kicking function to the room
+- Add friend function, friends in the game can play a game together
 
-`./gradlew build --continuous -xtest`
+## Authors & Acknowledgments
+### Authors
+* **Zihan Liu** - [zihanltesla](https://github.com/zihanltesla)
+* **Han Yang** - [Haaaan1](https://github.com/Haaaan1)
+* **Yixuan Zhou** - [yixuan-zhou-uzh](https://github.com/yixuan-zhou-uzh)
+* **Zehao Zhang** - [Zehao-Zhang](https://github.com/Zehao-Zhang)
 
-## API Endpoint Testing with Postman
-We recommend using [Postman](https://www.getpostman.com) to test your API Endpoints.
+### Acknowledgments
+We extend our deepest gratitude to our tutor, [Valentin](https://github.com/v4lentin1879) as well as to the entire team involved in the Software Engineering Lab course at the University of Zurich.
 
-## Debugging
-If something is not working and/or you don't know what is going on. We recommend using a debugger and step-through the process step-by-step.
-
-To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you start with `./gradlew bootRun` command), do the following:
-
-1. Open Tab: **Run**/Edit Configurations
-2. Add a new Remote Configuration and name it properly
-3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
-4. Press `Shift + F9` or the use **Run**/Debug "Name of your task"
-5. Set breakpoints in the application where you need it
-6. Step through the process one step at a time
-
-## Testing
-Have a look here: https://www.baeldung.com/spring-boot-testing
-# debug
+## License
+This project is licensed under the Apache License 2.0 - see the [LICENSE](https://github.com/sopra-fs23-group-01/sopra-fs23-group-01-server/blob/main/LICENSE) file for details.
