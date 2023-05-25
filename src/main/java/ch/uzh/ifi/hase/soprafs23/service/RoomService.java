@@ -149,12 +149,14 @@ public class RoomService {
         List<String> wordsList = new ArrayList<>();
         switch (theme){
             case SPORTS:
-                List<String> sportsWords = Arrays.asList("Soccer", "Basketball", "TennisBall", "Baseball", "Bowling");
+                List<String> sportsWords = Arrays.asList("Soccer", "Basketball", "TennisBall", "Baseball",
+                        "Bowling","Volleyball", "Badminton", "Boxing", "Diving","Cycling", "Athletics","golf", "floorball");
                 Collections.shuffle(sportsWords, randomWord);
                 wordsList.addAll(sportsWords.subList(0, 2));
                 break;
             case FURNITURE:
-                List<String> furnitureWords = Arrays.asList("Sofa", "Chair", "Table", "Bed");
+                List<String> furnitureWords = Arrays.asList("Sofa", "Chair", "Table", "Bed","cupboard","bookcase", "clock","pillow"
+                , "mattress", "cushion", "carpet", "blinds", "sheet", "towel");
                 Collections.shuffle(furnitureWords, randomWord);
                 wordsList.addAll(furnitureWords.subList(0, 2));
                 break;
