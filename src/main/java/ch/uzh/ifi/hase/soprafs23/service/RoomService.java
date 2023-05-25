@@ -92,7 +92,7 @@ public class RoomService {
         Map<Long, Long> votingResult = room.getVotingResult();
         votingResult.put(voterId, voteeId);
         room.setVotingResult(votingResult);
-        chatService.systemReminder(userService.getUserById(voterId).getUsername() + " has voted", roomId);
+//        chatService.systemReminder(userService.getUserById(voterId).getUsername() + " has voted", roomId);
     }
 
     public boolean checkIfAllReady(Room room) {

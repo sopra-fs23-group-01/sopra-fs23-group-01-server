@@ -136,7 +136,7 @@ public class ChatService {
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
-                //if(true) break;
+                break;
             }
         }else if (currentGameStage.toString().equals(GameStage.VOTING.toString())) {
             broadcastVoteStart(roomId);
