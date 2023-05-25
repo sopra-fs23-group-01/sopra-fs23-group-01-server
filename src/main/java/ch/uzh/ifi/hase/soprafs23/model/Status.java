@@ -14,5 +14,6 @@ public enum Status {
     READY,
     NOT_READY, 
     ROOM_UPDATE,
-    RECONNECT
+    RECONNECT, 
+    LOBBY_UPDATE
 }
