@@ -39,15 +39,13 @@ public class ChatController {
     @MessageMapping("/message/{roomId}")
     @SendTo("/chatroom/{roomId}/public")
     public Message receiveMessage(@Payload Message message,@DestinationVariable("roomId") Long roomId) {
-        //if the assigned status is assign word then return a word to the user
         if (message.getStatus() == Status.ASSIGNED_WORD) {
             String word = roomService.assignWord(message.getSenderName());
             String side = roomService.assignSide(message.getSenderName());
-            //chatService.systemReminder(word,roomId);
             Message wordMessage = new Message();
             wordMessage.setSenderName("system");
             wordMessage.setStatus(Status.ASSIGNED_WORD);
-            wordMessage.setRole(word); // 修改状态为 ASSIGNED_WORD
+            wordMessage.setRole(word);
             wordMessage.setMessage(side);
             simpMessagingTemplate.convertAndSendToUser(message.getSenderName(), "/private", wordMessage);
         }

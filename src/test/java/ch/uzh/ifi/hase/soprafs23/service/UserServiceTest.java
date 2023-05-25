@@ -184,32 +184,27 @@ public class UserServiceTest {
 
     @Test
     public void userLeaveRoom_ValidUser_Success() {
-        // 准备数据
+
         User user = new User();
         user.setId(1L);
         user.setReadyStatus(ReadyStatus.READY);
 
-        // 模拟 userRepository 的行为
         when(userRepository.existsById(user.getId())).thenReturn(true);
         when(userRepository.getOne(user.getId())).thenReturn(user);
 
-        // 调用被测试方法
         userService.userLeaveRoom(user);
 
-        // 验证状态是否正确更新
         assertEquals(ReadyStatus.FREE, user.getReadyStatus());
     }
 
     @Test
     public void userLeaveRoom_InvalidUser_NotFoundException() {
-        // 准备数据
+
         User user = new User();
         user.setId(1L);
 
-        // 模拟 userRepository 的行为
         when(userRepository.existsById(user.getId())).thenReturn(false);
 
-        // 调用被测试方法并断言抛出预期的异常
         assertThrows(NullPointerException.class, () -> {
             userService.userLeaveRoom(user);
         });
@@ -218,69 +213,60 @@ public class UserServiceTest {
 
     @Test
     public void userSetReady_UserFreeStatus_SetToReadyStatus() {
-        // 准备数据
+
         User user = new User();
         user.setId(1L);
         user.setReadyStatus(ReadyStatus.FREE);
 
-        // 模拟 userRepository 的行为
         when(userRepository.existsById(user.getId())).thenReturn(true);
         when(userRepository.getOne(user.getId())).thenReturn(user);
 
-        // 调用被测试方法
         userService.userSetReady(user);
 
-        // 验证状态是否正确更新
         assertEquals(ReadyStatus.READY, user.getReadyStatus());
     }
 
     @Test
     public void userSetReady_UserReadyStatus_SetToFreeStatus() {
-        // 准备数据
+
         User user = new User();
         user.setId(1L);
         user.setReadyStatus(ReadyStatus.READY);
 
-        // 模拟 userRepository 的行为
         when(userRepository.existsById(user.getId())).thenReturn(true);
         when(userRepository.getOne(user.getId())).thenReturn(user);
 
-        // 调用被测试方法
         userService.userSetReady(user);
 
-        // 验证状态是否正确更新
         assertEquals(ReadyStatus.FREE, user.getReadyStatus());
 
     }
 
     @Test
     public void userProfileById_ValidId_Success() {
-        // 准备数据
+
         Long userId = 1L;
         User user = new User();
         user.setId(userId);
         user.setUsername("exampleUser");
 
-        // 模拟 userRepository 的行为
+
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        // 调用被测试方法
         User result = userService.userProfileById(userId);
 
-        // 验证返回的结果是否正确
         assertEquals(user, result);
 
     }
 
     @Test
     public void userProfileById_InvalidId_NotFoundException() {
-        // 准备数据
+
         Long userId = 1L;
 
-        // 模拟 userRepository 的行为
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // 调用被测试方法并断言抛出预期的异常
+
         assertThrows(ResponseStatusException.class, () -> {
             userService.userProfileById(userId);
         });

@@ -1,116 +1,3 @@
-//package ch.uzh.ifi.hase.soprafs23.service;
-//
-//import ch.uzh.ifi.hase.soprafs23.constant.Theme;
-//import ch.uzh.ifi.hase.soprafs23.entity.Room;
-//import ch.uzh.ifi.hase.soprafs23.entity.User;
-//import ch.uzh.ifi.hase.soprafs23.repository.RoomRepository;
-//import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
-//import ch.uzh.ifi.hase.soprafs23.service.RoomService;
-//import ch.uzh.ifi.hase.soprafs23.service.UserService;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.boot.test.mock.mockito.MockBean;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.test.context.web.WebAppConfiguration;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.Mockito.*;
-//
-//@WebAppConfiguration
-//@SpringBootTest
-//public class RoomServiceIntegrationTest {
-//
-//    @Autowired
-//    private RoomService roomService;
-//
-//    @MockBean
-//    private RoomRepository roomRepository;
-//
-//    @MockBean
-//    private UserRepository userRepository;
-//
-//    @MockBean
-//    private UserService userService;
-//
-//    @Test
-//    public void testCreateRoom() {
-//        // Create a new room
-//        Room newRoom = new Room();
-//        newRoom.setTheme(Theme.SPORTS);
-//        newRoom.setRoomOwnerId(1L);
-//
-//        // Mock the room repository save method
-//        when(roomRepository.save(any(Room.class))).thenReturn(newRoom);
-//
-//        // Call the createRoom method
-//        Room createdRoom = roomService.createRoom(newRoom);
-//
-//        // Verify the room repository save method was called
-//        verify(roomRepository, times(1)).save(newRoom);
-//
-//        // Verify the created room
-//        assertNotNull(createdRoom);
-//        assertEquals(newRoom.getTheme(), createdRoom.getTheme());
-//        assertEquals(newRoom.getRoomOwnerId(), createdRoom.getRoomOwnerId());
-//    }
-//
-//    @Test
-//    public void testEnterRoom() {
-//        // Create a new user
-//        User user = new User();
-//        user.setId(1L);
-//
-//        // Create a new room
-//        Room room = new Room();
-//        room.setTheme(Theme.SPORTS);
-//        room.setRoomOwnerId(1L);
-//
-//        // Mock the room repository findById method
-//        //when(roomRepository.findById(room.getRoomId())).thenReturn(java.util.Optional.of(room));
-//        when(roomService.findRoomById(room.getRoomId())).thenReturn(room);
-//
-//        // Call the enterRoom method
-//        roomService.enterRoom(room, user);
-//
-//        // Verify the room repository findById method was called
-//        verify(roomRepository, times(1)).findById(room.getRoomId());
-//
-//        // Verify that the user has been added to the room
-//        assertTrue(room.getRoomPlayersList().contains(user.getId()));
-//    }
-//
-//    @Test
-//    public void testCollectVote() {
-//        // Create a room
-//        Room room = new Room();
-//        room.setRoomId(1L);
-//        room.setRoomPlayersList(new ArrayList<>());
-//
-//        // Create users
-//        User voter = new User();
-//        voter.setId(1L);
-//        User votee = new User();
-//        votee.setId(2L);
-//
-//        // Mock the room repository findById method
-//        when(roomRepository.findById(room.getRoomId())).thenReturn(java.util.Optional.of(room));
-//
-//        // Call the collectVote method
-//        roomService.collectVote(room, voter.getId(), votee.getId(), room.getRoomId());
-//
-//        // Verify the room repository findById method was called
-//        verify(roomRepository, times(1)).findById(room.getRoomId());
-//
-//        // Verify the voting result in the room
-//        assertEquals(votee.getId(), room.getVotingResult().get(voter.getId()));
-//    }
-//}
-
 package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.constant.RoomProperty;
@@ -250,11 +137,9 @@ public class RoomServiceIntegrationTest {
         room.setRoomId(10001L);
         room.setRoomOwnerId(user1.getId());
         room.setMaxPlayersNum(4);
-        Room createdRoom = roomService.createRoom(room);
 
-        //roomService.enterRoom(createdRoom, user2);
+        Room createdRoom = roomService.createRoom(room);
         createdRoom.addRoomPlayerList(user2.getId());
-        //roomService.deletePlayer(user1.getId(), createdRoom.getRoomId());
         roomService.leaveRoom(createdRoom, user1.getId());
 
         assertEquals(1, createdRoom.getRoomPlayersList().size());
@@ -276,7 +161,6 @@ public class RoomServiceIntegrationTest {
         room.setRoomId(10001L);
         room.setRoomOwnerId(createdUser1.getId());
         Room createdRoom = roomService.createRoom(room);
-        //roomService.deletePlayer(createdUser1.getId(), createdRoom.getRoomId());
         roomService.leaveRoom(createdRoom, user1.getId());
 
         assertThrows(ResponseStatusException.class, () -> roomService.findRoomById(createdRoom.getRoomId()));

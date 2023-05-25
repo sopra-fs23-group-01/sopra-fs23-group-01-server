@@ -1,5 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23.constant;
 
 public enum Theme {
-    SPORTS, FURNITURE, JOB;
+    SPORTS, FURNITURE, JOB, SUPERHERO;
 }

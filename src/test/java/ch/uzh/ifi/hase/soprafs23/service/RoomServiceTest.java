@@ -107,7 +107,6 @@
          // Check if each player has been assigned a role and card
          for (Long playerId : room.getRoomPlayersList()) {
              User player = userRepository.getOne(playerId);
-             //System.out.println("playerId"+player.getId()+"card"+player.getCard()+"Role"+player.getRole());
              if(player.getRole()==Role.UNDERCOVER)
                  i++;
          }
@@ -120,7 +119,6 @@
          // Check if each player has been assigned a role and card
          for (Long playerId : room.getRoomPlayersList()) {
              User player = userRepository.getOne(playerId);
-             //System.out.println("playerId"+player.getId()+"card"+player.getCard()+"Role"+player.getRole());
              if(player.getRole()==Role.UNDERCOVER)
                  i++;
          }
@@ -155,16 +153,12 @@
          newRoom.setRoomOwnerId(1l);
          newRoom.setTheme(Theme.SPORTS);
 
-         // 模拟 roomRepository.save() 方法的行为
          when(roomRepository.save(any(Room.class))).thenReturn(newRoom);
 
-         // 调用 createRoom() 方法
          Room createdRoom = roomService.createRoom(newRoom);
 
-         // 验证 roomRepository.save() 方法被调用一次
          verify(roomRepository, times(1)).save(any(Room.class));
 
-         // 验证返回的房间对象与预期对象相同
          assertEquals(newRoom, createdRoom);
      }
 
@@ -172,22 +166,18 @@
      //when the room is not full, you can enter the room successfully
      @Test
      public void testEnterRoom_success() {
-         // 创建一个测试用的房间对象
+
          Room room = new Room();
          room.setMaxPlayersNum(2);
          room.addRoomPlayerList(123L);
 
-         // 创建一个测试用的用户对象
          User user = new User();
          user.setId(456L);
 
-         // 模拟 userService.getUserById() 方法的行为
          when(userService.getUserById(456L)).thenReturn(user);
 
-         // 调用 enterRoom() 方法
          roomService.enterRoom(room, user);
 
-         // 验证房间的玩家列表中是否包含新加入的用户
          assertTrue(room.getRoomPlayersList().contains(456L));
      }
 
@@ -195,82 +185,67 @@
      //when the room is full, if you want to enter the room, it will throw the exception
      @Test
      public void testEnterRoom_RoomFull() {
-         // 创建一个测试用的房间对象
+
          Room room = new Room();
          room.setMaxPlayersNum(2);
          room.addRoomPlayerList(1l);
          room.addRoomPlayerList(2l);
 
-         // 创建一个测试用的用户对象
          User user = new User();
          user.setId(3l);
 
-         // 调用 enterRoom() 方法，并期望抛出 ResponseStatusException 异常
          assertThrows(ResponseStatusException.class, () -> roomService.enterRoom(room, user));
      }
 
      //When there are more than one players, when the roomOwner leaves, the roomOwner will be transferred, and this player will be deleted
      @Test
      public void testDeletePlayerWithMultiplePlayers() {
-         // 创建一个测试用的房间对象
+
          Room room = new Room();
          room.setRoomId(1L);
          room.setRoomOwnerId(123L);
          room.addRoomPlayerList(123L);
          room.addRoomPlayerList(456L);
 
-         // 定义要删除的玩家和房间ID
          Long userId = 123L;
          Long roomId = 1L;
 
-         // 模拟 findRoomById() 方法的行为
          when(roomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
 
-         // 调用 deletePlayer() 方法
          roomService.deletePlayer(userId, roomId);
 
-         // 验证 findRoomById() 方法被调用一次
          verify(roomRepository, times(1)).findById(roomId);
 
-         // 验证房间的玩家列表是否已经移除了指定的玩家
          assertFalse(room.getRoomPlayersList().contains(userId));
 
-         // 验证房间的房主是否已经变更为下一个玩家
          assertEquals(456L, room.getRoomOwnerId());
 
-         // 验证房间是否没有被删除
          verify(roomRepository, never()).delete(room);
      }
 
      //When the last player leaves the room, the room will be deleted
      @Test
      public void testDeletePlayerWithSinglePlayer() {
-         // 创建一个测试用的房间对象
          Room room = new Room();
          room.setRoomId(1L);
          room.setRoomOwnerId(123L);
          room.addRoomPlayerList(123L);
 
-         // 定义要删除的玩家和房间ID
          Long userId = 123L;
          Long roomId = 1L;
 
-         // 模拟 findRoomById() 方法的行为
          when(roomRepository.findById(room.getRoomId())).thenReturn(Optional.of(room));
 
-         // 调用 deletePlayer() 方法
          roomService.deletePlayer(userId, roomId);
 
-         // 验证 findRoomById() 方法被调用一次
          verify(roomRepository, times(1)).findById(roomId);
 
-         // 验证房间是否被删除
          verify(roomRepository, times(1)).delete(room);
      }
 
      @Test
      public void testFindRoomWithMostPlayers_success() {
-         // 创建测试用的房间列表
+
          Room room1 = new Room();
          room1.setRoomId(1L);
          room1.setRoomProperty(RoomProperty.WAITING);
@@ -288,22 +263,16 @@
 
          List<Room> roomList = Arrays.asList(room1, room2);
 
-         // 模拟 getRooms() 方法的行为
          when(roomService.getRooms()).thenReturn(roomList);
 
-         // 调用 findRoomWithMostPlayers() 方法
          Room result = roomService.findRoomWithMostPlayers();
 
-         // 验证 getRooms() 方法被调用一次
-         //verify(roomService, times(1)).getRooms();
-
-         // 验证返回的房间对象是否正确
          assertEquals(room2, result);
      }
 
      @Test
      public void testFindRoomWithMostPlayers_removeFullRooms() {
-         // 创建测试用的房间列表
+
          Room room1 = new Room();
          room1.setRoomId(1L);
          room1.setMaxPlayersNum(4);
@@ -321,40 +290,31 @@
 
          List<Room> roomList = Arrays.asList(room1, room2);
 
-         // 模拟 getRooms() 方法的行为
          when(roomService.getRooms()).thenReturn(roomList);
 
-         // 调用 findRoomWithMostPlayers() 方法
          Room result = roomService.findRoomWithMostPlayers();
 
-         // 验证 getRooms() 方法被调用一次
-         //verify(roomService, times(1)).getRooms();
-
-         // 验证返回的房间对象是否正确
          assertEquals(room1, result);
      }
 
      @Test
      public void testFindRoomWithMostPlayers_NoAvailableRoom() {
-         // 创建一个空的房间列表
+
          List<Room> roomList = new ArrayList<>();
 
-         // 模拟 getRooms() 方法的行为
          when(roomService.getRooms()).thenReturn(roomList);
 
-         // 调用 findRoomWithMostPlayers() 方法，并捕获预期的异常
          ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
              roomService.findRoomWithMostPlayers();
          });
 
-         // 验证异常的状态码和消息是否符合预期
          assertEquals(HttpStatus.FORBIDDEN, exception.getStatus());
          assertEquals("No room is available!", exception.getReason());
      }
 
      @Test
      public void testFindRoomWithThisPlayer_success() {
-         // 创建测试用的房间列表
+
          Room room1 = new Room();
          room1.setRoomId(1L);
          room1.addRoomPlayerList(123L);
@@ -368,19 +328,16 @@
 
          List<Room> roomList = Arrays.asList(room1, room2);
 
-         // 模拟 getRooms() 方法的行为
          when(roomService.getRooms()).thenReturn(roomList);
 
-         // 调用 findRoomWithThisPlayer() 方法
          Room result = roomService.findRoomWithThisPlayer(123L);
 
-         // 验证返回的房间对象是否正确
          assertEquals(room1, result);
      }
 
      @Test
      public void testFindRoomWithThisPlayer_returnNull() {
-         // 创建测试用的房间列表
+
          Room room1 = new Room();
          room1.setRoomId(1L);
          room1.addRoomPlayerList(123L);
@@ -394,13 +351,10 @@
 
          List<Room> roomList = Arrays.asList(room1, room2);
 
-         // 模拟 getRooms() 方法的行为
          when(roomService.getRooms()).thenReturn(roomList);
 
-         // 调用 findRoomWithThisPlayer() 方法
          Room result = roomService.findRoomWithThisPlayer(1000L);
 
-         // 验证返回的房间对象是否正确
          assertNull(result);
      }
 
@@ -844,7 +798,6 @@
          assertEquals(0, room.getCurrentPlayerIndex());
          assertEquals(RoomProperty.WAITING, room.getRoomProperty());
 
-         //verify(chatService, times(3)).systemReminder(anyString(), eq(room.getRoomId()));
      }
 
  }

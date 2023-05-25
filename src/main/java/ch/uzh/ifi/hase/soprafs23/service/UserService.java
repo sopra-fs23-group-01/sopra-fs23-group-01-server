@@ -180,9 +180,7 @@ public class UserService {
     }
 
     public void userLeaveRoom(User user) {
-//        if(!userRepository.existsById(user.getId())) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user ID was not found");
-//        }
+
         User userByUserid = userRepository.getOne(user.getId());
         userByUserid.setReadyStatus(ReadyStatus.FREE);
     }

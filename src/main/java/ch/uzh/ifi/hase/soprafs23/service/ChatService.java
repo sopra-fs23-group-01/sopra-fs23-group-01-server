@@ -69,7 +69,7 @@ public class ChatService {
         Message gameStartMessage = new Message();
         gameStartMessage.setSenderName("system");
         gameStartMessage.setMessage("Game has started!");
-        gameStartMessage.setStatus(Status.START); // 设置状态为 GAME_STARTED
+        gameStartMessage.setStatus(Status.START); //  GAME_STARTED
         simpMessagingTemplate.convertAndSend("/chatroom/"+roomID+"/public", gameStartMessage);
     }
 
@@ -78,44 +78,16 @@ public class ChatService {
         gameEndMessage.setSenderName(room.getWinner().toString());
         gameEndMessage.setMessage("Undercover Word:"+ room.getUndercoverWord()
                 +"\nDetective Word:"+ room.getDetectiveWord());
-        gameEndMessage.setStatus(Status.END); // 设置状态为 GAME_STARTED
+        gameEndMessage.setStatus(Status.END); //  GAME_END
         simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", gameEndMessage);
         roomService.EndGame(room);
-        //        String message = "Undercover Word: " + room.getUndercoverWord()
-//                + "\nDetective Word: " + room.getDetectiveWord()
-//                + "\nWinner: ";
-//
-//        List<String> winnerUsernames = new ArrayList<>();
-//
-//        if (room.getWinner() == Role.UNDERCOVER) {
-//            Hibernate.initialize(room.getUndercoversList());
-//            List<Long> undercoverIds = room.getUndercoversList();
-//            for (Long undercoverId : undercoverIds) {
-//                User undercover = userService.getUserById(undercoverId);
-//                winnerUsernames.add(undercover.getUsername());
-//            }
-//        } else {
-//            Hibernate.initialize(room.getDetectivesList());
-//            List<Long> detectiveIds = room.getDetectivesList();
-//            for (Long detectiveId : detectiveIds) {
-//                User detective = userService.getUserById(detectiveId);
-//                winnerUsernames.add(detective.getUsername());
-//            }
-//        }
-//
-//        message += String.join(", ", winnerUsernames);
-//
-//        message += String.join(", ", winnerUsernames);
-//
-//        gameEndMessage.setMessage(message);
-//        //systemReminder("The winner group is "+room.getWinner().toString()+"!",roomId);
         }
 
     public void broadcastVoteStart(Long roomId) {
         Message voteStartMessage = new Message();
         voteStartMessage.setSenderName("system");
         voteStartMessage.setMessage("Now it's time to vote!\n You can click avatar to vote");
-        voteStartMessage.setStatus(Status.VOTE); // 设置状态为 GAME_STARTED
+        voteStartMessage.setStatus(Status.VOTE); // GAME_VOTE
         simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", voteStartMessage);
     }
 
@@ -123,7 +95,7 @@ public class ChatService {
         Message gameStartMessage = new Message();
         gameStartMessage.setSenderName("system");
         gameStartMessage.setMessage(reminderInfo);
-        gameStartMessage.setStatus(Status.REMINDER); // 设置状态为 GAME_STARTED
+        gameStartMessage.setStatus(Status.REMINDER); // GAME_REMINDER
         simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", gameStartMessage);
     }
 
@@ -131,13 +103,8 @@ public class ChatService {
         Message gameStartMessage = new Message();
         gameStartMessage.setSenderName(userName);
         gameStartMessage.setMessage("Now it's Player --" + userName + "'s turn to describe");
-        gameStartMessage.setStatus(Status.DESCRIPTION); // 设置状态为 GAME_STARTED
+        gameStartMessage.setStatus(Status.DESCRIPTION);
         simpMessagingTemplate.convertAndSend("/chatroom/"+roomId+"/public", gameStartMessage);
-//        Message currentPlayerMessage = new Message();
-//        currentPlayerMessage.setSenderName("system");
-//        currentPlayerMessage.setMessage(userName);
-//        currentPlayerMessage.setStatus(Status.CURRENT_PLAYER);
-//        simpMessagingTemplate.convertAndSend("/chatroom/public",currentPlayerMessage);
     }
 
     public void conductTurn(Room roomToConduct, Long roomId){
@@ -152,7 +119,6 @@ public class ChatService {
                     descriptionBroadcast(currentUser.getUsername(),roomId);
                     ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
                     executor.schedule(() -> {
-                        // 这里是15秒后要执行的代码
                         if (Integer.parseInt(currentPlayerIndex.toString()) < Integer.parseInt(currentAlivePlayersNum.toString()) - 1) {
                             currentPlayerIndex.incrementAndGet();
                             room.setCurrentPlayerIndex(Integer.parseInt(currentPlayerIndex.toString()));
@@ -170,15 +136,13 @@ public class ChatService {
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
-                if(true) break;//这里要改break的条件
+                //if(true) break;
             }
         }else if (currentGameStage.toString().equals(GameStage.VOTING.toString())) {
             broadcastVoteStart(roomId);
             ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
             executor.schedule(() -> {
-                // 这里是15秒后要执行的代码
-                // 展示投票结果
-                // room.getVotingResult();
+
                 roomService.checkIfSomeoneOut(room,roomId);
                 roomService.checkIfGameEnd(room);
             }, 10, TimeUnit.SECONDS);

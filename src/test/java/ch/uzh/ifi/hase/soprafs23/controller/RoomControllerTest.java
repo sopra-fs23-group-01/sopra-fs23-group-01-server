@@ -164,17 +164,15 @@ public class RoomControllerTest {
 
     @Test
     public void testQuickStart_success() throws Exception {
-        // 创建输入数据
+
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("testUsername");
 
-        // 创建模拟对象
         User userInput = new User();
         Room roomToStart = new Room();
         roomToStart.setRoomId(1L);
         roomToStart.setTheme(Theme.SPORTS);
 
-        // 设置模拟对象的行为
         when(roomService.findRoomWithMostPlayers()).thenReturn(roomToStart);
         doNothing().when(roomService).enterRoom(any(Room.class), any(User.class));
 
@@ -190,22 +188,18 @@ public class RoomControllerTest {
 
     @Test
     public void testQuickStart_fail() throws Exception {
-        // 创建输入数据
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("testUsername");
 
-        // 创建模拟对象
         User userInput = new User();
         Room roomToStart = new Room();
         roomToStart.setRoomId(1L);
         roomToStart.setTheme(Theme.SPORTS);
 
-        // 设置模拟对象的行为
         given(roomService.findRoomWithMostPlayers())
                 .willThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
         doNothing().when(roomService).enterRoom(any(Room.class), any(User.class));
 
-        // 执行HTTP POST请求
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/room/quickStart")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -215,21 +209,18 @@ public class RoomControllerTest {
 
     @Test
     public void testPlayerGuard_success() throws Exception {
-        // 创建输入数据
+
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setId(1L);
 
-        // 创建模拟对象
         User userInput = new User();
         userInput.setId(1L);
         Room roomToEnter = new Room();
         roomToEnter.setRoomId(1L);
         roomToEnter.setTheme(Theme.SPORTS);
 
-        // 设置模拟对象的行为
         when(roomService.findRoomWithThisPlayer(userInput.getId())).thenReturn(roomToEnter);
 
-        // 执行HTTP POST请求
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/games/guard")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -242,22 +233,19 @@ public class RoomControllerTest {
 
     @Test
     public void testPlayerGuard_fail() throws Exception {
-        // 创建输入数据
+
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setId(1L);
 
-        // 创建模拟对象
         User userInput = new User();
         userInput.setId(1L);
         Room roomToEnter = new Room();
         roomToEnter.setRoomId(1L);
         roomToEnter.setTheme(Theme.SPORTS);
 
-        // 设置模拟对象的行为
         given(roomService.findRoomWithThisPlayer(userInput.getId()))
                 .willThrow(new ResponseStatusException(HttpStatus.FORBIDDEN));
 
-        // 执行HTTP POST请求
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/games/guard")
                         .contentType(MediaType.APPLICATION_JSON)

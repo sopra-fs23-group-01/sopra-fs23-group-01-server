@@ -54,12 +54,8 @@ public class RoomService {
 
     //Here we create a new room and we need to set the room property and theme according to the input from client
     public Room createRoom(Room newRoom) {
-        //newRoom.setToken(UUID.randomUUID().toString());
-        //newRoom.setRoomOwnerId(newRoom.getRoomOwnerId());
         newRoom.setRoomProperty(RoomProperty.WAITING);
-        //newRoom.setTheme(newRoom.getTheme());
         newRoom.addRoomPlayerList(newRoom.getRoomOwnerId());
-        //newRoom.addRoomPlayer(userRepository.findById(newRoom.getRoomOwnerId()));
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newRoom = roomRepository.save(newRoom);
@@ -96,7 +92,7 @@ public class RoomService {
         Map<Long, Long> votingResult = room.getVotingResult();
         votingResult.put(voterId, voteeId);
         room.setVotingResult(votingResult);
-        chatService.systemReminder(votingResult.toString() + " collectVote", roomId);
+        chatService.systemReminder(userService.getUserById(voterId).getUsername() + " has voted", roomId);
     }
 
     public boolean checkIfAllReady(Room room) {
@@ -138,7 +134,6 @@ public class RoomService {
                 player.setCard(wordsList.get(1));
             }
             userRepository.save(player);
-            //chatService.systemReminder(player.getId()+player.getCard(),roomId);
         }
         roomRepository.save(room);
 
@@ -153,6 +148,12 @@ public class RoomService {
                         "Bowling","Volleyball", "Badminton", "Boxing", "Diving","Cycling", "Athletics","golf", "floorball");
                 Collections.shuffle(sportsWords, randomWord);
                 wordsList.addAll(sportsWords.subList(0, 2));
+                break;
+            case SUPERHERO:
+                List<String> superheroWords = Arrays.asList("IronMan", "BatMan", "SpiderMan", "Captain-America", "Hulk", "Thor", "WonderWoman", "Superman",
+                        "Flash", "Wolverine", "BlackWidow", "DoctorStrange", "AquaMan", "BlackPanther");
+                Collections.shuffle(superheroWords, randomWord);
+                wordsList.addAll(superheroWords.subList(0, 2));
                 break;
             case FURNITURE:
                 List<String> furnitureWords = Arrays.asList("Sofa", "Chair", "Table", "Bed","cupboard","bookcase", "clock","pillow"

@@ -32,7 +32,7 @@ public class RoomController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<RoomGetDTO> getAllRooms() {
-        // fetch all users in the internal representation，
+        // fetch all rooms in the internal representation，
         List<Room> rooms = roomService.getRooms();
         List<RoomGetDTO> roomGetDTOs = new ArrayList<>();
 
@@ -47,12 +47,11 @@ public class RoomController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public RoomGetDTO createRoom(@RequestBody RoomPostDTO roomPostDTO) {
-        // convert API user to internal representation
+        // convert API room to internal representation
         Room roomInput = DTOMapper.INSTANCE.convertRoomPostDTOtoEntity(roomPostDTO);
-        //roomInput.getRoomOwnerId();
-        // create user
+        // create room
         Room createdRoom = roomService.createRoom(roomInput);
-        // convert internal representation of user back to API
+        // convert internal representation of room back to API
         return DTOMapper.INSTANCE.convertEntityToRoomGetDTO(createdRoom);
     }
 
@@ -70,7 +69,7 @@ public class RoomController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void enterRoom(@PathVariable("roomId") Long roomId, @RequestBody UserPutDTO userPutDTO) {
-        // convert API user to internal representation
+
         User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
         Room room = roomService.findRoomById(roomId);
         roomService.enterRoom(room, userInput);

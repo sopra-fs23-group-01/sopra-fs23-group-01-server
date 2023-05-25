@@ -52,18 +52,6 @@ public class ChatControllerTest {
         message.setStatus(Status.ASSIGNED_WORD);
     }
 
-//    @Test
-//    public void testReceiveMessage() {
-//        Mockito.when(roomService.assignWord(any())).thenReturn("test word");
-//        Mockito.when(roomService.assignSide(any())).thenReturn("test side");
-//
-//        chatController.receiveMessage(message, roomId);
-//
-//        Mockito.verify(roomService).assignWord(eq(message.getSenderName()));
-//        Mockito.verify(roomService).assignSide(eq(message.getSenderName()));
-//        Mockito.verify(chatService).systemReminder(eq("test word"), eq(roomId));
-//        Mockito.verify(simpMessagingTemplate).convertAndSendToUser(eq(message.getSenderName()), eq("/private"), any(Message.class));
-//    }
 
     @Test
     public void testReceiveCreationMessage() {
@@ -79,8 +67,6 @@ public class ChatControllerTest {
         Mockito.verify(simpMessagingTemplate).convertAndSendToUser(eq(message.getReceiverName()), eq("/private"), eq(message));
     }
 
-
-    //测试玩家都准备了开始游戏可以正常开始
     @Test
     public void startGame_AllPlayersReady() {
         Room room = new Room();
@@ -95,16 +81,13 @@ public class ChatControllerTest {
         }).when(chatService).conductTurn(room, roomId);
     
         chatController.startGame(roomId);
-        
-        //测试是否用到了这些函数
+
         verify(chatService).initiateGame(room, roomId);
         verify(chatService).broadcastGameStart(roomId);
         verify(chatService).conductTurn(room, roomId);
         verify(chatService).broadcastGameEnd(room, roomId);
     }
 
-
-    //测试有玩家没有准备但是游戏开始是否正常
     @Test
     public void startGame_NotAllPlayersReady() {
         Room room = new Room();

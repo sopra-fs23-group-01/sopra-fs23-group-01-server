@@ -147,7 +147,6 @@ public class ChatServiceTest {
         chatService.conductTurn(room, room.getRoomId());}
         
 
-    //测试开始游戏以后发出去的是否和想要发的一样
     @Test
     public void testBroadcastGameStart() {
         // Prepare test data
