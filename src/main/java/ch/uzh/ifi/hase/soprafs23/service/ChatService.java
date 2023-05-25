@@ -162,10 +162,10 @@ public class ChatService {
                             room.setGameStage(GameStage.VOTING);
                             i.set(1);
                         }
-                    }, 5, TimeUnit.SECONDS);//15
+                    }, 15, TimeUnit.SECONDS);//15
 
                 try {
-                    Thread.sleep(6000);//20000
+                    Thread.sleep(20000);//20000
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
